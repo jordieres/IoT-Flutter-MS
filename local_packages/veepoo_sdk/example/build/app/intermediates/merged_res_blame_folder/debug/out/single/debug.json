@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/app/intermediates/merged_res/debug/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/app/intermediates/merged_res/debug/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/app/intermediates/merged_res/debug/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/app/intermediates/merged_res/debug/drawable_launch_background.xml.flat",
+        "source": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/res/drawable/launch_background.xml"
+    },
+    {
+        "merged": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/app/intermediates/merged_res/debug/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/app/intermediates/merged_res/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+    }
+]

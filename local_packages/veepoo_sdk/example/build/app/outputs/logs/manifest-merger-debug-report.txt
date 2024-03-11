@@ -1,0 +1,186 @@
+-- Merging decision tree log ---
+application
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:23:5-45:19
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:19:5-24:19
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:19:5-24:19
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:24:5-31:19
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:24:5-31:19
+MERGED from [androidx.core:core:1.6.0] /Users/amir/.gradle/caches/transforms-3/3a6e70d47a0e8579cf19129b84f37c48/transformed/core-1.6.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.6.0] /Users/amir/.gradle/caches/transforms-3/3a6e70d47a0e8579cf19129b84f37c48/transformed/core-1.6.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/amir/.gradle/caches/transforms-3/2aa1b745a14c5c8a6f38d762ab6518aa/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/amir/.gradle/caches/transforms-3/2aa1b745a14c5c8a6f38d762ab6518aa/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.6.0] /Users/amir/.gradle/caches/transforms-3/3a6e70d47a0e8579cf19129b84f37c48/transformed/core-1.6.0/AndroidManifest.xml:24:18-86
+	android:name
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+manifest
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:1-46:12
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:1-46:12
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:1-46:12
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:1-46:12
+MERGED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:1-46:12
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-26:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/amir/.gradle/caches/transforms-3/ce65cd4f1aa4f6b3d7cf3c5ebb9f7365/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/amir/.gradle/caches/transforms-3/3fb031820d2c54dacb88b3076e818c10/transformed/fragment-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/189e014029fd9836e61568956a20230b/transformed/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/amir/.gradle/caches/transforms-3/202fb90bd6bc88e0e3caae66bb5e3193/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/amir/.gradle/caches/transforms-3/f812c1d8edc16170d32b684f38a5814a/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.0.0] /Users/amir/.gradle/caches/transforms-3/d8016bb875eb67093ee9655dc90677f9/transformed/jetified-activity-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/amir/.gradle/caches/transforms-3/df197afdb80d2e611b0810776782bb2c/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.6.0] /Users/amir/.gradle/caches/transforms-3/3a6e70d47a0e8579cf19129b84f37c48/transformed/core-1.6.0/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/amir/.gradle/caches/transforms-3/04412af4f4d6cbe540c5b3929df8eec8/transformed/lifecycle-runtime-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/amir/.gradle/caches/transforms-3/465611556cf4653c7d1e1c76bcedf8aa/transformed/jetified-savedstate-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/amir/.gradle/caches/transforms-3/f69d6d47d7b838d264209fe53e54c50a/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/amir/.gradle/caches/transforms-3/f4044867cf68725ee89c4b9c92ed02c9/transformed/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/amir/.gradle/caches/transforms-3/7235c56483ed63171cfb3070863d5eea/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/amir/.gradle/caches/transforms-3/984d18169e488dbe5c982c70d6d61edc/transformed/core-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/amir/.gradle/caches/transforms-3/2aa1b745a14c5c8a6f38d762ab6518aa/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/amir/.gradle/caches/transforms-3/7c96da04ba8e94914fb626943c7c4b5c/transformed/lifecycle-viewmodel-2.1.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.orhanobut:logger:1.15] /Users/amir/.gradle/caches/transforms-3/3c83b824a59bef24cc8668da1a4ead5b/transformed/jetified-logger-1.15/AndroidManifest.xml:2:1-8:12
+MERGED from [androidx.annotation:annotation-experimental:1.1.0] /Users/amir/.gradle/caches/transforms-3/7e1a48dcd85532a0ee0c623d67fe9a77/transformed/jetified-annotation-experimental-1.1.0/AndroidManifest.xml:17:1-24:12
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+	package
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:2:5-52
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:1-46:12
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:1-46:12
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.BLUETOOTH
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:4:5-68
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-68
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-68
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:4:22-65
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:5:5-74
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:8:5-74
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:8:5-74
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:5:22-71
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:7:5-79
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-79
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-79
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:7:22-76
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:8:5-81
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-81
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-81
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:8:22-78
+uses-permission#android.permission.INTERNET
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:10:5-67
+MERGED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:10:5-67
+MERGED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:10:5-67
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-67
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-67
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:10:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:11:5-79
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:11:22-76
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:12:5-81
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-81
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-81
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:12:22-78
+uses-feature#android.hardware.bluetooth_le
+ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:14:5-16:35
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:15:5-17:35
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:15:5-17:35
+	android:required
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:16:9-32
+	android:name
+		ADDED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml:15:9-53
+uses-sdk
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/amir/.gradle/caches/transforms-3/ce65cd4f1aa4f6b3d7cf3c5ebb9f7365/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/amir/.gradle/caches/transforms-3/ce65cd4f1aa4f6b3d7cf3c5ebb9f7365/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/amir/.gradle/caches/transforms-3/3fb031820d2c54dacb88b3076e818c10/transformed/fragment-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/amir/.gradle/caches/transforms-3/3fb031820d2c54dacb88b3076e818c10/transformed/fragment-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/189e014029fd9836e61568956a20230b/transformed/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/189e014029fd9836e61568956a20230b/transformed/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/amir/.gradle/caches/transforms-3/202fb90bd6bc88e0e3caae66bb5e3193/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/amir/.gradle/caches/transforms-3/202fb90bd6bc88e0e3caae66bb5e3193/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/amir/.gradle/caches/transforms-3/f812c1d8edc16170d32b684f38a5814a/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/amir/.gradle/caches/transforms-3/f812c1d8edc16170d32b684f38a5814a/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.0.0] /Users/amir/.gradle/caches/transforms-3/d8016bb875eb67093ee9655dc90677f9/transformed/jetified-activity-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.0.0] /Users/amir/.gradle/caches/transforms-3/d8016bb875eb67093ee9655dc90677f9/transformed/jetified-activity-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.0.0] /Users/amir/.gradle/caches/transforms-3/df197afdb80d2e611b0810776782bb2c/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/amir/.gradle/caches/transforms-3/df197afdb80d2e611b0810776782bb2c/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.6.0] /Users/amir/.gradle/caches/transforms-3/3a6e70d47a0e8579cf19129b84f37c48/transformed/core-1.6.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.6.0] /Users/amir/.gradle/caches/transforms-3/3a6e70d47a0e8579cf19129b84f37c48/transformed/core-1.6.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/amir/.gradle/caches/transforms-3/04412af4f4d6cbe540c5b3929df8eec8/transformed/lifecycle-runtime-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /Users/amir/.gradle/caches/transforms-3/04412af4f4d6cbe540c5b3929df8eec8/transformed/lifecycle-runtime-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/amir/.gradle/caches/transforms-3/465611556cf4653c7d1e1c76bcedf8aa/transformed/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/amir/.gradle/caches/transforms-3/465611556cf4653c7d1e1c76bcedf8aa/transformed/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/amir/.gradle/caches/transforms-3/f69d6d47d7b838d264209fe53e54c50a/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/amir/.gradle/caches/transforms-3/f69d6d47d7b838d264209fe53e54c50a/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/amir/.gradle/caches/transforms-3/f4044867cf68725ee89c4b9c92ed02c9/transformed/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/amir/.gradle/caches/transforms-3/f4044867cf68725ee89c4b9c92ed02c9/transformed/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/amir/.gradle/caches/transforms-3/7235c56483ed63171cfb3070863d5eea/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/amir/.gradle/caches/transforms-3/7235c56483ed63171cfb3070863d5eea/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/amir/.gradle/caches/transforms-3/984d18169e488dbe5c982c70d6d61edc/transformed/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/amir/.gradle/caches/transforms-3/984d18169e488dbe5c982c70d6d61edc/transformed/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/amir/.gradle/caches/transforms-3/2aa1b745a14c5c8a6f38d762ab6518aa/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/amir/.gradle/caches/transforms-3/2aa1b745a14c5c8a6f38d762ab6518aa/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/amir/.gradle/caches/transforms-3/7c96da04ba8e94914fb626943c7c4b5c/transformed/lifecycle-viewmodel-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/amir/.gradle/caches/transforms-3/7c96da04ba8e94914fb626943c7c4b5c/transformed/lifecycle-viewmodel-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [com.orhanobut:logger:1.15] /Users/amir/.gradle/caches/transforms-3/3c83b824a59bef24cc8668da1a4ead5b/transformed/jetified-logger-1.15/AndroidManifest.xml:6:5-43
+MERGED from [com.orhanobut:logger:1.15] /Users/amir/.gradle/caches/transforms-3/3c83b824a59bef24cc8668da1a4ead5b/transformed/jetified-logger-1.15/AndroidManifest.xml:6:5-43
+MERGED from [androidx.annotation:annotation-experimental:1.1.0] /Users/amir/.gradle/caches/transforms-3/7e1a48dcd85532a0ee0c623d67fe9a77/transformed/jetified-annotation-experimental-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.1.0] /Users/amir/.gradle/caches/transforms-3/7e1a48dcd85532a0ee0c623d67fe9a77/transformed/jetified-annotation-experimental-1.1.0/AndroidManifest.xml:20:5-22:41
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml
+service#vn.com.tma.ehealth.veepoo_sdk.service.BleService
+ADDED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:20:9-22:40
+	android:exported
+		ADDED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-37
+	android:name
+		ADDED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-76
+service#com.inuker.bluetooth.library.BluetoothService
+ADDED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:23:9-81
+	android:name
+		ADDED from [:veepoo_sdk] /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/build/veepoo_sdk/intermediates/merged_manifest/debug/AndroidManifest.xml:23:18-78
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+IMPLIED from /Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/example/android/app/src/debug/AndroidManifest.xml:1:1-7:12 reason: vn.com.tma.ehealth.veepoo_sdk requested WRITE_EXTERNAL_STORAGE
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+	android:required
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+	android:required
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+	android:name
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/amir/.gradle/caches/transforms-3/9e1c876ea849c06ecd7c7028915108ad/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51

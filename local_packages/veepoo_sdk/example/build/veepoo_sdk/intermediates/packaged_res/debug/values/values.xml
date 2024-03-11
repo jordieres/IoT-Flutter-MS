@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_description">Show Veepoo device status</string>
+    <string name="channel_name">Veepoo SDK</string>
+</resources>

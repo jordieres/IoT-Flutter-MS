@@ -1,0 +1,50 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="vn.com.tma.ehealth.veepoo_sdk" >
+4
+5    <uses-sdk android:minSdkVersion="22" />
+5-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml
+6
+7    <uses-permission android:name="android.permission.BLUETOOTH" />
+7-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:5:5-68
+7-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:5:22-65
+8    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+8-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:6:5-74
+8-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:6:22-71
+9    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+9-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:7:5-79
+9-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:7:22-76
+10    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+10-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:8:5-81
+10-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:8:22-78
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:9:5-67
+11-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:9:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:10:5-79
+12-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:10:22-76
+13    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+13-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:11:5-81
+13-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:11:22-78
+14
+15    <uses-feature
+15-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:13:5-15:35
+16        android:name="android.hardware.bluetooth_le"
+16-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:14:9-53
+17        android:required="true" />
+17-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:15:9-32
+18
+19    <application>
+19-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:17:5-24:19
+20        <service
+20-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:20:9-22:48
+21            android:name="vn.com.tma.ehealth.veepoo_sdk.service.BleService"
+21-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:21:13-47
+22            android:exported="false" />
+22-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:22:13-37
+23        <service android:name="com.inuker.bluetooth.library.BluetoothService" />
+23-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:23:9-81
+23-->/Users/amir/Project/FLUTTER/healthyband2/local_packages/veepoo_sdk/android/src/main/AndroidManifest.xml:23:18-78
+24    </application>
+25
+26</manifest>
