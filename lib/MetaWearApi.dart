@@ -58,7 +58,7 @@ class MetaWearApi {
       } else {
         print("$hand hand device ($macAddress) is not connected.");
       }
-    })
+    });
   }
 
   static void disposeTimers() {
