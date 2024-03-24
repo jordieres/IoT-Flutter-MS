@@ -1,0 +1,2 @@
+{"Id":"TESTUPM567-77","Type":"Steps","Structure":["Steps","Distance","Calories","TimeStamp"],"Lat":40.4539977,"Long":-3.693063,"AppVersion":"1.0.0","DeviceMac":"D9:09:1C:0A:BA:FD","DeviceName":"W8"}
+64, 0.05, 3.3, 1711268345481
