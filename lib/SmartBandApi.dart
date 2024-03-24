@@ -132,7 +132,7 @@ class SmartBandApi {
       //- Delete the original file
       await file.delete();
 
-      print('Data compressed and original file deleted.');
+      print('Data is compressed and original file deleted.');
     } catch (e) {
       print('An error occurred while saving data: $e');
     }

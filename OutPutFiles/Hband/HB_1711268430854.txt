@@ -1,0 +1,2 @@
+{"Id":"TESTUPM567-77","Type":"BloodPressure","Structure":["HighBloodPressure","LowBloodPressure","TimeStamp"],"Lat":40.4540015,"Long":-3.6930855,"AppVersion":"1.0.0","DeviceMac":"D9:09:1C:0A:BA:FD","DeviceName":"W8"}
+122, 81, 1711268430854

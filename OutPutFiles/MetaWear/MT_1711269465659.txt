@@ -1,0 +1,11 @@
+{"Id":"TESTUPM567-77","Type":"Temperature","Structure":["Degree","TimeStamp","Hand"],"Lat":40.453998,"Long":-3.6930742,"AppVersion":"1.0.0","LH-DeviceMac":"F5:38:30:B8:26:DD","LH-DeviceName":"MetaWear","RH-DeviceMac":"E8:D4:6C:D3:DD:2E","RH-DeviceName":"MetaWear"}
+22.75,1711269416279,Right
+25.25,1711269425609,Left
+22.75,1711269426268,Right
+25.25,1711269435642,Left
+22.75,1711269436258,Right
+25.25,1711269445672,Left
+22.75,1711269446282,Right
+25.25,1711269455618,Left
+22.75,1711269456276,Right
+25.25,1711269465646,Left
