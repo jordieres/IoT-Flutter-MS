@@ -10,6 +10,30 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:collection/collection.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart'; //for language
+import 'AppLocal.dart'; //for the langauges
+
+import 'enums/device_connection_status.dart';
+
+class SpO2Data {
+  final int spo2Value;
+  final int progress;
+
+  SpO2Data({required this.spo2Value, required this.progress});
+
+  factory SpO2Data.fromJson(Map<String, dynamic> json) {
+    return SpO2Data(
+      spo2Value: json['spo2Value'],
+      progress: json['progress'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'spo2Value': spo2Value,
+        'progress': progress,
+      };
+}
+
 class SmartBandApi {
   static List<Map<String, dynamic>> heartRateBuffer =
       []; // this is the buffer to store heart rate values and timestamps
