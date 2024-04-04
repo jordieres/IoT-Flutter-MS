@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <string name="service_channel_name">Sensor Service Channel</string>
+        <string name="service_channel_description">This channel is used for sensor service notifications</string>
+        <string name="service_notification_title">Sensor Data Collection Active</string>
+        <string name="service_notification_content">Collecting sensor data in the background.</string>
+        <string name="fail_channel_name">fail_channel</string>
+        <string name="fail_channel_description">This channel is used for sensor fail notifications</string>
+        <string name="fail_notification_title">Reconnection Failed</string>
+        <string name="fail_notification_content">Collecting sensor data in the background.</string>
+
+        <string name="no_metawear_device_found">No MetaWear device found for %1$s hand.</string>
+        <string name="no_additional_metawear_device_found">No additional MetaWear device found for %1$s hand.</string>
+        <string name="right">Right</string>
+        <string name="left">Left</string>
+        <string name="no_sensoria_device_found">No Socks device found.</string>
+</resources>

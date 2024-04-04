@@ -1,125 +1,769 @@
 import 'package:flutter/material.dart';
+import 'SmartBandApi.dart';
+import 'MetaWearApi.dart';
+import 'SensoriaApi.dart';
+import 'uploader.dart';
+import 'AppLocal.dart';
+import 'dart:async';
 
-void main() {
-  runApp(const MyApp());
+import 'dart:ui'; //to use ImageFilter.
+
+import 'dart:convert';
+import 'dart:math';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info/package_info.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'enums/device_connection_status.dart';
+
+int getChkSum(String strData) {
+  int chksum = 0;
+  chksum = chksum ^ int.parse("20", radix: 16);
+  chksum = chksum ^ int.parse("03", radix: 16);
+  for (int i = 0; i < strData.length; i++) {
+    chksum = chksum ^ strData.codeUnitAt(i);
+  }
+  chksum = chksum ^ int.parse("04", radix: 16);
+  return chksum;
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DeviceStatus {
+  String deviceName;
+  DeviceConnectionStatus connectionStatus;
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  DeviceStatus({required this.deviceName, required this.connectionStatus});
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await requestPermissions();
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String languageCode = prefs.getString('languageCode') ?? 'en';
+  Locale initialLocale = Locale(languageCode);
+
+  //to send the app version for the metadata
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String appVersion = packageInfo.version;
+  SmartBandApi.setAppVersion(appVersion);
+  MetaWearApi.sendAppVersion(appVersion);
+  SensoriaApi.sendAppVersion(appVersion);
+
+  //  update each API with the correct language code
+  SmartBandApi.setLanguageCode(languageCode);
+  MetaWearApi.setLocale(languageCode);
+  SensoriaApi.setLocale(languageCode);
+
+  runApp(MyApp(initialLocale: initialLocale));
+
+  Uploader.startMonitoringAndUploading();
+}
+
+Future<void> requestPermissions() async {
+  // Check and request storage permission
+  var storageStatus = await Permission.storage.status;
+  if (!storageStatus.isGranted) {
+    await Permission.storage.request();
+  }
+
+  // Check and request notification permission/
+  var notificationStatus = await Permission.notification.status;
+  if (!notificationStatus.isGranted) {
+    await Permission.notification.request();
+  }
+
+  // Check and request location permission
+  var locationStatus = await Permission.location.status;
+  if (!locationStatus.isGranted) {
+    await Permission.location.request();
+  }
+
+  // Check and request Bluetooth permissions
+  var bluetoothStatus = await Permission.bluetooth.status;
+  if (!bluetoothStatus.isGranted) {
+    await Permission.bluetooth.request();
+  }
+
+  var bluetoothScanStatus = await Permission.bluetoothScan.status;
+  if (!bluetoothScanStatus.isGranted) {
+    await Permission.bluetoothScan.request();
+  }
+
+  var bluetoothConnectStatus = await Permission.bluetoothConnect.status;
+  if (!bluetoothConnectStatus.isGranted) {
+    await Permission.bluetoothConnect.request();
+  }
+
+  var bluetoothAdvertiseStatus = await Permission.bluetoothAdvertise.status;
+  if (!bluetoothAdvertiseStatus.isGranted) {
+    await Permission.bluetoothAdvertise.request();
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MyApp extends StatefulWidget {
+  final Locale initialLocale;
+  MyApp({required this.initialLocale});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyAppState createState() => _MyAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyAppState extends State<MyApp> {
+  late Locale _locale;
 
-  void _incrementCounter() {
+  bool isBandToggled = false;
+  bool isRightHandToggled = false;
+  bool isLeftHandToggled = false;
+  bool isRightFootToggled = false;
+  bool isLeftFootToggled = false;
+
+  int? batteryLevelRH = null;
+  int? batteryLevelLH = null;
+  int? batteryLevelRF = null;
+  int? batteryLevelLF = null;
+  int? batteryLevelSB = null;
+
+  Map<String, DeviceConnectionStatus> deviceStatuses = {
+    'SB': DeviceConnectionStatus.disconnected,
+    'RH': DeviceConnectionStatus.disconnected,
+    'LH': DeviceConnectionStatus.disconnected,
+    'RF': DeviceConnectionStatus.disconnected,
+    'LF': DeviceConnectionStatus.disconnected,
+  };
+
+  DeviceConnectionStatus connectionStatus = DeviceConnectionStatus.disconnected;
+
+  final TextEditingController _idController = TextEditingController();
+  bool _isIdEditable = true; // to enable or disable the input field
+  final TextEditingController _checksumController = TextEditingController();
+  bool _isIdCorrect = true; //  variable to track if entered checksum is correct
+  bool _devicesEnabled = false; // variable to enable/disable the devices access(lock)
+
+// metawear Devices
+  Set<String> _connectedDevices = Set<String>();
+
+  // metawear Devices
+  Set<String> _sensoriaconnectedDevices = Set<String>();
+
+  @override
+  void initState() {
+    super.initState();
+    _locale = widget.initialLocale;
+    Timer.periodic(Duration(minutes: 1), (Timer t) => updateBatteryLevels());
+
+    _loadIdNumber().then((_) {
+      // after loading, if the text field is empty, allow editing.//
+      if (_idController.text.isEmpty) {
+        setState(() => _isIdEditable = true);
+      }
+    });
+    _isIdEditable = false;
+
+    SmartBandApi.onConnectionStatusChange = (status) {
+      _updateDeviceStatus('SB', status);
+    };
+
+    MetaWearApi.onRightHandConnectionStatusChange = (status) {
+      _updateDeviceStatus('RH', status);
+    };
+    MetaWearApi.onLeftHandConnectionStatusChange = (status) {
+      _updateDeviceStatus('LH', status);
+    };
+
+    SensoriaApi.onRightFootConnectionStatusChange = (status) {
+      _updateDeviceStatus('RF', status);
+    };
+    SensoriaApi.onLeftFootConnectionStatusChange = (status) {
+      _updateDeviceStatus('LF', status);
+    };
+  }
+
+  void updateBatteryLevels() async {
+    int newBatteryLevelRH = await MetaWearApi.getBatteryLevelForDevice(1);
+    int newBatteryLevelLH = await MetaWearApi.getBatteryLevelForDevice(2);
+
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      batteryLevelRH = newBatteryLevelRH;
+      batteryLevelLH = newBatteryLevelLH;
     });
   }
 
+  void _updateDeviceStatus(String deviceName, DeviceConnectionStatus status) {
+    setState(() {
+      deviceStatuses[deviceName] = status;
+      // update switch state based on connection status
+      switch (deviceName) {
+        case 'SB':
+          isBandToggled = status != DeviceConnectionStatus.disconnected;
+          if (status == DeviceConnectionStatus.connected) {
+            fetchAndUpdateBatteryLevel(deviceName, 0); // fetch immediately upon connection
+          } else {
+            // stop battery level updates when disconnected
+            stopBatteryLevelUpdates(deviceName);
+          }
+          break;
+        case 'RH':
+          isRightHandToggled = status != DeviceConnectionStatus.disconnected;
+          if (status == DeviceConnectionStatus.connected) {
+            // start battery level updates for the right hand device
+            fetchAndUpdateBatteryLevel(deviceName, 1);
+          } else {
+            // stop battery level updates when disconnected
+            stopBatteryLevelUpdates(deviceName);
+          }
+          break;
+        case 'LH':
+          isLeftHandToggled = status != DeviceConnectionStatus.disconnected;
+          if (status == DeviceConnectionStatus.connected) {
+            fetchAndUpdateBatteryLevel(deviceName, 2);
+          } else {
+            stopBatteryLevelUpdates(deviceName);
+          }
+          break;
+        case 'RF':
+          isRightFootToggled = status != DeviceConnectionStatus.disconnected;
+          if (status == DeviceConnectionStatus.connected) {
+            fetchAndUpdateBatteryLevel(deviceName, 1);
+          } else {
+            stopBatteryLevelUpdates(deviceName);
+          }
+          break;
+        case 'LF':
+          isLeftFootToggled = status != DeviceConnectionStatus.disconnected;
+          if (status == DeviceConnectionStatus.connected) {
+            fetchAndUpdateBatteryLevel(deviceName, 2);
+          } else {
+            stopBatteryLevelUpdates(deviceName);
+          }
+          break;
+      }
+    });
+  }
+
+  Map<String, Timer> batteryUpdateTimers = {};
+
+  void fetchAndUpdateBatteryLevel(String deviceName, int deviceIndex) async {
+    int? batteryLevel;
+
+    if (deviceName == 'SB') {
+      batteryLevel = await SmartBandApi.getBatteryLevel();
+    } else if (deviceName == 'RH' || deviceName == 'LH') {
+      batteryLevel = await MetaWearApi.getBatteryLevelForDevice(deviceIndex);
+    } else {
+      batteryLevel = await SensoriaApi.getBatteryLevelForDevice(deviceIndex);
+    }
+
+    setState(() {
+      switch (deviceName) {
+        case 'SB':
+          batteryLevelSB = batteryLevel;
+          break;
+        case 'RH':
+          batteryLevelRH = batteryLevel;
+          break;
+        case 'LH':
+          batteryLevelLH = batteryLevel;
+          break;
+        case 'RF':
+          batteryLevelRF = batteryLevel;
+          break;
+        case 'LF':
+          batteryLevelLF = batteryLevel;
+          break;
+      }
+    });
+  }
+
+  void stopBatteryLevelUpdates(String deviceName) {
+    batteryUpdateTimers[deviceName]?.cancel();
+  }
+
+  void setLocale(Locale newLocale) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('languageCode', newLocale.languageCode);
+    if (mounted) {
+      setState(() {
+        _locale = newLocale;
+      });
+      MetaWearApi.setLocale(newLocale.languageCode);
+      SensoriaApi.setLocale(newLocale.languageCode);
+      SmartBandApi.setLanguageCode(newLocale.languageCode);
+    }
+  }
+
+  @override
+  void dispose() {
+    MetaWearApi.disposeTimers();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+    print("Locale in build: $_locale");
+    var localization = AppLocalizations.of(context);
+    print("Localization: $localization");
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      locale: _locale,
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            height: 35,
+            child: Image.asset('assets/images/SaludMadrid_logo.png', fit: BoxFit.scaleDown),
+          ),
+          backgroundColor: Colors.white,
+          actions: [
+            DropdownButton<String>(
+              underline: Container(),
+              icon: Icon(Icons.language, color: Colors.white),
+              items: <String>['en', 'es'].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value.toUpperCase(), style: TextStyle(color: Colors.black)),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  setLocale(Locale(newValue));
+                }
+              },
+              value: _locale.languageCode,
             ),
           ],
         ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      // ID Number TextField with explicit size for 12 uppercase characters
+                      Container(
+                        width: MediaQuery.of(context).size.width *
+                            0.5, // Adjust based on your UI needs
+                        child: TextField(
+                          controller: _idController,
+                          readOnly: !_isIdEditable,
+                          decoration: InputDecoration(
+                            labelText: _locale.languageCode == 'en'
+                                ? 'Reference Number'
+                                : 'Número de Referencia',
+                            border: OutlineInputBorder(),
+                          ),
+                          maxLength: 12,
+                          onChanged: (value) {
+                            // force uppercase and limit input length
+                            _idController.value = TextEditingValue(
+                              text: value.toUpperCase().substring(0, min(value.length, 12)),
+                              selection: TextSelection.fromPosition(
+                                TextPosition(offset: min(value.length, 12)),
+                              ),
+                            );
+                            setState(() {
+                              _isIdCorrect = true;
+                            });
+                          },
+                          buildCounter: (BuildContext context,
+                                  {required int currentLength,
+                                  int? maxLength,
+                                  required bool isFocused}) =>
+                              null,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.characters,
+                        ),
+                      ),
+                      Text('-',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)), // Hyphen"-"
+                      // checksum Textfield with explicit size for 3 digits
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.15,
+                        child: TextField(
+                          controller: _checksumController,
+                          readOnly: !_isIdEditable,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          maxLength: 3,
+                          buildCounter: (BuildContext context,
+                                  {required int currentLength,
+                                  int? maxLength,
+                                  required bool isFocused}) =>
+                              null,
+                        ),
+                      ),
+                      IconButton(
+                        icon: _isIdEditable ? Icon(Icons.check) : Icon(Icons.edit),
+                        onPressed: _handleCheckOrEdit,
+                      ),
+                    ],
+                  ),
+                ),
+                if (!_isIdCorrect)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: Text(
+                      _locale.languageCode == 'en'
+                          ? 'The Reference number is not correct, please contact your doctor.'
+                          : 'El número de referencia no es correcto, por favor contacte a su médico.',
+                      style: TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                SizedBox(
+                  height: 40,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildDeviceBox(
+                      _locale.languageCode == 'en' ? 'MMR Left Hand' : 'MMR Mano Izda.',
+                      "LH",
+                      Switch(
+                        value: isLeftHandToggled,
+                        onChanged: (value) async {
+                          setState(() {
+                            isLeftHandToggled = value;
+                          });
+                          if (value) {
+                            await MetaWearApi.connectDevice(2);
+                          } else {
+                            // todo: Code to disconnect the right hand MetaWear device
+
+                            await MetaWearApi.disconnectDevice(2);
+                          }
+                        },
+                        activeColor: Colors.white,
+                        activeTrackColor: Colors.blueAccent,
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.white,
+                      ),
+                      batteryLevelLH,
+                    ),
+                    _buildDeviceBox(
+                      _locale.languageCode == 'en' ? 'MMR Right Hand' : 'MMR Mano Dcha.',
+                      "RH",
+                      Switch(
+                        value: isRightHandToggled,
+                        onChanged: (value) async {
+                          setState(() {
+                            isRightHandToggled = value;
+                          });
+
+                          if (value) {
+                            //  to connect to the right hand MetaWear device
+                            await MetaWearApi.connectDevice(1);
+                          } else {
+                            // todo: Code to disconnect the right hand MetaWear device
+                            await MetaWearApi.disconnectDevice(1);
+                          }
+                        },
+                        activeColor: Colors.white,
+                        activeTrackColor: Colors.green,
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.white,
+                      ),
+                      batteryLevelRH,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 3),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildDeviceBox(
+                      _locale.languageCode == 'en' ? 'Socks Left Foot' : 'Calcetines Pie Izda.',
+                      "LF",
+                      Switch(
+                        value: isLeftFootToggled,
+                        onChanged: (value) async {
+                          setState(() {
+                            isLeftFootToggled = value;
+                          });
+                          if (value) {
+                            await SensoriaApi.scanAndConnectWithCore(2);
+                          } else {
+                            await SensoriaApi.disconnectDevice(2);
+                          }
+                        },
+                        activeColor: Colors.white,
+                        activeTrackColor: Colors.blueAccent,
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.white,
+                      ),
+                      batteryLevelLF,
+                    ),
+                    _buildDeviceBox(
+                      _locale.languageCode == 'en' ? 'Socks Right Foot' : 'Calcetines Pie Dcha.',
+                      "RF",
+                      Switch(
+                        value: isRightFootToggled,
+                        onChanged: (value) async {
+                          setState(() {
+                            isRightFootToggled = value;
+                          });
+                          if (value) {
+                            await SensoriaApi.scanAndConnectWithCore(1);
+
+                            print("the connect to firstdevice trigger in main.dart");
+                          } else {
+                            await SensoriaApi.disconnectDevice(1);
+                          }
+                        },
+                        activeColor: Colors.white,
+                        activeTrackColor: Colors.green,
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.white,
+                      ),
+                      batteryLevelRF,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Container(
+                  child: _buildDeviceBox(
+                    _locale.languageCode == 'en' ? 'Smart Band' : 'pulsera inteligente',
+                    "SB",
+                    Switch(
+                      value: isBandToggled,
+                      onChanged: (value) {
+                        setState(() {
+                          isBandToggled = value;
+                          if (value) {
+                            SmartBandApi.scanConnectBind();
+                          } else {
+                            SmartBandApi.disconnectDevice();
+                          }
+                        });
+                      },
+                      activeColor: Colors.white,
+                      activeTrackColor: Colors.blue,
+                      inactiveThumbColor: Colors.grey,
+                      inactiveTrackColor: Colors.white,
+                    ),
+                    batteryLevelSB,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Widget _buildDeviceBox(String title, String deviceName, Widget switchWidget, int? batteryLevel) {
+    DeviceConnectionStatus status =
+        deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected;
+
+    List<Widget> widgetList = [
+      Text(title),
+      Text(
+        status.toString().split('.').last,
+        style: TextStyle(fontSize: 14, color: Colors.grey),
+      ),
+    ];
+
+    IconData? batteryIcon;
+    Color iconColor = Colors.green[800]!;
+
+    if (batteryLevel != null) {
+      if (batteryLevel >= 75 || batteryLevel == 4) {
+        batteryIcon = Icons.battery_full;
+      } else if (batteryLevel >= 50 || batteryLevel == 3) {
+        batteryIcon = Icons.battery_3_bar;
+      } else if (batteryLevel >= 25 || batteryLevel == 2) {
+        batteryIcon = Icons.battery_2_bar;
+      } else if (batteryLevel > 0 || batteryLevel == 1) {
+        batteryIcon = Icons.battery_1_bar;
+        iconColor = Colors.red; // Change color to red for low battery
+      } else {
+        batteryIcon = Icons.battery_unknown;
+      }
+
+      widgetList.add(Icon(batteryIcon, color: Colors.green[800]));
+      widgetList.add(Text("$batteryLevel%"));
+    }
+
+    double boxWidth = MediaQuery.of(context).size.width / 2 - 10;
+    if (deviceName == "SB") {
+      boxWidth = MediaQuery.of(context).size.width - 20;
+    }
+
+    return Opacity(
+      opacity: _devicesEnabled ? 1.0 : 0.5,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Container(
+            width: boxWidth,
+            padding: EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.black45.withOpacity(0.2),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 9), // Spacing
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (status == DeviceConnectionStatus.connected && batteryIcon != null)
+                      Transform.rotate(
+                        angle: 3.14159 / 2,
+                        child: Icon(batteryIcon, color: iconColor),
+                      ),
+                    SizedBox(width: 4), // Spacing
+                    // Connection Status
+                    Text(
+                      status.toString().split('.').last,
+                      style: TextStyle(fontSize: 15, color: Colors.grey),
+                    ),
+                  ],
+                ),
+
+                // Switch Widget or Lock Icon
+                _devicesEnabled ? switchWidget : Icon(Icons.lock),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLanguageDropdown() {
+    return DropdownButton<Locale>(
+      value: _locale,
+      onChanged: (Locale? newValue) async {
+        if (newValue != null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('languageCode', newValue.languageCode);
+          setLocale(newValue);
+        }
+      },
+      items: [
+        DropdownMenuItem(
+          value: Locale('en', ''),
+          child: Text('English'),
+        ),
+        DropdownMenuItem(
+          value: Locale('es', ''),
+          child: Text('Spanish'),
+        ),
+      ],
+    );
+  }
+
+  void _onDeviceConnected(String macAddress, String hand) {
+    setState(() {});
+  }
+
+  void _onSensoriaDeviceConnected(String macAddress, String foot) {
+    setState(() {
+      if (foot == "Right") {
+        isRightFootToggled = true;
+
+        _sensoriaconnectedDevices.add(macAddress);
+      } else if (foot == "Left") {
+        isLeftFootToggled = true;
+        _sensoriaconnectedDevices.add(macAddress);
+      }
+    });
+  }
+
+  Future<void> _loadIdNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final idNumber = prefs.getString('idNumber') ?? '';
+
+    final idNumberChecksum = prefs.getString('idNumberChecksum') ?? '';
+    final combinedIDChecksum = "$idNumber-$idNumberChecksum";
+
+    setState(() {
+      _idController.text = idNumber; // display the raw ID number in the textfield
+      _checksumController.text = idNumberChecksum; // also set the checksum TextField
+      _devicesEnabled = idNumber.isNotEmpty && idNumberChecksum.isNotEmpty;
+    });
+
+    if (idNumber.isNotEmpty && idNumberChecksum.isNotEmpty) {
+      SmartBandApi.setIdNumber(combinedIDChecksum);
+      SensoriaApi.sendIdNumber(combinedIDChecksum);
+      MetaWearApi.sendIdNumber(combinedIDChecksum);
+    }
+    print("Cheksum ID number sent to APIs on app start.");
+  }
+
+  Future<void> _saveIdNumber(String idNumber, int checksum) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('idNumber', idNumber);
+    await prefs.setString('idNumberChecksum', checksum.toString());
+  }
+
+  void _handleCheckOrEdit() async {
+    if (_isIdEditable) {
+      String idNumber = _idController.text.trim();
+      if (idNumber.isNotEmpty && idNumber.length <= 12) {
+        int calculatedChecksum = getChkSum(idNumber);
+        int userEnteredChecksum = int.tryParse(_checksumController.text) ?? -1;
+
+        if (calculatedChecksum == userEnteredChecksum) {
+          _saveIdNumber(idNumber, userEnteredChecksum);
+
+          final combinedIDChecksum = "$idNumber-$calculatedChecksum";
+
+          SmartBandApi.setIdNumber(combinedIDChecksum);
+          MetaWearApi.sendIdNumber(combinedIDChecksum);
+          SensoriaApi.sendIdNumber(combinedIDChecksum);
+          // _loadIdNumber();
+          setState(() {
+            _isIdEditable = false;
+            _isIdCorrect = true;
+            _devicesEnabled = true;
+          });
+        } else {
+          setState(() {
+            _isIdCorrect = false;
+            _devicesEnabled = false;
+          });
+        }
+      } else {
+        setState(() {
+          _isIdCorrect = false; // to show error message if length is incorrect
+        });
+      }
+    } else {
+      setState(() {
+        _isIdEditable = true;
+        _devicesEnabled = false; // to lock the devices when starting to edit
+
+        // _isIdCorrect = true; // to reset checksum state on edit
+      });
+    }
   }
 }

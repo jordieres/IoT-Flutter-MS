@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral() // jcenter() is deprecated, so you can remove it if all dependencies are available in google() and mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.0.4' // Update this to a valid version
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral() // Again, you can remove jcenter() if it's not needed
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
