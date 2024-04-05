@@ -173,6 +173,9 @@ class SmartBandApi {
         List<SearchResult> devices = await VeepooSdk.scanDevice();
         if (devices.isNotEmpty) {
           selectedDevice = devices.first;
+
+          _selectedDeviceMac = selectedDevice.mac;
+          _selectedDeviceName = selectedDevice.name;
         } else {
           scanAttempts--;
           await Future.delayed(Duration(seconds: 2)); // wait before retrying
@@ -371,9 +374,7 @@ class SmartBandApi {
     await VeepooSdk.readFiveMinutes();
 
     VeepooSdk.eventChannel().receiveBroadcastStream().listen((event) {
-      print('Received eventtttt-------------------: $event');
       final e = json.decode(event);
-      print('Received eeeeeeee-------------------: $e');
 
       if (e['action'] == 'onOriginFiveMinuteDataChange') {
         if (e['payload'] is String) {
@@ -512,7 +513,7 @@ class SmartBandApi {
 
       final File gzFile = await _compressFile(txtFile, gzFileName);
 
-      await txtFile.delete(); //
+      await txtFile.delete();
 
       print('Data is compressed and original file deleted.');
     } catch (e) {

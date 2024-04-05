@@ -40,7 +40,9 @@ void main() async {
   await requestPermissions();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String languageCode = prefs.getString('languageCode') ?? 'en';
+
+  String languageCode = prefs.getString('languageCode') ?? 'es';
+
   Locale initialLocale = Locale(languageCode);
 
   //to send the app version for the metadata
@@ -322,21 +324,41 @@ class _MyAppState extends State<MyApp> {
           ),
           backgroundColor: Colors.white,
           actions: [
-            DropdownButton<String>(
-              underline: Container(),
-              icon: Icon(Icons.language, color: Colors.white),
-              items: <String>['en', 'es'].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value.toUpperCase(), style: TextStyle(color: Colors.black)),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setLocale(Locale(newValue));
-                }
-              },
-              value: _locale.languageCode,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.blue.shade400,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(8),
+              margin: EdgeInsets.only(right: 10),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: Colors.blue.shade400, // Sets dropdown background color
+                  popupMenuTheme: PopupMenuThemeData(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15.0), // Rounded corners for dropdown menu
+                    ),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    icon: Container(), // Removes the dropdown icon
+                    items: <String>['en', 'es'].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value.toUpperCase(), style: TextStyle(color: Colors.white)),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setLocale(Locale(newValue));
+                      }
+                    },
+                    value: _locale.languageCode,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -346,70 +368,117 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      // ID Number TextField with explicit size for 12 uppercase characters
-                      Container(
-                        width: MediaQuery.of(context).size.width *
-                            0.5, // Adjust based on your UI needs
-                        child: TextField(
-                          controller: _idController,
-                          readOnly: !_isIdEditable,
-                          decoration: InputDecoration(
-                            labelText: _locale.languageCode == 'en'
-                                ? 'Reference Number'
-                                : 'Número de Referencia',
-                            border: OutlineInputBorder(),
-                          ),
-                          maxLength: 12,
-                          onChanged: (value) {
-                            // force uppercase and limit input length
-                            _idController.value = TextEditingValue(
-                              text: value.toUpperCase().substring(0, min(value.length, 12)),
-                              selection: TextSelection.fromPosition(
-                                TextPosition(offset: min(value.length, 12)),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade600, // Set the container's background color to blue
+                      borderRadius: BorderRadius.circular(10), // Round the corners of the container
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5), // Shadow color
+                          spreadRadius: 2,
+                          blurRadius: 7,
+                          offset: Offset(0, 3), // Position of shadow
+                        ),
+                      ],
+                    ),
+                    padding:
+                        EdgeInsets.all(10), // Add some padding inside the container for aesthetics
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        // ID Number TextField with explicit size for 12 uppercase characters
+                        Container(
+                          width: MediaQuery.of(context).size.width *
+                              0.5, // Adjust based on your UI needs
+                          child: TextField(
+                            controller: _idController,
+                            readOnly: !_isIdEditable,
+                            style: TextStyle(color: Colors.white), // Text color
+                            decoration: InputDecoration(
+                              labelText: _locale.languageCode == 'en'
+                                  ? 'Reference Number'
+                                  : 'Número de Referencia',
+                              labelStyle: TextStyle(color: Colors.white),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                            setState(() {
-                              _isIdCorrect = true;
-                            });
-                          },
-                          buildCounter: (BuildContext context,
-                                  {required int currentLength,
-                                  int? maxLength,
-                                  required bool isFocused}) =>
-                              null,
-                          autocorrect: false,
-                          textCapitalization: TextCapitalization.characters,
-                        ),
-                      ),
-                      Text('-',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)), // Hyphen"-"
-                      // checksum Textfield with explicit size for 3 digits
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.15,
-                        child: TextField(
-                          controller: _checksumController,
-                          readOnly: !_isIdEditable,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            maxLength: 12,
+                            onChanged: (value) {
+                              // force uppercase and limit input length
+                              _idController.value = TextEditingValue(
+                                text: value.toUpperCase().substring(0, min(value.length, 12)),
+                                selection: TextSelection.fromPosition(
+                                  TextPosition(offset: min(value.length, 12)),
+                                ),
+                              );
+                              setState(() {
+                                _isIdCorrect = true;
+                              });
+                            },
+                            buildCounter: (BuildContext context,
+                                    {required int currentLength,
+                                    int? maxLength,
+                                    required bool isFocused}) =>
+                                null,
+                            autocorrect: false,
+                            textCapitalization: TextCapitalization.characters,
                           ),
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          buildCounter: (BuildContext context,
-                                  {required int currentLength,
-                                  int? maxLength,
-                                  required bool isFocused}) =>
-                              null,
                         ),
-                      ),
-                      IconButton(
-                        icon: _isIdEditable ? Icon(Icons.check) : Icon(Icons.edit),
-                        onPressed: _handleCheckOrEdit,
-                      ),
-                    ],
+                        SizedBox(width: 5),
+                        Text('-',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                color: Colors.white)), // Hyphen "-"
+                        // Hyphen"-"
+                        // checksum Textfield with explicit size for 3 digits
+                        SizedBox(width: 5),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          child: TextField(
+                            controller: _checksumController,
+                            readOnly: !_isIdEditable,
+                            style: TextStyle(color: Colors.white), // Text color
+
+                            decoration: InputDecoration(
+                              border:
+                                  OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                            maxLength: 3,
+                            buildCounter: (BuildContext context,
+                                    {required int currentLength,
+                                    int? maxLength,
+                                    required bool isFocused}) =>
+                                null,
+                          ),
+                        ),
+                        IconButton(
+                          icon: _isIdEditable
+                              ? Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                )
+                              : Icon(Icons.edit, color: Colors.white),
+                          onPressed: _handleCheckOrEdit,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 if (!_isIdCorrect)
@@ -615,7 +684,7 @@ class _MyAppState extends State<MyApp> {
             width: boxWidth,
             padding: EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.08),
+              color: Colors.blue.shade500.withOpacity(0.08),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: Colors.black45.withOpacity(0.2),
