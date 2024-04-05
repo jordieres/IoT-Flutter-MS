@@ -60,12 +60,12 @@ HealthyWear is an IoT flutter application developed for the Android/iOS devices 
 
 
 ### Version 1.0.0
-First release:
-Android native is functional
+- First release
+- Android native is functional
 
 ### Version 1.0.1
-UI improvement
-Data handling improvement
+- UI improvement
+- Data handling improvement
 
 
 
