@@ -152,11 +152,9 @@ public class SensoriaHandler implements SADeviceInterface,SAServiceStreamingServ
     private ArrayList<String> dataBuffer1 = new ArrayList<>();
     private ArrayList<String> dataBuffer2 = new ArrayList<>();
 
-<<<<<<< HEAD
-    private final int BUFFER_SIZE_THRESHOLD = 1500;
-=======
+
     private final int BUFFER_SIZE_THRESHOLD = 3000;
->>>>>>> ver_2
+
 
     private final Object bufferLock = new Object();
 

@@ -203,11 +203,9 @@ public void setLocale(String languageCode) {
 //    private List<String> dataBuffer = new ArrayList<>();
     private List<String> dataBuffer = new CopyOnWriteArrayList<>();
 
-<<<<<<< HEAD
-    private static final int BUFFER_MAX_SIZE = 100;
-=======
+
     private static final int BUFFER_MAX_SIZE = 1000;
->>>>>>> ver_2
+
 
     private List<String> ambientLightBuffer = new ArrayList<>();
 
@@ -218,11 +216,9 @@ public void setLocale(String languageCode) {
 
     private BluetoothAdapter bluetoothAdapter;
     private final Handler handler = new Handler();
-<<<<<<< HEAD
+
     private static final long SCAN_PERIOD = 6000;
-=======
-    private static final long SCAN_PERIOD = 10000;
->>>>>>> ver_2
+
 
 
     private long lastScanTimestamp = 0;
@@ -909,11 +905,9 @@ public void setLocale(String languageCode) {
 
             //todo: i can remove this manual config as i have already use preset REGULAR
             ambientLight.configure()
-<<<<<<< HEAD
-                    .measurementRate(AmbientLightLtr329.MeasurementRate.LTR329_RATE_500MS)
-=======
+
                     .measurementRate(AmbientLightLtr329.MeasurementRate.LTR329_RATE_2000MS)
->>>>>>> ver_2
+
                     .commit();
 
 //        subscribeToSensorFusionData(ambientLight.illuminance(), "AmbienLight", hand);
@@ -931,21 +925,16 @@ public void setLocale(String languageCode) {
                 long timestamp = System.currentTimeMillis();
 
                 String lightDataString = String.format(Locale.US, "%.2f,%d,%s", Light, timestamp, hand);
-<<<<<<< HEAD
-=======
-                android.util.Log.d(TAG, "setupAmbientL:------------------------- "+Light);
->>>>>>> ver_2
+
 
 
 
                 synchronized (ambientLightBuffer) {
                     ambientLightBuffer.add(lightDataString);
 
-<<<<<<< HEAD
-                    if (ambientLightBuffer.size() == 100) {
-=======
+
                     if (ambientLightBuffer.size() == 50) {
->>>>>>> ver_2
+
                         fetchLocationAndSaveData("MI", new ArrayList<>(ambientLightBuffer));
 
                         ambientLightBuffer.clear();
@@ -1026,11 +1015,9 @@ private void setupTemperatureSensors(MetaWearBoard board,  String hand) {
             @Override
             public void run() {
                 sensor.read();
-<<<<<<< HEAD
-                handler.postDelayed(this, 60000);
-=======
+
                 handler.postDelayed(this, 600000);
->>>>>>> ver_2
+
             }
         };
 
@@ -1213,17 +1200,12 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
 
 
     //-----------------StatusChecker--------------
-<<<<<<< HEAD
-    private static final long SENSOR_FUSION_CHECK_INTERVAL = 30000;
-    private static final long TEMPERATURE_CHECK_INTERVAL = 60000;
-    private static final long AMBIENTL_CHECK_INTERVAL = 60000;
-    private static final long FILE_WRITE_CHECK_INTERVAL = 120000;
-=======
+
     private static final long SENSOR_FUSION_CHECK_INTERVAL = 180000;
     private static final long TEMPERATURE_CHECK_INTERVAL = 660000;
     private static final long AMBIENTL_CHECK_INTERVAL = 300000;
     private static final long FILE_WRITE_CHECK_INTERVAL = 180000;
->>>>>>> ver_2
+
     private static final long LED_BLINK_CHECK_INTERVAL = 60000;
 
     private void startStatusCheckerForBoard1() {
