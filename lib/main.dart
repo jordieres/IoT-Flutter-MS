@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'SmartBandApi.dart';
 import 'MetaWearApi.dart';
 import 'SensoriaApi.dart';
-import 'uploader.dart';
+import 'Uploader.dart';
 import 'AppLocal.dart';
 import 'dart:async';
 
@@ -170,6 +170,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _locale = widget.initialLocale;
     Timer.periodic(Duration(minutes: 1), (Timer t) => updateBatteryLevels());
+
+    Uploader.loadConfig();
 
     _loadIdNumber().then((_) {
       // after loading, if the text field is empty, allow editing.//
@@ -686,7 +688,6 @@ class _MyAppState extends State<MyApp> {
         deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected;
 
     String statusMessage = getConnectionStatusMessage(status, _locale);
-    print("the status message is $statusMessage the status is $status the locale is $_locale");
 
     List<Widget> widgetList = [
       Text(title),
@@ -852,7 +853,6 @@ class _MyAppState extends State<MyApp> {
       SensoriaApi.sendIdNumber(combinedIDChecksum);
       MetaWearApi.sendIdNumber(combinedIDChecksum);
     }
-    print("Cheksum ID number sent to APIs on app start.");
   }
 
   Future<void> _saveIdNumber(String idNumber, int checksum) async {

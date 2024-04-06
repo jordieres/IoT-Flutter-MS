@@ -1,13 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:path/path.dart';
+import 'package:flutter/services.dart' show rootBundle;
+
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:http_parser/http_parser.dart';
 
 class Uploader {
-  static const String serverUrl = "http://138.100.82.181/mmr/carga_univ.py";
-  static const Duration uploadInterval = Duration(seconds: 10);
+  static late final String serverUrl;
+
+  static const Duration uploadInterval = Duration(seconds: 60);
+
+  static Future<void> loadConfig() async {
+    final config = await rootBundle.loadString('assets/config.txt');
+    serverUrl = config.trim();
+  }
 
   static void startMonitoringAndUploading() {
     Timer.periodic(uploadInterval, (Timer t) => startUploading());

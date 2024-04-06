@@ -906,7 +906,7 @@ public void setLocale(String languageCode) {
             //todo: i can remove this manual config as i have already use preset REGULAR
             ambientLight.configure()
 
-                    .measurementRate(AmbientLightLtr329.MeasurementRate.LTR329_RATE_2000MS)
+                    .measurementRate(AmbientLightLtr329.MeasurementRate.LTR329_RATE_1000MS)
 
                     .commit();
 
@@ -1066,7 +1066,7 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
 
     public void saveDataToFile(String dataType, List<String> dataBuffer,double latitude, double longitude) {
         if (dataBuffer.isEmpty()) {
-            Log.d(TAG, "No data to save for " + dataType + ". Only metadata will be written.");
+//            Log.d(TAG, "No data to save for " + dataType + ". Only metadata will be written.");
             return;
         }
 
@@ -1168,7 +1168,7 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
             Log.e("MetaWearHandler", "Failed to save data to file", e);
         }
 
-        compressFile(file);
+//        compressFile(file);
         dataBuffer.clear();
     }
 
@@ -1203,12 +1203,17 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
 
     //-----------------StatusChecker--------------
 
-    private static final long SENSOR_FUSION_CHECK_INTERVAL = 180000;
-    private static final long TEMPERATURE_CHECK_INTERVAL = 660000;
-    private static final long AMBIENTL_CHECK_INTERVAL = 300000;
+    private static final long SENSOR_FUSION_CHECK_INTERVAL = 80000;
+    private static final long TEMPERATURE_CHECK_INTERVAL = 120000;
+    private static final long AMBIENTL_CHECK_INTERVAL = 130000;
     private static final long FILE_WRITE_CHECK_INTERVAL = 180000;
 
     private static final long LED_BLINK_CHECK_INTERVAL = 60000;
+
+
+
+
+
 
     private void startStatusCheckerForBoard1() {
         statusCheckHandler.postDelayed(new Runnable() {
@@ -1257,6 +1262,8 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
             }
         }, LED_BLINK_CHECK_INTERVAL);
     }
+
+
 
     private void startStatusCheckerForBoard2() {
         statusCheckHandler.postDelayed(new Runnable() {
