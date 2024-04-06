@@ -6,6 +6,8 @@ import 'uploader.dart';
 import 'AppLocal.dart';
 import 'dart:async';
 
+import 'splash_screen.dart';
+
 import 'dart:ui'; //to use ImageFilter.
 
 import 'dart:convert';
@@ -57,9 +59,24 @@ void main() async {
   MetaWearApi.setLocale(languageCode);
   SensoriaApi.setLocale(languageCode);
 
-  runApp(MyApp(initialLocale: initialLocale));
+  // Start with the splash screen.
+  runApp(SplashApp());
 
-  Uploader.startMonitoringAndUploading();
+  // Replace the splash screen with the main app after initialization is complete.
+  Future.delayed(Duration(seconds: 1), () {
+    runApp(MyApp(initialLocale: initialLocale));
+  });
+  // Uploader.startMonitoringAndUploading();todo must be uncommented
+}
+
+class SplashApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
+    );
+  }
 }
 
 Future<void> requestPermissions() async {
@@ -319,21 +336,22 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
-            height: 35,
+            height: 45,
             child: Image.asset('assets/images/SaludMadrid_logo.png', fit: BoxFit.scaleDown),
           ),
           backgroundColor: Colors.white,
           actions: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.blue.shade400,
+                color: Colors.red.shade700.withOpacity(0.9),
                 shape: BoxShape.circle,
               ),
               padding: EdgeInsets.all(8),
               margin: EdgeInsets.only(right: 10),
               child: Theme(
                 data: Theme.of(context).copyWith(
-                  canvasColor: Colors.blue.shade400, // Sets dropdown background color
+                  canvasColor: Colors.red.shade400, // Sets dropdown background color
+
                   popupMenuTheme: PopupMenuThemeData(
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -367,120 +385,128 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade600, // Set the container's background color to blue
-                      borderRadius: BorderRadius.circular(10), // Round the corners of the container
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.5), // Shadow color
-                          spreadRadius: 2,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // Position of shadow
-                        ),
-                      ],
-                    ),
-                    padding:
-                        EdgeInsets.all(10), // Add some padding inside the container for aesthetics
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        // ID Number TextField with explicit size for 12 uppercase characters
-                        Container(
-                          width: MediaQuery.of(context).size.width *
-                              0.5, // Adjust based on your UI needs
-                          child: TextField(
-                            controller: _idController,
-                            readOnly: !_isIdEditable,
-                            style: TextStyle(color: Colors.white), // Text color
-                            decoration: InputDecoration(
-                              labelText: _locale.languageCode == 'en'
-                                  ? 'Reference Number'
-                                  : 'Número de Referencia',
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
+                    padding: const EdgeInsets.all(16.0),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(10), // Match your container's border radius
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(
+                            sigmaX: 0.0, sigmaY: 0.0), // Adjust blur radius as needed
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade600
+                                .withOpacity(0.8), // Set the container's background color to blue
+                            borderRadius:
+                                BorderRadius.circular(10), // Round the corners of the container
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5), // Shadow color
+                                spreadRadius: 2,
+                                blurRadius: 7,
+                                offset: Offset(0, 3), // Position of shadow
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            maxLength: 12,
-                            onChanged: (value) {
-                              // force uppercase and limit input length
-                              _idController.value = TextEditingValue(
-                                text: value.toUpperCase().substring(0, min(value.length, 12)),
-                                selection: TextSelection.fromPosition(
-                                  TextPosition(offset: min(value.length, 12)),
+                            ],
+                          ),
+                          padding: EdgeInsets.all(
+                              12), // Add some padding inside the container for aesthetics
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              // ID Number TextField with explicit size for 12 uppercase characters
+                              Container(
+                                width: MediaQuery.of(context).size.width *
+                                    0.5, // Adjust based on your UI needs
+                                child: TextField(
+                                  controller: _idController,
+                                  readOnly: !_isIdEditable,
+                                  style: TextStyle(color: Colors.white), // Text color
+                                  decoration: InputDecoration(
+                                    labelText:
+                                        _locale.languageCode == 'en' ? 'Reference ' : 'Referencia',
+                                    labelStyle: TextStyle(color: Colors.white),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  maxLength: 12,
+                                  onChanged: (value) {
+                                    // force uppercase and limit input length
+                                    _idController.value = TextEditingValue(
+                                      text: value.toUpperCase().substring(0, min(value.length, 12)),
+                                      selection: TextSelection.fromPosition(
+                                        TextPosition(offset: min(value.length, 12)),
+                                      ),
+                                    );
+                                    setState(() {
+                                      _isIdCorrect = true;
+                                    });
+                                  },
+                                  buildCounter: (BuildContext context,
+                                          {required int currentLength,
+                                          int? maxLength,
+                                          required bool isFocused}) =>
+                                      null,
+                                  autocorrect: false,
+                                  textCapitalization: TextCapitalization.characters,
                                 ),
-                              );
-                              setState(() {
-                                _isIdCorrect = true;
-                              });
-                            },
-                            buildCounter: (BuildContext context,
-                                    {required int currentLength,
-                                    int? maxLength,
-                                    required bool isFocused}) =>
-                                null,
-                            autocorrect: false,
-                            textCapitalization: TextCapitalization.characters,
-                          ),
-                        ),
-                        SizedBox(width: 5),
-                        Text('-',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                                color: Colors.white)), // Hyphen "-"
-                        // Hyphen"-"
-                        // checksum Textfield with explicit size for 3 digits
-                        SizedBox(width: 5),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: TextField(
-                            controller: _checksumController,
-                            readOnly: !_isIdEditable,
-                            style: TextStyle(color: Colors.white), // Text color
+                              ),
+                              SizedBox(width: 5),
+                              Text('-',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24,
+                                      color: Colors.white)), // Hyphen "-"
+                              // Hyphen"-"
+                              // checksum Textfield with explicit size for 3 digits
+                              SizedBox(width: 5),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                child: TextField(
+                                  controller: _checksumController,
+                                  readOnly: !_isIdEditable,
+                                  style: TextStyle(color: Colors.white), // Text color
 
-                            decoration: InputDecoration(
-                              border:
-                                  OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white)),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 3,
+                                  buildCounter: (BuildContext context,
+                                          {required int currentLength,
+                                          int? maxLength,
+                                          required bool isFocused}) =>
+                                      null,
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
+                              IconButton(
+                                icon: _isIdEditable
+                                    ? Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(Icons.edit, color: Colors.grey.shade300),
+                                onPressed: _handleCheckOrEdit,
                               ),
-                            ),
-                            keyboardType: TextInputType.number,
-                            maxLength: 3,
-                            buildCounter: (BuildContext context,
-                                    {required int currentLength,
-                                    int? maxLength,
-                                    required bool isFocused}) =>
-                                null,
+                            ],
                           ),
                         ),
-                        IconButton(
-                          icon: _isIdEditable
-                              ? Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                )
-                              : Icon(Icons.edit, color: Colors.white),
-                          onPressed: _handleCheckOrEdit,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
+                    )),
                 if (!_isIdCorrect)
                   Container(
                     width: double.infinity,
@@ -494,137 +520,156 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 SizedBox(
-                  height: 40,
+                  height: 20,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildDeviceBox(
-                      _locale.languageCode == 'en' ? 'MMR Left Hand' : 'MMR Mano Izda.',
-                      "LH",
-                      Switch(
-                        value: isLeftHandToggled,
-                        onChanged: (value) async {
-                          setState(() {
-                            isLeftHandToggled = value;
-                          });
-                          if (value) {
-                            await MetaWearApi.connectDevice(2);
-                          } else {
-                            // todo: Code to disconnect the right hand MetaWear device
-
-                            await MetaWearApi.disconnectDevice(2);
-                          }
-                        },
-                        activeColor: Colors.white,
-                        activeTrackColor: Colors.blueAccent,
-                        inactiveThumbColor: Colors.grey,
-                        inactiveTrackColor: Colors.white,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10), // Match your container's border radius
+                  child: BackdropFilter(
+                    filter:
+                        ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), // Adjust blur radius as needed
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white, // Adjust opacity as needed
+                        borderRadius:
+                            BorderRadius.circular(10), // Round the corners of the container
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5), // Shadow color
+                            spreadRadius: 2,
+                            blurRadius: 7,
+                            offset: Offset(0, 3), // Position of shadow
+                          ),
+                        ],
                       ),
-                      batteryLevelLH,
-                    ),
-                    _buildDeviceBox(
-                      _locale.languageCode == 'en' ? 'MMR Right Hand' : 'MMR Mano Dcha.',
-                      "RH",
-                      Switch(
-                        value: isRightHandToggled,
-                        onChanged: (value) async {
-                          setState(() {
-                            isRightHandToggled = value;
-                          });
-
-                          if (value) {
-                            //  to connect to the right hand MetaWear device
-                            await MetaWearApi.connectDevice(1);
-                          } else {
-                            // todo: Code to disconnect the right hand MetaWear device
-                            await MetaWearApi.disconnectDevice(1);
-                          }
-                        },
-                        activeColor: Colors.white,
-                        activeTrackColor: Colors.green,
-                        inactiveThumbColor: Colors.grey,
-                        inactiveTrackColor: Colors.white,
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildDeviceBox(
+                                _locale.languageCode == 'en' ? 'Left MMR' : 'MMR izdo',
+                                "LH",
+                                Switch(
+                                  value: isLeftHandToggled,
+                                  onChanged: (value) async {
+                                    setState(() {
+                                      isLeftHandToggled = value;
+                                    });
+                                    if (value) {
+                                      await MetaWearApi.connectDevice(2);
+                                    } else {
+                                      await MetaWearApi.disconnectDevice(2);
+                                    }
+                                  },
+                                  activeColor: Colors.white,
+                                  activeTrackColor: Colors.blueAccent,
+                                  inactiveThumbColor: Colors.red,
+                                  inactiveTrackColor: Colors.white,
+                                ),
+                                batteryLevelLH,
+                              ),
+                              _buildDeviceBox(
+                                _locale.languageCode == 'en' ? 'Right MMR' : 'MMR dcho',
+                                "RH",
+                                Switch(
+                                  value: isRightHandToggled,
+                                  onChanged: (value) async {
+                                    setState(() {
+                                      isRightHandToggled = value;
+                                    });
+                                    if (value) {
+                                      await MetaWearApi.connectDevice(1);
+                                    } else {
+                                      await MetaWearApi.disconnectDevice(1);
+                                    }
+                                  },
+                                  activeColor: Colors.white,
+                                  activeTrackColor: Colors.green,
+                                  inactiveThumbColor: Colors.red,
+                                  inactiveTrackColor: Colors.white,
+                                ),
+                                batteryLevelRH,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 3),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildDeviceBox(
+                                _locale.languageCode == 'en' ? 'Left Sock' : 'Calcetín izdo',
+                                "LF",
+                                Switch(
+                                  value: isLeftFootToggled,
+                                  onChanged: (value) async {
+                                    setState(() {
+                                      isLeftFootToggled = value;
+                                    });
+                                    if (value) {
+                                      await SensoriaApi.scanAndConnectWithCore(2);
+                                    } else {
+                                      await SensoriaApi.disconnectDevice(2);
+                                    }
+                                  },
+                                  activeColor: Colors.white,
+                                  activeTrackColor: Colors.blueAccent,
+                                  inactiveThumbColor: Colors.red,
+                                  inactiveTrackColor: Colors.white,
+                                ),
+                                batteryLevelLF,
+                              ),
+                              // SizedBox(width: 2),
+                              _buildDeviceBox(
+                                _locale.languageCode == 'en' ? ' Right Sock' : 'Calcetín dcho',
+                                "RF",
+                                Switch(
+                                  value: isRightFootToggled,
+                                  onChanged: (value) async {
+                                    setState(() {
+                                      isRightFootToggled = value;
+                                    });
+                                    if (value) {
+                                      await SensoriaApi.scanAndConnectWithCore(1);
+                                    } else {
+                                      await SensoriaApi.disconnectDevice(1);
+                                    }
+                                  },
+                                  activeColor: Colors.white,
+                                  activeTrackColor: Colors.green,
+                                  inactiveThumbColor: Colors.red,
+                                  inactiveTrackColor: Colors.white,
+                                ),
+                                batteryLevelRF,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          _buildDeviceBox(
+                            _locale.languageCode == 'en' ? 'Smart Band' : 'Pulsera Inteligente',
+                            "SB",
+                            Switch(
+                              value: isBandToggled,
+                              onChanged: (value) {
+                                setState(() {
+                                  isBandToggled = value;
+                                  if (value) {
+                                    SmartBandApi.scanConnectBind();
+                                  } else {
+                                    SmartBandApi.disconnectDevice();
+                                  }
+                                });
+                              },
+                              activeColor: Colors.white,
+                              activeTrackColor: Colors.blue,
+                              inactiveThumbColor: Colors.red,
+                              inactiveTrackColor: Colors.white,
+                            ),
+                            batteryLevelSB,
+                          ),
+                        ],
                       ),
-                      batteryLevelRH,
                     ),
-                  ],
-                ),
-                SizedBox(height: 3),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildDeviceBox(
-                      _locale.languageCode == 'en' ? 'Socks Left Foot' : 'Calcetines Pie Izda.',
-                      "LF",
-                      Switch(
-                        value: isLeftFootToggled,
-                        onChanged: (value) async {
-                          setState(() {
-                            isLeftFootToggled = value;
-                          });
-                          if (value) {
-                            await SensoriaApi.scanAndConnectWithCore(2);
-                          } else {
-                            await SensoriaApi.disconnectDevice(2);
-                          }
-                        },
-                        activeColor: Colors.white,
-                        activeTrackColor: Colors.blueAccent,
-                        inactiveThumbColor: Colors.grey,
-                        inactiveTrackColor: Colors.white,
-                      ),
-                      batteryLevelLF,
-                    ),
-                    _buildDeviceBox(
-                      _locale.languageCode == 'en' ? 'Socks Right Foot' : 'Calcetines Pie Dcha.',
-                      "RF",
-                      Switch(
-                        value: isRightFootToggled,
-                        onChanged: (value) async {
-                          setState(() {
-                            isRightFootToggled = value;
-                          });
-                          if (value) {
-                            await SensoriaApi.scanAndConnectWithCore(1);
-
-                            print("the connect to firstdevice trigger in main.dart");
-                          } else {
-                            await SensoriaApi.disconnectDevice(1);
-                          }
-                        },
-                        activeColor: Colors.white,
-                        activeTrackColor: Colors.green,
-                        inactiveThumbColor: Colors.grey,
-                        inactiveTrackColor: Colors.white,
-                      ),
-                      batteryLevelRF,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 5),
-                Container(
-                  child: _buildDeviceBox(
-                    _locale.languageCode == 'en' ? 'Smart Band' : 'pulsera inteligente',
-                    "SB",
-                    Switch(
-                      value: isBandToggled,
-                      onChanged: (value) {
-                        setState(() {
-                          isBandToggled = value;
-                          if (value) {
-                            SmartBandApi.scanConnectBind();
-                          } else {
-                            SmartBandApi.disconnectDevice();
-                          }
-                        });
-                      },
-                      activeColor: Colors.white,
-                      activeTrackColor: Colors.blue,
-                      inactiveThumbColor: Colors.grey,
-                      inactiveTrackColor: Colors.white,
-                    ),
-                    batteryLevelSB,
                   ),
                 ),
               ],
@@ -669,25 +714,32 @@ class _MyAppState extends State<MyApp> {
       widgetList.add(Text("$batteryLevel%"));
     }
 
-    double boxWidth = MediaQuery.of(context).size.width / 2 - 10;
+    double boxWidth = MediaQuery.of(context).size.width / 2 - 15;
+
     if (deviceName == "SB") {
       boxWidth = MediaQuery.of(context).size.width - 20;
     }
+
+    // Adjusting blur effect and background color based on connection status
+    double blurSigma = status == DeviceConnectionStatus.connected ? 0 : 5;
+    Color boxColor = status == DeviceConnectionStatus.connected
+        ? Colors.green.withOpacity(0.3)
+        : Colors.blue.shade700.withOpacity(0.1);
 
     return Opacity(
       opacity: _devicesEnabled ? 1.0 : 0.5,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
           child: Container(
             width: boxWidth,
             padding: EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.blue.shade500.withOpacity(0.08),
+              color: boxColor,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Colors.black45.withOpacity(0.2),
+                color: Colors.white.withOpacity(0.9),
               ),
             ),
             child: Column(
@@ -695,7 +747,7 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 9), // Spacing
@@ -711,13 +763,19 @@ class _MyAppState extends State<MyApp> {
                     // Connection Status
                     Text(
                       status.toString().split('.').last,
-                      style: TextStyle(fontSize: 15, color: Colors.grey),
+                      style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
                     ),
                   ],
                 ),
 
                 // Switch Widget or Lock Icon
-                _devicesEnabled ? switchWidget : Icon(Icons.lock),
+
+                _devicesEnabled
+                    ? switchWidget
+                    : Icon(
+                        Icons.lock,
+                        color: Colors.red,
+                      ),
               ],
             ),
           ),

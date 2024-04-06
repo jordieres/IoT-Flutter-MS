@@ -217,7 +217,7 @@ public void setLocale(String languageCode) {
     private BluetoothAdapter bluetoothAdapter;
     private final Handler handler = new Handler();
 
-    private static final long SCAN_PERIOD = 6000;
+    private static final long SCAN_PERIOD = 10000;
 
 
 
@@ -925,6 +925,8 @@ public void setLocale(String languageCode) {
                 long timestamp = System.currentTimeMillis();
 
                 String lightDataString = String.format(Locale.US, "%.2f,%d,%s", Light, timestamp, hand);
+
+                android.util.Log.d(TAG, "setupAmbientL:------------------------- "+Light);
 
 
 
