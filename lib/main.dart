@@ -66,7 +66,7 @@ void main() async {
   Future.delayed(Duration(seconds: 2), () {
     runApp(MyApp(initialLocale: initialLocale));
   });
-  // Uploader.startMonitoringAndUploading();todo must be uncommented
+  Uploader.startMonitoringAndUploading();
 }
 
 class SplashApp extends StatelessWidget {
@@ -772,7 +772,7 @@ class _MyAppState extends State<MyApp> {
                     Text(
                       // status.toString().split('.').last,
                       statusMessage,
-                      style: TextStyle(fontSize: 15, color: statusColor),
+                      style: TextStyle(fontSize: 16, color: statusColor),
                     ),
                   ],
                 ),

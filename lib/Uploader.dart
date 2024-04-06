@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http_parser/http_parser.dart';
 
 class Uploader {
-  static const String serverUrl = "http://apii01.etsii.upm.es/mmr/carga_univ.py";
+  static const String serverUrl = "http://138.100.82.181/mmr/carga_univ.py";
   static const Duration uploadInterval = Duration(seconds: 10);
 
   static void startMonitoringAndUploading() {
