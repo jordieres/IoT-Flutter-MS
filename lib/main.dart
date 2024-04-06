@@ -514,7 +514,7 @@ class _MyAppState extends State<MyApp> {
                     child: Text(
                       _locale.languageCode == 'en'
                           ? 'The Reference number is not correct, please contact your doctor.'
-                          : 'El número de referencia no es correcto, por favor contacte a su médico.',
+                          : 'La referencia no es correcta. Por favor verfiquela o contacte al neurólogo',
                       style: TextStyle(color: Colors.red),
                       textAlign: TextAlign.center,
                     ),
@@ -685,10 +685,14 @@ class _MyAppState extends State<MyApp> {
     DeviceConnectionStatus status =
         deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected;
 
+    String statusMessage = getConnectionStatusMessage(status, _locale);
+    print("the status message is $statusMessage the status is $status the locale is $_locale");
+
     List<Widget> widgetList = [
       Text(title),
       Text(
-        status.toString().split('.').last,
+        // status.toString().split('.').last,
+        statusMessage,
         style: TextStyle(fontSize: 14, color: Colors.grey),
       ),
     ];
@@ -766,7 +770,8 @@ class _MyAppState extends State<MyApp> {
                     SizedBox(width: 4), // Spacing
                     // Connection Status
                     Text(
-                      status.toString().split('.').last,
+                      // status.toString().split('.').last,
+                      statusMessage,
                       style: TextStyle(fontSize: 15, color: statusColor),
                     ),
                   ],
@@ -896,5 +901,30 @@ class _MyAppState extends State<MyApp> {
         // _isIdCorrect = true; // to reset checksum state on edit
       });
     }
+  }
+
+  String getConnectionStatusMessage(DeviceConnectionStatus status, Locale locale) {
+    // English messages
+    Map<DeviceConnectionStatus, String> enMessages = {
+      DeviceConnectionStatus.disconnected: "Not connected",
+      DeviceConnectionStatus.connecting: "Connecting...",
+      DeviceConnectionStatus.connected: "Connected",
+      DeviceConnectionStatus.reconnecting: "Reconnecting..."
+    };
+
+    // Spanish messages
+    Map<DeviceConnectionStatus, String> esMessages = {
+      DeviceConnectionStatus.disconnected: "No conectado",
+      DeviceConnectionStatus.connecting: "Conectando...",
+      DeviceConnectionStatus.connected: "Conectado",
+      DeviceConnectionStatus.reconnecting: "Reconectando..."
+    };
+
+    // Choose the messages map based on the current locale
+    Map<DeviceConnectionStatus, String> messages =
+        locale.languageCode == "es" ? esMessages : enMessages;
+
+    // Return the message corresponding to the current status
+    return messages[status] ?? "Unknown";
   }
 }
