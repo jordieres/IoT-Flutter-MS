@@ -1,1 +1,1 @@
-http://138.100.82.181/mmr/carga_univ.py
+URL_to_the_upload_pod
