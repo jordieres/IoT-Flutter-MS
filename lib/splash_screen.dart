@@ -8,10 +8,15 @@ class SplashScreen extends StatelessWidget {
         mainAxisAlignment:
             MainAxisAlignment.spaceBetween, // Aligns children vertically with space between them
         children: [
-          Spacer(), // Pushes everything below it down
+          Spacer(), // Pushes everything below it up, making space for the icon
+          // App Icon
+          Image.asset(
+            'assets/images/AppIcon.png', // Make sure this path matches your asset folder structure
+            width: 120, // Adjust the size as per your preference
+          ),
           Text(
             'HealthyWear',
-            style: TextStyle(fontSize: 44, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           Spacer(), // Provides flexible space in between
@@ -19,7 +24,6 @@ class SplashScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centers the logos horizontally
             children: [
-              // HUG Logo - Make this larger as requested
               Image.asset(
                 'assets/images/logogetafe.png',
                 width: 170, // Adjust the size as per your preference for "larger"
@@ -28,8 +32,6 @@ class SplashScreen extends StatelessWidget {
                 'assets/images/upm.png',
                 width: 100, // Adjust the size as needed
               ),
-
-              // UPM Logo - Keep this smaller
             ],
           ),
           SizedBox(height: 20), // Adds some space at the very bottom

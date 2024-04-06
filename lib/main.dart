@@ -63,7 +63,7 @@ void main() async {
   runApp(SplashApp());
 
   // Replace the splash screen with the main app after initialization is complete.
-  Future.delayed(Duration(seconds: 1), () {
+  Future.delayed(Duration(seconds: 2), () {
     runApp(MyApp(initialLocale: initialLocale));
   });
   // Uploader.startMonitoringAndUploading();todo must be uncommented
