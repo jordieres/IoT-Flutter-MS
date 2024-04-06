@@ -725,6 +725,10 @@ class _MyAppState extends State<MyApp> {
     Color boxColor = status == DeviceConnectionStatus.connected
         ? Colors.green.withOpacity(0.3)
         : Colors.blue.shade700.withOpacity(0.1);
+    Color titleColor =
+        status == DeviceConnectionStatus.connected ? Colors.grey.shade500 : Colors.black;
+    Color statusColor =
+        status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.grey.shade500;
 
     return Opacity(
       opacity: _devicesEnabled ? 1.0 : 0.5,
@@ -747,7 +751,7 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titleColor),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 9), // Spacing
@@ -763,7 +767,7 @@ class _MyAppState extends State<MyApp> {
                     // Connection Status
                     Text(
                       status.toString().split('.').last,
-                      style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
+                      style: TextStyle(fontSize: 15, color: statusColor),
                     ),
                   ],
                 ),
