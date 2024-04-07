@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:healthywear/StatusChecker.dart';
 import 'SmartBandApi.dart';
 import 'MetaWearApi.dart';
 import 'SensoriaApi.dart';
 import 'Uploader.dart';
 import 'AppLocal.dart';
+import 'NotificationHandler.dart';
+import 'StatusChecker.dart';
 import 'dart:async';
 
 import 'splash_screen.dart';
@@ -55,15 +58,20 @@ void main() async {
   SensoriaApi.sendAppVersion(appVersion);
 
   //  update each API with the correct language code
-  SmartBandApi.setLanguageCode(languageCode);
+  SmartBandApi.setLocale(languageCode);
   MetaWearApi.setLocale(languageCode);
   SensoriaApi.setLocale(languageCode);
+  NotificationHandler.setLocale(languageCode);
 
-  // Start with the splash screen.
+  /////status checker/////////
+  StatusChecker statusChecker = StatusChecker();
+  MetaWearApi.setConnectionStatusListener(statusChecker.onConnectionStatusUpdate);
+  SensoriaApi.setConnectionStatusListener(statusChecker.onConnectionStatusUpdate);
+  /////////////
+
   runApp(SplashApp());
 
-  // Replace the splash screen with the main app after initialization is complete.
-  Future.delayed(Duration(seconds: 2), () {
+  Future.delayed(Duration(seconds: 1), () {
     runApp(MyApp(initialLocale: initialLocale));
   });
   Uploader.startMonitoringAndUploading();
@@ -130,6 +138,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Locale _locale;
+  // Locale _locale = Locale('es', 'ES');
 
   bool isBandToggled = false;
   bool isRightHandToggled = false;
@@ -151,6 +160,8 @@ class _MyAppState extends State<MyApp> {
     'LF': DeviceConnectionStatus.disconnected,
   };
 
+  Timer? _idInputTimer; //timer for idnumber
+
   DeviceConnectionStatus connectionStatus = DeviceConnectionStatus.disconnected;
 
   final TextEditingController _idController = TextEditingController();
@@ -169,17 +180,19 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _locale = widget.initialLocale;
-    Timer.periodic(Duration(minutes: 1), (Timer t) => updateBatteryLevels());
 
-    Uploader.loadConfig();
+    Uploader.loadConfig(); //load config file which include the url
 
-    _loadIdNumber().then((_) {
-      // after loading, if the text field is empty, allow editing.//
-      if (_idController.text.isEmpty) {
-        setState(() => _isIdEditable = true);
-      }
-    });
-    _isIdEditable = false;
+/////loader of IdNumber/////todo:if we want to activitate the mechanism to save the idnumber
+    // _loadIdNumber().then((_) {
+    //   // after loading, if the text field is empty, allow editing.//
+    //   if (_idController.text.isEmpty) {
+    //     setState(() => _isIdEditable = true);
+    //   }
+    // });
+    // _isIdEditable = false;
+/////////////////////////////////////////////////////
+    _isIdEditable = true;
 
     SmartBandApi.onConnectionStatusChange = (status) {
       _updateDeviceStatus('SB', status);
@@ -198,16 +211,6 @@ class _MyAppState extends State<MyApp> {
     SensoriaApi.onLeftFootConnectionStatusChange = (status) {
       _updateDeviceStatus('LF', status);
     };
-  }
-
-  void updateBatteryLevels() async {
-    int newBatteryLevelRH = await MetaWearApi.getBatteryLevelForDevice(1);
-    int newBatteryLevelLH = await MetaWearApi.getBatteryLevelForDevice(2);
-
-    setState(() {
-      batteryLevelRH = newBatteryLevelRH;
-      batteryLevelLH = newBatteryLevelLH;
-    });
   }
 
   void _updateDeviceStatus(String deviceName, DeviceConnectionStatus status) {
@@ -260,6 +263,13 @@ class _MyAppState extends State<MyApp> {
           break;
       }
     });
+
+    if (_areAllDevicesDisconnected()) {
+      _startOrRestartDisconnectTimer();
+    } else {
+      // If any device is connected, ensure the timer is cancelled
+      _cancelDisconnectTimer();
+    }
   }
 
   Map<String, Timer> batteryUpdateTimers = {};
@@ -309,13 +319,16 @@ class _MyAppState extends State<MyApp> {
       });
       MetaWearApi.setLocale(newLocale.languageCode);
       SensoriaApi.setLocale(newLocale.languageCode);
-      SmartBandApi.setLanguageCode(newLocale.languageCode);
+      SmartBandApi.setLocale(newLocale.languageCode);
+      NotificationHandler.setLocale(newLocale.languageCode);
     }
   }
 
   @override
   void dispose() {
     MetaWearApi.disposeTimers();
+    _idInputTimer?.cancel();
+
     super.dispose();
   }
 
@@ -703,13 +716,13 @@ class _MyAppState extends State<MyApp> {
 
     if (batteryLevel != null) {
       if (batteryLevel >= 75 || batteryLevel == 4) {
-        batteryIcon = Icons.battery_full;
+        batteryIcon = Icons.battery_full_rounded;
       } else if (batteryLevel >= 50 || batteryLevel == 3) {
-        batteryIcon = Icons.battery_3_bar;
+        batteryIcon = Icons.battery_5_bar_rounded;
       } else if (batteryLevel >= 25 || batteryLevel == 2) {
-        batteryIcon = Icons.battery_2_bar;
+        batteryIcon = Icons.battery_3_bar_rounded;
       } else if (batteryLevel > 0 || batteryLevel == 1) {
-        batteryIcon = Icons.battery_1_bar;
+        batteryIcon = Icons.battery_1_bar_rounded;
         iconColor = Colors.red; // Change color to red for low battery
       } else {
         batteryIcon = Icons.battery_unknown;
@@ -731,9 +744,14 @@ class _MyAppState extends State<MyApp> {
         ? Colors.green.withOpacity(0.3)
         : Colors.blue.shade700.withOpacity(0.1);
     Color titleColor =
-        status == DeviceConnectionStatus.connected ? Colors.grey.shade500 : Colors.black;
+        status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.black;
     Color statusColor =
         status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.grey.shade500;
+
+    FontWeight statusFontWeight =
+        status == DeviceConnectionStatus.connected ? FontWeight.bold : FontWeight.normal;
+    FontWeight statusFontWeightTitle =
+        status == DeviceConnectionStatus.connected ? FontWeight.normal : FontWeight.bold;
 
     return Opacity(
       opacity: _devicesEnabled ? 1.0 : 0.5,
@@ -756,7 +774,8 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titleColor),
+                  style:
+                      TextStyle(fontWeight: statusFontWeightTitle, fontSize: 16, color: titleColor),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 9), // Spacing
@@ -773,7 +792,8 @@ class _MyAppState extends State<MyApp> {
                     Text(
                       // status.toString().split('.').last,
                       statusMessage,
-                      style: TextStyle(fontSize: 16, color: statusColor),
+                      style:
+                          TextStyle(fontSize: 16, color: statusColor, fontWeight: statusFontWeight),
                     ),
                   ],
                 ),
@@ -834,6 +854,9 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  //////////////ID Number///////////////////
+  //todo:the _loadIdNumber and _saveIdNumber are related to save the id number
+
   Future<void> _loadIdNumber() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -861,6 +884,7 @@ class _MyAppState extends State<MyApp> {
     await prefs.setString('idNumberChecksum', checksum.toString());
   }
 
+//---------------- Id number check/edit/Reset--------------------------
   void _handleCheckOrEdit() async {
     if (_isIdEditable) {
       String idNumber = _idController.text.trim();
@@ -882,6 +906,7 @@ class _MyAppState extends State<MyApp> {
             _isIdCorrect = true;
             _devicesEnabled = true;
           });
+          _startIdInputTimer();
         } else {
           setState(() {
             _isIdCorrect = false;
@@ -890,21 +915,58 @@ class _MyAppState extends State<MyApp> {
         }
       } else {
         setState(() {
-          _isIdCorrect = false; // to show error message if length is incorrect
+          _isIdCorrect = false;
         });
       }
     } else {
       setState(() {
         _isIdEditable = true;
-        _devicesEnabled = false; // to lock the devices when starting to edit
+        _devicesEnabled = false;
 
         // _isIdCorrect = true; // to reset checksum state on edit
       });
     }
   }
 
+  void _startIdInputTimer() {
+    _idInputTimer?.cancel();
+
+    _idInputTimer = Timer(Duration(minutes: 3), () {
+      if (_areAllDevicesDisconnected()) {
+        setState(() {
+          _idController.clear();
+          _checksumController.clear();
+          _isIdEditable = true;
+          _devicesEnabled = false;
+        });
+      }
+    });
+  }
+
+  bool _areAllDevicesDisconnected() {
+    return deviceStatuses.values.every((status) => status == DeviceConnectionStatus.disconnected);
+  }
+
+  void _startOrRestartDisconnectTimer() {
+    _idInputTimer?.cancel();
+
+    _idInputTimer = Timer(Duration(minutes: 3), () {
+      setState(() {
+        _idController.clear();
+        _checksumController.clear();
+        _isIdEditable = true;
+        _devicesEnabled = false;
+      });
+    });
+  }
+
+  void _cancelDisconnectTimer() {
+    _idInputTimer?.cancel();
+  }
+
+  //////////////////////////////////////////////////
+
   String getConnectionStatusMessage(DeviceConnectionStatus status, Locale locale) {
-    // English messages
     Map<DeviceConnectionStatus, String> enMessages = {
       DeviceConnectionStatus.disconnected: "Not connected",
       DeviceConnectionStatus.connecting: "Connecting...",
@@ -912,7 +974,6 @@ class _MyAppState extends State<MyApp> {
       DeviceConnectionStatus.reconnecting: "Reconnecting..."
     };
 
-    // Spanish messages
     Map<DeviceConnectionStatus, String> esMessages = {
       DeviceConnectionStatus.disconnected: "No conectado",
       DeviceConnectionStatus.connecting: "Conectando...",
@@ -920,11 +981,9 @@ class _MyAppState extends State<MyApp> {
       DeviceConnectionStatus.reconnecting: "Reconectando..."
     };
 
-    // Choose the messages map based on the current locale
     Map<DeviceConnectionStatus, String> messages =
         locale.languageCode == "es" ? esMessages : enMessages;
 
-    // Return the message corresponding to the current status
     return messages[status] ?? "Unknown";
   }
 }

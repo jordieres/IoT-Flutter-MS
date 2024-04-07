@@ -17,6 +17,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart'; //just to check
 import 'package:collection/collection.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'; //for language
 import 'AppLocal.dart'; //for the langauges
+import 'StatusChecker.dart';
 
 import 'enums/device_connection_status.dart';
 
@@ -40,11 +41,13 @@ class SpO2Data {
 }
 
 class SmartBandApi {
+  //////conection status///////
   static Function(DeviceConnectionStatus)? onConnectionStatusChange;
 
   static void updateConnectionStatus(DeviceConnectionStatus status) {
     onConnectionStatusChange?.call(status);
   }
+  /////////////
 
   static List<List<dynamic>> heartRateBuffer = [];
   static List<List<dynamic>> spo2Buffer = [];
@@ -59,6 +62,7 @@ class SmartBandApi {
   static double? _lastKnownLongitude;
 
   static bool isBPMeasuring = false;
+  static bool isConnected = false;
 
   static Timer? _fetchStepDataTimer;
 
@@ -70,7 +74,7 @@ class SmartBandApi {
 
   static String languageCode = "en";
 
-  static void setLanguageCode(String code) {
+  static void setLocale(String code) {
     languageCode = code;
   }
   //////////
@@ -78,6 +82,30 @@ class SmartBandApi {
   static void setAppVersion(String version) {
     _appVersion = version;
   }
+
+  ////////status checker/////
+
+  static DateTime? lastDataHRTimestamp;
+  static DateTime? lastDataBPTimestamp;
+  static DateTime? lastDataStepTimestamp;
+  static DateTime? lastDataWriteFileTimestamp;
+
+  static void updateConnectionStatusForChecker(DeviceConnectionStatus status) {
+    StatusChecker.updateSmartBandStatus(status);
+  }
+
+  static Map<String, dynamic> getCurrentStatus() {
+    print("the request from status cheker is receive--------------------");
+
+    return {
+      "isConnected": isConnected,
+      "lastDataHRTimestamp": lastDataHRTimestamp?.toIso8601String() ?? "0",
+      "lastDataBPTimestamp": lastDataBPTimestamp?.toIso8601String() ?? "0",
+      "lastDataStepTimestamp": lastDataStepTimestamp?.toIso8601String() ?? "0",
+      "lastDataWriteFileTimestamp": lastDataWriteFileTimestamp?.toIso8601String() ?? "0",
+    };
+  }
+  ///////////
 
 /////----------permission and services check
 
@@ -109,6 +137,8 @@ class SmartBandApi {
     bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!isBluetoothEnabled) {
+      updateConnectionStatus(DeviceConnectionStatus.disconnected);
+      isConnected = false;
       Fluttertoast.showToast(
         msg: languageCode == "en"
             ? "Bluetooth is not enabled. Please enable Bluetooth to use this feature."
@@ -118,6 +148,8 @@ class SmartBandApi {
     }
 
     if (!isLocationEnabled) {
+      updateConnectionStatus(DeviceConnectionStatus.disconnected);
+      isConnected = false;
       Fluttertoast.showToast(
         msg: languageCode == "en"
             ? "Location services are not enabled. Please enable Location to use this feature."
@@ -186,7 +218,7 @@ class SmartBandApi {
         Fluttertoast.showToast(
             msg: SmartBandApi.languageCode == "en"
                 ? "Failed to find any devices after several attempts."
-                : "No se encontraron dispositivos tras varios intentos.",
+                : "No se encontraron Pulsera Inteligente.",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
             // timeInSecForIosWeb: 10,
@@ -194,11 +226,12 @@ class SmartBandApi {
             textColor: Colors.white,
             fontSize: 16.0);
         updateConnectionStatus(DeviceConnectionStatus.disconnected);
+        isConnected = false;
 
         return;
       }
 
-      bool isConnected = false;
+      isConnected = false;
       int connectAttempts = 2;
       while (connectAttempts > 0 && !isConnected) {
         isConnected = await VeepooSdk.connect(selectedDevice!.mac) ?? false;
@@ -230,6 +263,10 @@ class SmartBandApi {
       if (isBound == true) {
         print('Bound to ${selectedDevice!.mac}');
         SmartBandApi.updateConnectionStatus(DeviceConnectionStatus.connected);
+        updateConnectionStatusForChecker(DeviceConnectionStatus.connected); // Notify StatusChecker
+
+        isConnected = true;
+
         // Proceed with other actions
         updateLocationPeriodically();
         startHeartRateMeasurement();
@@ -242,6 +279,7 @@ class SmartBandApi {
     await VeepooSdk.disconnect();
     print('device is disconned--------------');
     updateConnectionStatus(DeviceConnectionStatus.disconnected);
+    updateConnectionStatusForChecker(DeviceConnectionStatus.disconnected);
   }
 
 //------HeartRate Measurement---------------
@@ -263,6 +301,7 @@ class SmartBandApi {
             if (heartRate > 0) {
               // add the heart rate and timestamp as a list to the buffer
               heartRateBuffer.add([heartRate, timestamp]);
+              lastDataHRTimestamp = DateTime.now();
             }
             List<String> heartRateStructure = ["HeartRate", "TimeStamp"];
 
@@ -301,6 +340,7 @@ class SmartBandApi {
             if (bpData.progress == 100) {
               BPBuffer.add(
                   [bpData.highPressure, bpData.lowPressure, DateTime.now().millisecondsSinceEpoch]);
+              lastDataBPTimestamp = DateTime.now();
 
               VeepooSdk.stopDetectBP();
               List<String> bpStructure = ["HighBloodPressure", "LowBloodPressure", "TimeStamp"];
@@ -353,6 +393,9 @@ class SmartBandApi {
           final List<List<dynamic>> buffer = [
             [steps, distance, calories, timestamp]
           ];
+
+          lastDataStepTimestamp = DateTime.now();
+
           List<String> stepStructure = ["Steps", "Distance", "Calories", "TimeStamp"];
 
           saveDataToFile('HS', buffer, structure: stepStructure);
@@ -499,7 +542,6 @@ class SmartBandApi {
       sb.writeln(metadataJson);
 
       for (List<dynamic> entry in buffer) {
-        // to convert each list of values to a comma-separated string
         String entryString = entry.join(', ');
         sb.writeln(entryString);
       }
@@ -514,6 +556,7 @@ class SmartBandApi {
       final File gzFile = await _compressFile(txtFile, gzFileName);
 
       await txtFile.delete();
+      lastDataWriteFileTimestamp = DateTime.now();
 
       print('Data is compressed and original file deleted.');
     } catch (e) {

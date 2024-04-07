@@ -16,6 +16,15 @@ class MetaWearApi {
       EventChannel('com.example.healthywear/metawear_connection_status');
 
   static bool _alreadyListening = false;
+  static String _languageCode = '';
+
+  //callback for status checker////
+  static Function(String, int, DeviceConnectionStatus)? onConnectionStatusChanged;
+
+  static void setConnectionStatusListener(Function(String, int, DeviceConnectionStatus) callback) {
+    onConnectionStatusChanged = callback;
+  }
+  ////////////////////////////
 
   static void handleConnectionUpdate(dynamic event) {
     final Map<dynamic, dynamic> statusUpdate = Map<String, dynamic>.from(event);
@@ -25,14 +34,18 @@ class MetaWearApi {
     if (status == "connected") {
       if (deviceIndex == 1) {
         updateRightHandConnectionStatus(DeviceConnectionStatus.connected);
+        onConnectionStatusChanged?.call("MetaWear", 1, DeviceConnectionStatus.connected);
       } else if (deviceIndex == 2) {
         updateLeftHandConnectionStatus(DeviceConnectionStatus.connected);
+        onConnectionStatusChanged?.call("MetaWear", 2, DeviceConnectionStatus.connected);
       }
     } else if (status == "disconnected") {
       if (deviceIndex == 1) {
         updateRightHandConnectionStatus(DeviceConnectionStatus.disconnected);
+        onConnectionStatusChanged?.call("MetaWear", 1, DeviceConnectionStatus.disconnected);
       } else if (deviceIndex == 2) {
         updateLeftHandConnectionStatus(DeviceConnectionStatus.disconnected);
+        onConnectionStatusChanged?.call("MetaWear", 2, DeviceConnectionStatus.disconnected);
       }
     } else if (status == "reconnecting") {
       if (deviceIndex == 1) {
@@ -92,15 +105,24 @@ class MetaWearApi {
     bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!isBluetoothEnabled) {
+      updateRightHandConnectionStatus(DeviceConnectionStatus.disconnected);
+      updateLeftHandConnectionStatus(DeviceConnectionStatus.disconnected);
+
       Fluttertoast.showToast(
-        msg: "Bluetooth is not enabled. Please enable Bluetooth to use this feature.",
+        msg: _languageCode == "en"
+            ? "Bluetooth service is not enabled. Please enable it."
+            : "El servicio de Bluetooth no está activado. Por favor, actívelo.",
         toastLength: Toast.LENGTH_LONG,
       );
     }
 
     if (!isLocationEnabled) {
+      updateRightHandConnectionStatus(DeviceConnectionStatus.disconnected);
+      updateLeftHandConnectionStatus(DeviceConnectionStatus.disconnected);
       Fluttertoast.showToast(
-        msg: "Location services are not enabled. Please enable Location to use this feature.",
+        msg: _languageCode == "en"
+            ? "Location service is not enabled. Please enable it."
+            : "El servicio de ubicación no está activado. Por favor, actívelo.",
         toastLength: Toast.LENGTH_LONG,
       );
     }
@@ -125,6 +147,7 @@ class MetaWearApi {
   static Future<void> setLocale(String languageCode) async {
     try {
       await _platform.invokeMethod('setLocale', {'languageCode': languageCode});
+      _languageCode = languageCode;
     } on PlatformException catch (e) {
       print("Failed to set locale on Android side: '${e.message}'.");
     }
@@ -186,8 +209,10 @@ class MetaWearApi {
       print("Disconnect request sent for device: $deviceIndex");
       if (deviceIndex == 1) {
         updateRightHandConnectionStatus(DeviceConnectionStatus.disconnected);
+        onConnectionStatusChanged?.call("MetaWear", 1, DeviceConnectionStatus.disconnected);
       } else {
         updateLeftHandConnectionStatus(DeviceConnectionStatus.disconnected);
+        onConnectionStatusChanged?.call("MetaWear", 2, DeviceConnectionStatus.disconnected);
       }
     } on PlatformException catch (e) {
       print("Error disconnecting device: ${e.message}");

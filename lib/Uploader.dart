@@ -10,6 +10,7 @@ import 'package:http_parser/http_parser.dart';
 
 class Uploader {
   static late final String serverUrl;
+  static DateTime? lastUploadTimestamp;
 
   static const Duration uploadInterval = Duration(seconds: 60);
 
@@ -49,7 +50,9 @@ class Uploader {
       if (streamedResponse.statusCode == 200) {
         final response = await streamedResponse.stream.bytesToString();
         if (response.contains('OK')) {
-          await file.delete(); // to delete the file after receiving confirmation from the server
+          await file.delete();
+          lastUploadTimestamp = DateTime.now();
+
           print("File uploaded and confirmed by server: ${file.path}");
           if (response.length > 2) {
             print("Additional server response: $response");
@@ -66,5 +69,9 @@ class Uploader {
     } catch (e) {
       print("Error uploading file: ${file.path}, $e");
     }
+  }
+
+  static DateTime? getLastUploadTimestamp() {
+    return lastUploadTimestamp;
   }
 }

@@ -100,6 +100,7 @@ public class MainActivity extends FlutterActivity {
         startSensorService();
 
 
+
         //MetaWear btle Service binding
         Intent bindIntent = new Intent(this, BtleService.class);
         bindService(bindIntent, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -108,6 +109,9 @@ public class MainActivity extends FlutterActivity {
         sensoriaHandler = new SensoriaHandler(this);
 
     }
+
+
+
 
     @Override
     protected void onDestroy() {
@@ -214,6 +218,15 @@ public class MainActivity extends FlutterActivity {
                             result.success(null);
                             break;
                         }
+                        case "blinkLed": {
+                            String color = call.argument("color");
+                            int deviceIndex=call.argument("deviceIndex");
+                            int blinkCount=call.argument("blinkCount");
+
+                            metaWearHandler.Led(deviceIndex,blinkCount,color);
+                            result.success(null);
+                            break;
+                        }
 
 
 
@@ -224,6 +237,13 @@ public class MainActivity extends FlutterActivity {
                             result.success(null);
                             break;
                         }
+                        case "requestStatusUpdate": {
+                            int deviceIndex = call.argument("deviceIndex");
+                            String status = metaWearHandler.getCurrentStatus(deviceIndex); // Assume getCurrentStatus now takes an int parameter for deviceIndex
+                            result.success(status);
+                            break;
+                        }
+
 //
 
                         default:
@@ -281,6 +301,15 @@ public class MainActivity extends FlutterActivity {
 
                             break;
                         }
+                        case "requestStatusUpdate": {
+                            android.util.Log.d(TAG, "the mainactivity received requesttttt for SENSORIA-------------- ");
+                            int deviceIndex = call.argument("deviceIndex");
+                            String status = sensoriaHandler.getCurrentStatus(deviceIndex);
+                            result.success(status);
+                            android.util.Log.d(TAG, "mainactivity send the SENSORIA toooooooooooo flutter "+status);
+                            break;
+                        }
+
 //
                         default:
                             result.notImplemented();

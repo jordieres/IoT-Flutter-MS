@@ -14,4 +14,7 @@
         <string name="right">Right</string>
         <string name="left">Left</string>
         <string name="no_sensoria_device_found">No Socks device found.</string>
+
+
+
 </resources>

@@ -165,6 +165,13 @@ public class SensoriaHandler implements SADeviceInterface,SAServiceStreamingServ
     private List<SADevice> connectedDevices = new ArrayList<>();
 
 
+    private Long lastDataTimestampSensoriaCore1 = null;
+    private Long lastDataTimestampSensoriaCore2 = null;
+
+    private Long lastDataWriteTimestamp = null;
+
+
+
 
 
 
@@ -646,6 +653,14 @@ public void didUpdateData(SADevice device, com.sensoria.sensorialibrary.SAServic
         return;
     }
 
+    if (device.deviceMac.equals(device1 != null ? device1.deviceMac : "")) {
+        // Update timestamp for the first core
+//        lastDataTimestampSensoriaCore1 = System.currentTimeMillis();
+    } else if (device.deviceMac.equals(device2 != null ? device2.deviceMac : "")) {
+        // Update timestamp for the second core
+//        lastDataTimestampSensoriaCore2 = System.currentTimeMillis();
+    }
+
 
     String footIndicator = (device.deviceMac.equals(device1 != null ? device1.deviceMac : "") ? "Right" : "Left");
 
@@ -671,6 +686,12 @@ public void didUpdateData(SADevice device, com.sensoria.sensorialibrary.SAServic
     synchronized(bufferLock) {
 
         dataBuffer1.add(formattedData);
+
+        if (footIndicator.equals("Right")) {
+            lastDataTimestampSensoriaCore1 = System.currentTimeMillis();
+        } else {
+            lastDataTimestampSensoriaCore2 = System.currentTimeMillis();
+        }
 
         int size = dataBuffer1.size();
 
@@ -737,12 +758,12 @@ public void didUpdateData(SADevice device, com.sensoria.sensorialibrary.SAServic
             writer.write(metadata.toString());
             writer.newLine();
 
-            //  rest of the data
             for (String data : dataBuffer) {
                 writer.write(data);
                 writer.newLine();
             }
             Log.d("SensoriaHandler", "File written successfully: " + file.getAbsolutePath());
+
         } catch (Exception e) {
             Log.e("SensoriaHandler", "Error writing to file", e);
         }
@@ -764,7 +785,11 @@ public void didUpdateData(SADevice device, com.sensoria.sensorialibrary.SAServic
                 gzipOS.write(buffer, 0, len);
             }
 
+            lastDataWriteTimestamp = System.currentTimeMillis();
+
             Log.d(TAG, "File compressed: " + gzipFileName);
+
+
         } catch (IOException e) {
             Log.e(TAG, "Error compressing file", e);
         }
@@ -787,25 +812,21 @@ public void didServiceError(SADevice device, SAService.Service service, String s
 
     @Override
     public void didServiceConnect(SADevice device, SAService.Service service) {
-        // Handle service connection event
         Log.d(TAG, "Service connected: " + service.name());
     }
 
     @Override
     public void didServiceDisconnect(SADevice device, SAService.Service service) {
-        // Handle service disconnection event
         Log.d(TAG, "Service disconnected: " + service.name());
     }
 
     @Override
     public void didServicePause(SADevice device, SAService.Service service) {
-        // Handle service pause event
         Log.d(TAG, "Service paused: " + service.name());
     }
 
     @Override
     public void didServiceResume(SADevice device, SAService.Service service) {
-        // Handle service resume event
         Log.d(TAG, "Service resumed: " + service.name());
     }
 
@@ -816,9 +837,33 @@ public void didServiceError(SADevice device, SAService.Service service, String s
 
     @Override
     public void didServiceReset(SADevice device, SAService.Service service) {
-        // Handle service reset event
         Log.d(TAG, "Service reset: " + service.name());
     }
+
+
+    public String getCurrentStatus(int coreIndex) {
+        Log.d(TAG, "getCurrentStatus:-------------- Request received for Sensoria core " + coreIndex);
+        Gson gson = new Gson();
+        Map<String, Object> statusMap = new HashMap<>();
+        SACore core = (coreIndex == 1) ? sacore1 : sacore2;
+        SADevice device = (coreIndex == 1) ? device1 : device2;
+
+        if (core != null && device != null) {
+            statusMap.put("lastDataTimestampSensoriaCore", (coreIndex == 1) ? lastDataTimestampSensoriaCore1 : lastDataTimestampSensoriaCore2);
+            statusMap.put("lastDataWriteTimestampSensoria", lastDataWriteTimestamp);
+//            statusMap.put("isConnected", core.isConnected());
+        } else {
+            statusMap.put("lastDataTimestampSensoriaCore", "N/A");
+            statusMap.put("lastDataWriteTimestamp", "N/A");
+            statusMap.put("isConnected", false);
+        }
+
+        String statusJson = gson.toJson(statusMap);
+        Log.d(TAG, "getCurrentStatus:----------------- The statusMap for core " + coreIndex + " is " + statusJson);
+
+        return statusJson;
+    }
+
 
 
 }

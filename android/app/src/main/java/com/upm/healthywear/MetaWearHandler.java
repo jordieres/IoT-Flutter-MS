@@ -186,15 +186,16 @@ public void setLocale(String languageCode) {
     private long lastDataTimestampBarometerBoard1 = 0;
     private long lastDataTimestampBarometerBoard2 = 0;
 
-    private long lastDataTimestampTemperatureBoard1 = 0;
-    private long lastDataTimestampTemperatureBoard2 = 0;
+    private Long lastDataTimestampTemperatureBoard1 = null;
+    private Long lastDataTimestampTemperatureBoard2 = null;
 
 
-    private long lastDataTimestampAmbientLightBoard1 = 0;
-    private long lastDataTimestampAmbientLightBoard2 = 0;
+    private Long lastDataTimestampAmbientLightBoard1 = null;
+    private Long lastDataTimestampAmbientLightBoard2 = null;
 
 
-    private long lastDataWriteTimestamp = 0;
+    private Long lastDataWriteFileTimestamps = null;
+
 
     /////
 
@@ -217,12 +218,12 @@ public void setLocale(String languageCode) {
     private BluetoothAdapter bluetoothAdapter;
     private final Handler handler = new Handler();
 
-    private static final long SCAN_PERIOD = 10000;
+    private static final long SCAN_PERIOD = 8000;
 
 
 
     private long lastScanTimestamp = 0;
-    private final long SCAN_VALIDITY_PERIOD = 3000;
+    private final long SCAN_VALIDITY_PERIOD = 20000;
 
     private int pendingDeviceIndex = -1;
 
@@ -471,14 +472,19 @@ public void setLocale(String languageCode) {
             board.connectAsync().onSuccessTask(task -> {
                 Log.d(TAG, "Connected to-------------------- " + finalDeviceToConnect.getAddress());
                 connectedDevices.add(finalDeviceToConnect.getAddress());
+                scannedDevices.remove(finalDeviceToConnect);
 
                 boolean isConnected = true;
 
                 android.util.Log.d(TAG, "is connected ---------------------- "+isConnected);
                 if(deviceIndex==1){
-                    startStatusCheckerForBoard1();
+//                    startStatusCheckerForBoard1();todo must uncomment-for old status checker
+
+
                 }else{
-                    startStatusCheckerForBoard2();
+//                    startStatusCheckerForBoard2();
+
+
 
                 }
 
@@ -787,7 +793,6 @@ public void setLocale(String languageCode) {
                 currentData.timestamp = System.currentTimeMillis();
                 currentData.hand = hand;
 
-
                 //////checker//////
                 // Update the timestamp for sensor fusion data reception
                 if ("Right".equals(hand)) {
@@ -796,7 +801,8 @@ public void setLocale(String languageCode) {
                     lastDataTimestampSensorFusionBoard2 = System.currentTimeMillis();
                 }
 
-                ////////
+                ///////////////////////
+
 
 
 
@@ -833,6 +839,8 @@ public void setLocale(String languageCode) {
                         if (currentData.isComplete()) {
 
                             writeToBuffer(currentData.toString());
+
+
                             currentData = new SensorFusionData();
                         }
                         break;
@@ -859,6 +867,9 @@ public void setLocale(String languageCode) {
                 return;
             }
             dataBuffer.add(data);
+
+
+
             if (dataBuffer.size() >= BUFFER_MAX_SIZE) {
                 fetchLocationAndSaveData("MF", dataBuffer);
 
@@ -906,7 +917,7 @@ public void setLocale(String languageCode) {
             //todo: i can remove this manual config as i have already use preset REGULAR
             ambientLight.configure()
 
-                    .measurementRate(AmbientLightLtr329.MeasurementRate.LTR329_RATE_1000MS)
+                    .measurementRate(AmbientLightLtr329.MeasurementRate.LTR329_RATE_2000MS)
 
                     .commit();
 
@@ -926,7 +937,15 @@ public void setLocale(String languageCode) {
 
                 String lightDataString = String.format(Locale.US, "%.2f,%d,%s", Light, timestamp, hand);
 
-                android.util.Log.d(TAG, "setupAmbientL:------------------------- "+Light);
+
+                    // Update last data timestamp
+                    if ("Right".equals(hand)) {
+                        lastDataTimestampAmbientLightBoard1 = System.currentTimeMillis();
+                    } else if ("Left".equals(hand)) {
+                        lastDataTimestampAmbientLightBoard2 = System.currentTimeMillis();
+                    }
+
+
 
 
 
@@ -935,22 +954,20 @@ public void setLocale(String languageCode) {
                     ambientLightBuffer.add(lightDataString);
 
 
+
+
                     if (ambientLightBuffer.size() == 50) {
 
                         fetchLocationAndSaveData("MI", new ArrayList<>(ambientLightBuffer));
 
                         ambientLightBuffer.clear();
+
                     }
                 }
 
 
 
-                // Update last data timestamp
-                if ("Right".equals(hand)) {
-                    lastDataTimestampAmbientLightBoard1 = System.currentTimeMillis();
-                } else if ("Left".equals(hand)) {
-                    lastDataTimestampAmbientLightBoard2 = System.currentTimeMillis();
-                }
+
 
             })).continueWith(task -> {
                 if (!task.isFaulted()) {
@@ -988,20 +1005,27 @@ private void setupTemperatureSensors(MetaWearBoard board,  String hand) {
             long timestamp = System.currentTimeMillis();
             String temperatureDataString = String.format(Locale.US, "%.2f,%d,%s", temperature, timestamp, hand);
 
+            if (temperature !=0){
+                if ("Right".equals(hand)) {
+                    lastDataTimestampTemperatureBoard1 = System.currentTimeMillis();
+                } else if ("Left".equals(hand)) {
+                    lastDataTimestampTemperatureBoard2 = System.currentTimeMillis();
+                }
+            }
+
             synchronized (temperatureBuffer) {
                 temperatureBuffer.add(temperatureDataString);
+
+
 
                 if (temperatureBuffer.size() ==10) {
                     fetchLocationAndSaveData("MT", new ArrayList<>(temperatureBuffer));
                     temperatureBuffer.clear();
+
                 }
             }
 
-            if ("Right".equals(hand)) {
-                lastDataTimestampTemperatureBoard1 = System.currentTimeMillis();
-            } else if ("Left".equals(hand)) {
-                lastDataTimestampTemperatureBoard2 = System.currentTimeMillis();
-            }
+
 
         })).continueWith(task -> {
             if (task.isFaulted()) {
@@ -1054,8 +1078,10 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
 
-            saveDataToFile(dataType, dataBuffer, latitude, longitude);
+            if (dataType != null && !dataType.isEmpty() && dataBuffer != null && !dataBuffer.isEmpty()) {
 
+                saveDataToFile(dataType, dataBuffer, latitude, longitude);
+            }
             fusedLocationClient.removeLocationUpdates(this);
         }
     };
@@ -1076,7 +1102,7 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
         try (FileOutputStream fos = new FileOutputStream(file);
              OutputStreamWriter writer = new OutputStreamWriter(fos)) {
 
-            lastDataWriteTimestamp = System.currentTimeMillis();
+
 
 
             try{
@@ -1168,8 +1194,10 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
             Log.e("MetaWearHandler", "Failed to save data to file", e);
         }
 
-//        compressFile(file);
+        compressFile(file);
         dataBuffer.clear();
+
+
     }
 
 
@@ -1192,6 +1220,9 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
             Log.e(TAG, "Error compressing file", e);
         }
         if (fileToCompress.delete()) {
+
+            lastDataWriteFileTimestamps = System.currentTimeMillis();
+
             Log.d(TAG, "Original file deleted: " + fileToCompress.getName());
         } else {
             Log.e(TAG, "Failed to delete the original file: " + fileToCompress.getName());
@@ -1201,120 +1232,36 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
 
 
 
-    //-----------------StatusChecker--------------
-
-    private static final long SENSOR_FUSION_CHECK_INTERVAL = 80000;
-    private static final long TEMPERATURE_CHECK_INTERVAL = 120000;
-    private static final long AMBIENTL_CHECK_INTERVAL = 130000;
-    private static final long FILE_WRITE_CHECK_INTERVAL = 180000;
-
-    private static final long LED_BLINK_CHECK_INTERVAL = 60000;
 
 
+    public String getCurrentStatus(int deviceIndex) {
+        android.util.Log.d(TAG, "getCurrentStatus: -----------------request received in handler");
+        Gson gson = new Gson();
+        Map<String, Object> statusMap = new HashMap<>();
+        MetaWearBoard board = (deviceIndex == 1) ? board1 : board2;
 
+        // Ensure the board is not null
+        if (board != null) {
+            statusMap.put("lastDataTimestampSensorFusion", (deviceIndex == 1) ? lastDataTimestampSensorFusionBoard1 : lastDataTimestampSensorFusionBoard2);
+            statusMap.put("lastDataTimestampTemperature", (deviceIndex == 1) ? lastDataTimestampTemperatureBoard1 : lastDataTimestampTemperatureBoard2);
+            statusMap.put("lastDataTimestampAmbientLight", (deviceIndex == 1) ? lastDataTimestampAmbientLightBoard1 : lastDataTimestampAmbientLightBoard2);
+            statusMap.put("lastDataWriteToTimestamp",lastDataWriteFileTimestamps );
+            statusMap.put("isConnected", board.isConnected()); // Directly use board.isConnected() if applicable
+        }else {
+            statusMap.put("lastDataTimestampSensorFusion", "N/A");
+            statusMap.put("lastDataTimestampTemperature", "N/A");
+            statusMap.put("lastDataTimestampAmbientLight", "N/A");
+            statusMap.put("lastDataWriteToTimestamp", "N/A");
+            statusMap.put("isConnected", false);
+        }
+String test=gson.toJson(statusMap);//todo must be deleted
 
-
-
-    private void startStatusCheckerForBoard1() {
-        statusCheckHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                boolean issueDetected = false;
-                long currentTime = System.currentTimeMillis();
-
-                if (currentTime - lastDataTimestampSensorFusionBoard1 > SENSOR_FUSION_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 1: No new sensor fusion data received in the last minute.");
-                    issueDetected = true;
-                }
-
-                if (currentTime - lastDataTimestampTemperatureBoard1 > TEMPERATURE_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 1: No new temperature data received in the last minute.");
-                    issueDetected = true;
-                }
-
-                if (currentTime - lastDataTimestampAmbientLightBoard1 > AMBIENTL_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 1: No new ambient light data received in the last minute.");
-                    issueDetected = true;
-                }
-
-                if (board1 == null || !board1.isConnected()) {
-                    Log.e(TAG, "Board 1: Device is not connected.");
-                    issueDetected = true;
-                }
-
-                if (currentTime - lastDataWriteTimestamp > FILE_WRITE_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 1: No new data file written in the last minute.");
-                    issueDetected = true;
-                }
-
-                if (issueDetected) {
-                    Led(1, 1,"red");
-
-                    Log.d(TAG, "Board 1: Issues detected. Blinking RED LED.");
-                } else {
-                    Log.d(TAG, "Board 1: No issues detected. Blinking GREEN LED.");
-                    Led(1, 1,"green");
-                }
-
-                // Schedule the next check
-                statusCheckHandler.postDelayed(this, LED_BLINK_CHECK_INTERVAL);
-
-            }
-        }, LED_BLINK_CHECK_INTERVAL);
+        return gson.toJson(statusMap);
     }
 
 
 
-    private void startStatusCheckerForBoard2() {
-        statusCheckHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                boolean issueDetected = false;
-                long currentTime = System.currentTimeMillis();
 
-                // Check for sensor fusion data reception
-                if (currentTime - lastDataTimestampSensorFusionBoard2 > SENSOR_FUSION_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 2: No new sensor fusion data received in the last minute.");
-                    issueDetected = true;
-                }
-
-                // Check for temperature data reception
-                if (currentTime - lastDataTimestampTemperatureBoard2 > TEMPERATURE_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 2: No new temperature data received in the last minute.");
-                    issueDetected = true;
-                }
-
-                // Check for ambient light data reception
-                if (currentTime - lastDataTimestampAmbientLightBoard2 > AMBIENTL_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 2: No new ambient light data received in the last minute.");
-                    issueDetected = true;
-                }
-
-                // Check if the device is still connected
-                if (board2 == null || !board2.isConnected()) {
-                    Log.e(TAG, "Board 2: Device is not connected.");
-                    issueDetected = true;
-                }
-
-                // Check for file writing interval
-                if (currentTime - lastDataWriteTimestamp > FILE_WRITE_CHECK_INTERVAL) {
-                    Log.e(TAG, "Board 2: No new data file written in the last minute.");
-                    issueDetected = true;
-                }
-
-                if (issueDetected) {
-                    Led(2, 2,"red");
-                    Log.d(TAG, "Board 2: Issues detected. Blinking RED LED.");
-                } else {
-                    Log.d(TAG, "Board 2: No issues detected. Blinking BLUE LED.");
-                    Led(2, 1,"blue");
-                }
-
-                statusCheckHandler.postDelayed(this, LED_BLINK_CHECK_INTERVAL);
-
-            }
-        }, LED_BLINK_CHECK_INTERVAL);
-    }
 
 
 
