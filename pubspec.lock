@@ -127,7 +127,7 @@ packages:
     source: hosted
     version: "6.2.2"
   flutter_background_service_ios:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_background_service_ios
       sha256: ab73657535876e16abc89e40f924df3e92ad3dee83f64d187081417e824709ed
