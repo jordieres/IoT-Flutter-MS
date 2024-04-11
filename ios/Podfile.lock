@@ -1,0 +1,125 @@
+PODS:
+  - AFNetworking (4.0.0):
+    - AFNetworking/NSURLSession (= 4.0.0)
+    - AFNetworking/Reachability (= 4.0.0)
+    - AFNetworking/Security (= 4.0.0)
+    - AFNetworking/Serialization (= 4.0.0)
+    - AFNetworking/UIKit (= 4.0.0)
+  - AFNetworking/NSURLSession (4.0.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (4.0.0)
+  - AFNetworking/Security (4.0.0)
+  - AFNetworking/Serialization (4.0.0)
+  - AFNetworking/UIKit (4.0.0):
+    - AFNetworking/NSURLSession
+  - Flutter (1.0.0)
+  - flutter_background_service_ios (0.0.3):
+    - Flutter
+  - flutter_local_notifications (0.0.1):
+    - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
+  - FMDB (2.7.10):
+    - FMDB/standard (= 2.7.10)
+  - FMDB/standard (2.7.10)
+  - geolocator_apple (1.2.0):
+    - Flutter
+  - iOSDFULibrary (4.1.0):
+    - Zip (~> 1.0)
+  - package_info (0.0.1):
+    - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - permission_handler_apple (9.3.0):
+    - Flutter
+  - Protobuf (3.26.1)
+  - reactive_ble_mobile (0.0.1):
+    - Flutter
+    - Protobuf (~> 3.5)
+    - SwiftProtobuf (~> 1.0)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - SwiftProtobuf (1.26.0)
+  - Toast (4.1.1)
+  - veepoo_sdk (0.0.1):
+    - AFNetworking (= 4.0)
+    - Flutter
+    - FMDB
+    - iOSDFULibrary (= 4.1.0)
+  - Zip (1.1.0)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
+  - package_info (from `.symlinks/plugins/package_info/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - reactive_ble_mobile (from `.symlinks/plugins/reactive_ble_mobile/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - veepoo_sdk (from `.symlinks/plugins/veepoo_sdk/ios`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - AFNetworking
+    - FMDB
+    - iOSDFULibrary
+    - Protobuf
+    - SwiftProtobuf
+    - Toast
+    - Zip
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_background_service_ios:
+    :path: ".symlinks/plugins/flutter_background_service_ios/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
+  geolocator_apple:
+    :path: ".symlinks/plugins/geolocator_apple/ios"
+  package_info:
+    :path: ".symlinks/plugins/package_info/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
+  reactive_ble_mobile:
+    :path: ".symlinks/plugins/reactive_ble_mobile/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  veepoo_sdk:
+    :path: ".symlinks/plugins/veepoo_sdk/ios"
+
+SPEC CHECKSUMS:
+  AFNetworking: 42892080606935f7a9ec3fda4927fdd37e9cd369
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
+  fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
+  FMDB: eae540775bf7d0c87a5af926ae37af69effe5a19
+  geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
+  iOSDFULibrary: e245240cc1096f3961f2e5ec53860f8fca1ff648
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  Protobuf: a53f5173a603075b3522a5c50be63a67a5f3353a
+  reactive_ble_mobile: 9ce6723d37ccf701dbffd202d487f23f5de03b4c
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
+  SwiftProtobuf: 5e8349171e7c2f88f5b9e683cb3cb79d1dc780b3
+  Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
+  veepoo_sdk: e4ee66ee74e503d0f2e0fc40dba613d24c7673e2
+  Zip: 8877eede3dda76bcac281225c20e71c25270774c
+
+PODFILE CHECKSUM: 0eb63abd6ea0ea8c13dd72f32d6cefa6ca9d3e71
+
+COCOAPODS: 1.15.2
