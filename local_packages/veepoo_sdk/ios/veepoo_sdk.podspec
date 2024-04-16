@@ -17,7 +17,7 @@ Veepoo SDK for flutter
   s.dependency 'Flutter'
   s.dependency 'iOSDFULibrary', '4.1.0'
   s.dependency 'FMDB'
-  s.dependency 'AFNetworking ', '4.0'
+  s.dependency 'AFNetworking', '4.0'
   s.platform = :ios, '8.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
