@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'StatusChecker.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class NotificationInfo {
   String deviceName;
@@ -50,7 +52,13 @@ class NotificationHandler {
     _initializeNotifications();
   }
 
-  void checkAndSendNotification(String deviceName, int deviceIndex, String activityName) {
+  Future<int> countFilesInUploadDirectory() async {
+    final directory = await getExternalStorageDirectory(); // Adjust if your files are elsewhere
+    final fileList = directory!.listSync().where((file) => file.path.endsWith('.gz')).toList();
+    return fileList.length;
+  }
+
+  void checkAndSendNotification(String deviceName, int deviceIndex, String activityName) async {
     final now = DateTime.now();
     final Duration specificInterval = _getNotificationInterval(deviceName, activityName);
     final notificationIndex = sentNotifications.indexWhere(
@@ -64,7 +72,7 @@ class NotificationHandler {
         now.difference(sentNotifications[notificationIndex].lastNotificationTime) >
             specificInterval) {
       String title = _generateTitle(deviceName, activityName);
-      String message = _generateMessage(deviceName, deviceIndex, activityName);
+      String message = await _generateMessage(deviceName, deviceIndex, activityName);
 
       _sendNotification(title, message);
 
@@ -133,7 +141,7 @@ class NotificationHandler {
         case "SmartBand":
           return "Smart Band Alert";
         case "Uploader":
-          return "Upload Failed";
+          return "Failure in Data Delivery to the Server";
         default:
           return "$deviceName Alert";
       }
@@ -146,7 +154,7 @@ class NotificationHandler {
         case "SmartBand":
           return "Alerta de Pulsera Inteligente";
         case "Uploader":
-          return "Fallo en la Carga";
+          return "Fallo en la Entrega de datos al Servidor";
         default:
           return "Alerta de $deviceName";
       }
@@ -154,7 +162,7 @@ class NotificationHandler {
     return "$deviceName Notification";
   }
 
-  String _generateMessage(String deviceName, int deviceIndex, String activityName) {
+  Future<String> _generateMessage(String deviceName, int deviceIndex, String activityName) async {
     if (locale == "en") {
       return _generateMessageEn(deviceName, deviceIndex, activityName);
     } else if (locale == "es") {
@@ -163,7 +171,8 @@ class NotificationHandler {
     return "Action required for $activityName.";
   }
 
-  String _generateMessageEn(String deviceName, int deviceIndex, String activityName) {
+  Future<String> _generateMessageEn(String deviceName, int deviceIndex, String activityName) async {
+    int fileCount = await countFilesInUploadDirectory();
     switch (deviceName) {
       case "MetaWear":
         switch (activityName) {
@@ -201,13 +210,14 @@ class NotificationHandler {
             return "Failure in $activityName for Smart Band"; // Added default return for SmartBand
         }
       case "Uploader":
-        return "Failure in uploading file to the server";
+        return "There are $fileCount files pending delivery to the server. Check your Internet access.";
       default:
         return "Failure in $activityName for $deviceName";
     }
   }
 
-  String _generateMessageEs(String deviceName, int deviceIndex, String activityName) {
+  Future<String> _generateMessageEs(String deviceName, int deviceIndex, String activityName) async {
+    int fileCount = await countFilesInUploadDirectory();
     switch (deviceName) {
       case "MetaWear":
         switch (activityName) {
@@ -245,7 +255,7 @@ class NotificationHandler {
             return "Fallo en $activityName para la Pulsera Inteligente";
         }
       case "Uploader":
-        return "Fallo al subir archivo al servidor";
+        return "Hay $fileCount ficheros pendientes de entrega al servidor. Compruebe su acceso a Internet. ";
       default:
         return "Fallo en $activityName para $deviceName";
     }
