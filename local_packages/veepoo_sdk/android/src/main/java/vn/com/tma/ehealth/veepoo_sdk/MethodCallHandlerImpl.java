@@ -390,7 +390,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
 
     private void confirmDevicePwd(final MethodChannel.Result result, String pwdStr, Boolean is24Hourmodel) {
         try {
-            mVpoperateManager.confirmDevicePwd(new IBleWriteResponse() {
+                mVpoperateManager.confirmDevicePwd(new IBleWriteResponse() {
                 @Override
                 public void onResponse(int i) {
                     if (i != Code.REQUEST_SUCCESS) {
