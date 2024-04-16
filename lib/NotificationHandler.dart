@@ -207,7 +207,7 @@ class NotificationHandler {
           case "Data writing to file":
             return "Failure in Writing to file for Smart Band";
           default:
-            return "Failure in $activityName for Smart Band"; // Added default return for SmartBand
+            return "Failure in $activityName for Smart Band";
         }
       case "Uploader":
         return "There are $fileCount files pending delivery to the server. Check your Internet access.";
