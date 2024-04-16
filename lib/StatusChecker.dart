@@ -58,8 +58,8 @@ class StatusChecker {
   int Allowed_updateIntervalMinutes_SmartBand_WriteFile = 30;
 
   ////////Uploader times////////////////////////
-  int Allowed_initialDelayMinutes_Upload = 50;
-  int Allowed_updateIntervalMinutes_Upload = 60;
+  int Allowed_initialDelayMinutes_Upload = 1;
+  int Allowed_updateIntervalMinutes_Upload = 1;
 
   StatusChecker() {
     Timer.periodic(Duration(minutes: 1), (Timer t) => requestStatusUpdates());

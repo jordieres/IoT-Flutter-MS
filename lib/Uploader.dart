@@ -27,6 +27,12 @@ class Uploader {
     final directory = await getExternalStorageDirectory(); //  external directory
     final files = directory!.listSync().where((item) => item.path.endsWith('.gz'));
 
+    if (files.isEmpty) {
+      print("Checked for files to upload, but none were found.");
+      lastUploadTimestamp = DateTime.now();
+      return;
+    }
+
     for (var file in files) {
       await uploadFile(file as File);
     }
