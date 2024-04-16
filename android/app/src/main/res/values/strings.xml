@@ -3,7 +3,7 @@
         <string name="service_channel_name">Sensor Service Channel</string>
         <string name="service_channel_description">This channel is used for sensor service notifications</string>
         <string name="service_notification_title">Application for data collection of wearables activated.</string>
-        <string name="service_notification_content">Collecting sensor data in the background.</string>
+        <string name="service_notification_content">The app runs in the background.</string>
         <string name="fail_channel_name">fail_channel</string>
         <string name="fail_channel_description">This channel is used for sensor fail notifications</string>
         <string name="fail_notification_title">Reconnection Failed</string>
