@@ -12,6 +12,7 @@ import 'dart:async';
 import 'splash_screen.dart';
 
 import 'dart:ui'; //to use ImageFilter.
+import 'package:google_fonts/google_fonts.dart';
 
 import 'dart:convert';
 import 'dart:math';
@@ -71,7 +72,7 @@ void main() async {
 
   runApp(SplashApp());
 
-  Future.delayed(Duration(seconds: 1), () {
+  Future.delayed(Duration(seconds: 2), () {
     runApp(MyApp(initialLocale: initialLocale));
   });
   Uploader.startMonitoringAndUploading();
@@ -579,7 +580,7 @@ class _MyAppState extends State<MyApp> {
                                   },
                                   activeColor: Colors.white,
                                   activeTrackColor: Colors.blueAccent,
-                                  inactiveThumbColor: Colors.red,
+                                  inactiveThumbColor: Colors.grey.shade500,
                                   inactiveTrackColor: Colors.white,
                                 ),
                                 batteryLevelLH,
@@ -601,7 +602,7 @@ class _MyAppState extends State<MyApp> {
                                   },
                                   activeColor: Colors.white,
                                   activeTrackColor: Colors.green,
-                                  inactiveThumbColor: Colors.red,
+                                  inactiveThumbColor: Colors.grey.shade500,
                                   inactiveTrackColor: Colors.white,
                                 ),
                                 batteryLevelRH,
@@ -629,7 +630,7 @@ class _MyAppState extends State<MyApp> {
                                   },
                                   activeColor: Colors.white,
                                   activeTrackColor: Colors.blueAccent,
-                                  inactiveThumbColor: Colors.red,
+                                  inactiveThumbColor: Colors.grey.shade500,
                                   inactiveTrackColor: Colors.white,
                                 ),
                                 batteryLevelLF,
@@ -652,7 +653,7 @@ class _MyAppState extends State<MyApp> {
                                   },
                                   activeColor: Colors.white,
                                   activeTrackColor: Colors.green,
-                                  inactiveThumbColor: Colors.red,
+                                  inactiveThumbColor: Colors.grey.shade500,
                                   inactiveTrackColor: Colors.white,
                                 ),
                                 batteryLevelRF,
@@ -677,7 +678,7 @@ class _MyAppState extends State<MyApp> {
                               },
                               activeColor: Colors.white,
                               activeTrackColor: Colors.blue,
-                              inactiveThumbColor: Colors.red,
+                              inactiveThumbColor: Colors.grey.shade500,
                               inactiveTrackColor: Colors.white,
                             ),
                             batteryLevelSB,
@@ -744,7 +745,7 @@ class _MyAppState extends State<MyApp> {
         ? Colors.green.withOpacity(0.3)
         : Colors.blue.shade700.withOpacity(0.1);
     Color titleColor =
-        status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.black;
+        status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.blue.shade900;
     Color statusColor =
         status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.grey.shade500;
 
@@ -774,8 +775,9 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text(
                   title,
-                  style:
-                      TextStyle(fontWeight: statusFontWeightTitle, fontSize: 16, color: titleColor),
+                  style: GoogleFonts.roboto(
+                      fontSize: 17.5, fontWeight: statusFontWeightTitle, color: titleColor),
+                  // TextStyle(fontWeight: statusFontWeightTitle, fontSize: 16, color: titleColor),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 9), // Spacing

@@ -44,6 +44,7 @@ dependencies:
   flutter_reactive_ble: ^5.3.1
   flutter_local_notifications: ^17.0.0
   package_info: ^2.0.2
+  google_fonts: ^6.2.1
   geolocator: ^11.0.0
   http: ^1.1.1
   intl: any
