@@ -6,15 +6,14 @@ import 'SensoriaApi.dart';
 import 'Uploader.dart';
 import 'AppLocal.dart';
 import 'NotificationHandler.dart';
-import 'StatusChecker.dart';
 import 'dart:async';
+import 'BackgroundHandling.dart';
 
 import 'splash_screen.dart';
 
 import 'dart:ui'; //to use ImageFilter.
 import 'package:google_fonts/google_fonts.dart';
 
-import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -45,6 +44,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await requestPermissions();
 
+  initializeBackgroundTask(); //Backgroundhandling processes
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String languageCode = prefs.getString('languageCode') ?? 'es';
@@ -71,11 +72,11 @@ void main() async {
   /////////////
 
   runApp(SplashApp());
-
+//splash screen//////////
   Future.delayed(Duration(seconds: 2), () {
     runApp(MyApp(initialLocale: initialLocale));
   });
-  Uploader.startMonitoringAndUploading();
+  // Uploader.startMonitoringAndUploading();
 }
 
 class SplashApp extends StatelessWidget {

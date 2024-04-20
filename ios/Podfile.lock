@@ -51,6 +51,8 @@ PODS:
     - Flutter
     - FMDB
     - iOSDFULibrary (= 4.1.0)
+  - workmanager (0.0.1):
+    - Flutter
   - Zip (1.1.0)
 
 DEPENDENCIES:
@@ -65,6 +67,7 @@ DEPENDENCIES:
   - reactive_ble_mobile (from `.symlinks/plugins/reactive_ble_mobile/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - veepoo_sdk (from `.symlinks/plugins/veepoo_sdk/ios`)
+  - workmanager (from `.symlinks/plugins/workmanager/ios`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -99,6 +102,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   veepoo_sdk:
     :path: ".symlinks/plugins/veepoo_sdk/ios"
+  workmanager:
+    :path: ".symlinks/plugins/workmanager/ios"
 
 SPEC CHECKSUMS:
   AFNetworking: 42892080606935f7a9ec3fda4927fdd37e9cd369
@@ -118,6 +123,7 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 5e8349171e7c2f88f5b9e683cb3cb79d1dc780b3
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   veepoo_sdk: e4ee66ee74e503d0f2e0fc40dba613d24c7673e2
+  workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
   Zip: 8877eede3dda76bcac281225c20e71c25270774c
 
 PODFILE CHECKSUM: 978dd492a93a8ef4ec2dc2b3631de447af34068a
