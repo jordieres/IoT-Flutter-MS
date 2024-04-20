@@ -202,7 +202,6 @@ public class MainActivity extends FlutterActivity {
                         }
                         case "sendIdNumber": {
                             String refNumber = call.argument("refNumber");
-                            Log.d(TAG, "Id Number received: " + refNumber);
                             metaWearHandler.setIdNumber(refNumber);
                             result.success(null);
                             break;
@@ -271,7 +270,6 @@ public class MainActivity extends FlutterActivity {
                             break;
                         case "sendIdNumber": {
                             String refNumber = call.argument("refNumber");
-                            Log.d(TAG, "Id Number received: " + refNumber);
                             sensoriaHandler.setIdNumber(refNumber);
                             result.success(null);
                             break;
@@ -285,7 +283,6 @@ public class MainActivity extends FlutterActivity {
                         case "getBatteryLevel": {
                             Integer coreIndexBattery = call.argument("coreIndex");
                             sensoriaHandler.readBatteryLevelForCore(coreIndexBattery, result);
-                            Log.d(TAG, "Attempting to read battery level for core:----------------- " + coreIndexBattery);
 
                             break;
                         }
@@ -302,11 +299,9 @@ public class MainActivity extends FlutterActivity {
                             break;
                         }
                         case "requestStatusUpdate": {
-                            android.util.Log.d(TAG, "the mainactivity received requesttttt for SENSORIA-------------- ");
                             int deviceIndex = call.argument("deviceIndex");
                             String status = sensoriaHandler.getCurrentStatus(deviceIndex);
                             result.success(status);
-                            android.util.Log.d(TAG, "mainactivity send the SENSORIA toooooooooooo flutter "+status);
                             break;
                         }
 
@@ -331,7 +326,6 @@ public class MainActivity extends FlutterActivity {
                     @Override
                     public void onCancel(Object arguments) {
                         metaWearHandler.setConnectionStatusEventSink(null);
-                        android.util.Log.d(TAG, "onCancel: --------------------iscalled");
                     }
                 });
 
@@ -349,7 +343,6 @@ public class MainActivity extends FlutterActivity {
                     @Override
                     public void onCancel(Object arguments) {
                         sensoriaHandler.setConnectionStatusEventSink(null);
-                        android.util.Log.d(TAG, "onCancel: --------------------iscalled");
                     }
                 });
 

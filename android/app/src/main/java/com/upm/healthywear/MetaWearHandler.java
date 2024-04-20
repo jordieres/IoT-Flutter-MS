@@ -684,13 +684,10 @@ public void setLocale(String languageCode) {
                         .repeatCount((byte) blinkCount)
                         .commit();
                 led.play();
-                Log.d(TAG, "Blinking " + color + " LED for device index: " + deviceIndex + ", blink count: " + blinkCount);
 
             } else {
-                Log.e(TAG, "LED module not available for device index: " + deviceIndex);
             }
         } else {
-            Log.e(TAG, "Board not connected or invalid device index: " + deviceIndex);
 
         }
     }
@@ -1235,7 +1232,6 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
 
 
     public String getCurrentStatus(int deviceIndex) {
-        android.util.Log.d(TAG, "getCurrentStatus: -----------------request received in handler");
         Gson gson = new Gson();
         Map<String, Object> statusMap = new HashMap<>();
         MetaWearBoard board = (deviceIndex == 1) ? board1 : board2;

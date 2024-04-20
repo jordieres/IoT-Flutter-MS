@@ -1,9 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter/services.dart';
-import 'dart:convert';
+// import 'package:flutter/services.dart';
+// import 'dart:convert';
 import 'dart:async';
-import 'StatusChecker.dart';
-import 'dart:io';
+// import 'StatusChecker.dart';
+// import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class NotificationInfo {
@@ -53,12 +53,13 @@ class NotificationHandler {
   }
 
   Future<int> countFilesInUploadDirectory() async {
-    final directory = await getExternalStorageDirectory(); // Adjust if your files are elsewhere
+    final directory = await getExternalStorageDirectory();
     final fileList = directory!.listSync().where((file) => file.path.endsWith('.gz')).toList();
     return fileList.length;
   }
 
   void checkAndSendNotification(String deviceName, int deviceIndex, String activityName) async {
+    print("notifi checker RRECeivedddd in notihandler-------AMIR");
     final now = DateTime.now();
     final Duration specificInterval = _getNotificationInterval(deviceName, activityName);
     final notificationIndex = sentNotifications.indexWhere(
