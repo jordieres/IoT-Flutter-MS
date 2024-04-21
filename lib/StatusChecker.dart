@@ -327,6 +327,8 @@ class StatusChecker {
 
   Future<void> checkBatteryLevelAndNotify(String deviceName, int deviceIndex) async {
     int? batteryLevel;
+    bool isBatteryLow = false; // Flag to determine if the battery is low
+
     try {
       if (deviceName == "Mobile Device") {
         batteryLevel = await _battery.batteryLevel;
@@ -339,7 +341,7 @@ class StatusChecker {
             batteryLevel = await SensoriaApi.getBatteryLevelForDevice(deviceIndex);
             break;
           case "SmartBand":
-            batteryLevel = await SmartBandApi.getBatteryLevel();
+            batteryLevel = await SmartBandApi.getBatteryLevel(); // Note: returns scale 1-4
             break;
           default:
             print("Unknown device type: $deviceName");
@@ -351,7 +353,27 @@ class StatusChecker {
       return;
     }
 
-    if (batteryLevel != null && batteryLevel < 20 || batteryLevel == 1) {
+    // Check if battery level is low based on device-specific thresholds
+    if (batteryLevel != null) {
+      switch (deviceName) {
+        case "SmartBand":
+          if (batteryLevel <= 1) {
+            // Low battery if level is 1 or less
+            isBatteryLow = true;
+          }
+          break;
+        default:
+          if (batteryLevel < 20) {
+            // Low battery if level is under 20% for other devices
+            isBatteryLow = true;
+          }
+          break;
+      }
+    }
+
+    if (isBatteryLow) {
+      print(
+          "Warning: Battery level for $deviceName device $deviceIndex is critical at $batteryLevel%");
       notificationHandler.checkAndSendNotification(deviceName, deviceIndex, "Battery Warning");
     }
   }
