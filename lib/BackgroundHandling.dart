@@ -5,14 +5,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'NotificationHandler.dart';
 import 'Uploader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    NotificationHandler notificationHandler = NotificationHandler();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    // Initialize notification
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('ic_notification');
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    // Create a notification channel
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'upload_channel', // id
+      'Data Upload Notifications', // title
+      importance: Importance.high,
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
 
     switch (task) {
       case 'checkUploadStatus':
-        return await checkUploadStatus(notificationHandler);
+        return await checkUploadStatus(flutterLocalNotificationsPlugin);
       case 'uploadFiles':
         return await handleUploadFiles();
       default:
@@ -22,7 +42,8 @@ void callbackDispatcher() {
   });
 }
 
-Future<bool> checkUploadStatus(NotificationHandler notificationHandler) async {
+Future<bool> checkUploadStatus(
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int lastUploadTime = prefs.getInt('lastUploadTimestamp') ?? 0;
   int currentTime = DateTime.now().millisecondsSinceEpoch;
@@ -31,10 +52,25 @@ Future<bool> checkUploadStatus(NotificationHandler notificationHandler) async {
     // 1800000 milliseconds = 30 minutes
     final directory = await getExternalStorageDirectory();
     final files = directory!.listSync().where((item) => item.path.endsWith('.gz'));
+    int fileCount = files.length;
 
     if (files.isNotEmpty) {
-      print("notifi checker-------AMIR");
-      notificationHandler.checkAndSendNotification("Uploader", 0, "Uploading");
+      print("Notification checker: There are $fileCount files pending upload-AMIR.");
+      const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: AndroidNotificationDetails(
+          'upload_channel',
+          'Uploads',
+          importance: Importance.high,
+          priority: Priority.high,
+          showWhen: false,
+        ),
+      );
+      await flutterLocalNotificationsPlugin.show(
+        0, // Notification ID
+        'Upload Reminder', // Title
+        'You have $fileCount files pending for upload.', // Body
+        platformChannelSpecifics,
+      );
     }
   }
   return true;
