@@ -7,6 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Uploader {
   static late final String serverUrl;
@@ -58,6 +59,9 @@ class Uploader {
         if (response.contains('OK')) {
           await file.delete();
           lastUploadTimestamp = DateTime.now();
+
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('lastUploadTimestamp', lastUploadTimestamp!.millisecondsSinceEpoch);
 
           print("File uploaded and confirmed by server: ${file.path}");
           if (response.length > 2) {
