@@ -684,12 +684,14 @@ class _MyAppState extends State<MyApp> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
             child: Container(
-              width: MediaQuery.of(context).size.width / 2 - 20,
+              width: boxWidth,
               padding: EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: boxColor,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white.withOpacity(0.9)),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.9),
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -697,22 +699,32 @@ class _MyAppState extends State<MyApp> {
                   Text(
                     title,
                     style: GoogleFonts.roboto(
-                        fontSize: 17.5, fontWeight: FontWeight.bold, color: titleColor),
+                        fontSize: 17.5, fontWeight: statusFontWeightTitle, color: titleColor),
+                    // TextStyle(fontWeight: statusFontWeightTitle, fontSize: 16, color: titleColor),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 10), // Spacing
+                  SizedBox(height: 9), // Spacing
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (batteryLevel != null) Icon(batteryIcon, color: iconColor),
-                      SizedBox(width: 8), // Spacing
+                      if (status == DeviceConnectionStatus.connected && batteryIcon != null)
+                        Transform.rotate(
+                          angle: 3.14159 / 2,
+                          child: Icon(batteryIcon, color: iconColor),
+                        ),
+                      SizedBox(width: 4), // Spacing
+                      // Connection Status
                       Text(
-                        getConnectionStatusMessage(status, _locale),
+                        // status.toString().split('.').last,
+                        statusMessage,
                         style: TextStyle(
-                            fontSize: 14, color: statusColor, fontWeight: statusFontWeight),
+                            fontSize: 16, color: statusColor, fontWeight: statusFontWeight),
                       ),
                     ],
                   ),
+
+                  // Switch Widget or Lock Icon
+
                   if (!_devicesEnabled) Icon(Icons.lock, color: Colors.red, size: 24),
                 ],
               ),
