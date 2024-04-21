@@ -8,12 +8,15 @@ import 'Uploader.dart';
 import 'NotificationHandler.dart';
 import 'MetaWearApi.dart';
 import 'SensoriaApi.dart';
+import 'package:battery_plus/battery_plus.dart';
 
 class StatusChecker {
   MethodChannel metaWearChannel = MethodChannel('com.example.healthywear/metawear');
   MethodChannel sensoriaChannel = MethodChannel('com.example.healthywear/sensoria');
 
   final notificationHandler = NotificationHandler();
+
+  Battery _battery = Battery();
 
   Map<int, DeviceConnectionStatus> metaWearStatuses = {};
   Map<int, DeviceConnectionStatus> sensoriaStatuses = {};
@@ -126,6 +129,8 @@ class StatusChecker {
   }
 
   void requestStatusUpdates() {
+    checkBatteryLevelAndNotify("Mobile Device", 0);
+
     metaWearStatuses.forEach((index, status) {
       if (status == DeviceConnectionStatus.connected) {
         requestStatusUpdateForDevice("MetaWear", index);
@@ -323,20 +328,23 @@ class StatusChecker {
   Future<void> checkBatteryLevelAndNotify(String deviceName, int deviceIndex) async {
     int? batteryLevel;
     try {
-      switch (deviceName) {
-        case "MetaWear":
-          batteryLevel = await MetaWearApi.getBatteryLevelForDevice(deviceIndex);
-          break;
-        case "Sensoria":
-          batteryLevel = await SensoriaApi.getBatteryLevelForDevice(deviceIndex);
-          break;
-        case "SmartBand":
-          batteryLevel = await SmartBandApi.getBatteryLevel();
-
-          break;
-        default:
-          print("Unknown device type: $deviceName");
-          return;
+      if (deviceName == "Mobile Device") {
+        batteryLevel = await _battery.batteryLevel;
+      } else {
+        switch (deviceName) {
+          case "MetaWear":
+            batteryLevel = await MetaWearApi.getBatteryLevelForDevice(deviceIndex);
+            break;
+          case "Sensoria":
+            batteryLevel = await SensoriaApi.getBatteryLevelForDevice(deviceIndex);
+            break;
+          case "SmartBand":
+            batteryLevel = await SmartBandApi.getBatteryLevel();
+            break;
+          default:
+            print("Unknown device type: $deviceName");
+            return;
+        }
       }
     } on PlatformException catch (e) {
       print("Failed to get battery level for $deviceName device $deviceIndex: ${e.message}");
@@ -344,8 +352,6 @@ class StatusChecker {
     }
 
     if (batteryLevel != null && batteryLevel < 20 || batteryLevel == 1) {
-      print(
-          "Warning: Battery level for $deviceName device $deviceIndex is critical at $batteryLevel%");
       notificationHandler.checkAndSendNotification(deviceName, deviceIndex, "Battery Warning");
     }
   }

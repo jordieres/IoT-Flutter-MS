@@ -76,7 +76,7 @@ void main() async {
   Future.delayed(Duration(seconds: 2), () {
     runApp(MyApp(initialLocale: initialLocale));
   });
-  // Uploader.startMonitoringAndUploading();
+  Uploader.startMonitoringAndUploading();
 }
 
 class SplashApp extends StatelessWidget {
