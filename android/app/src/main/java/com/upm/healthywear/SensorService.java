@@ -7,12 +7,20 @@
     import android.app.NotificationChannel;
     import android.app.NotificationManager;
     import androidx.core.app.NotificationCompat;
+    import android.content.res.Configuration;
+    import java.util.Locale;
+    import android.content.SharedPreferences;
+    import android.preference.PreferenceManager;
+
 
     import android.os.Build;
     import android.util.Log;
 
     public class SensorService extends Service {
         private MetaWearHandler metaWearHandler;
+
+        private static final String TAG = "SensorService";
+
 
         @Override
         public void onCreate() {
@@ -23,9 +31,35 @@
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
+
+            if (intent != null && intent.hasExtra("LANGUAGE_CODE")) {
+                String languageCode = intent.getStringExtra("LANGUAGE_CODE");
+                Log.d(TAG, "Service started with LANGUAGE_CODE:AMIR " + languageCode);
+                setLocale(languageCode);
+            } else {
+                Log.d(TAG, "No LANGUAGE_CODE provided, using default.AMIR");
+            }
+
+
+
             startForegroundServiceWithNotification();
 
             return START_STICKY;
+        }
+
+        private void applySavedLocale() {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            String languageCode = prefs.getString("languageCode", "es");
+            setLocale(languageCode);
+        }
+
+        public void setLocale(String languageCode) {
+            Locale locale = new Locale(languageCode);
+            android.util.Log.d(TAG, "setLocale: issssssssssssss AMIR"+locale);
+            Locale.setDefault(locale);
+            Configuration config = new Configuration(getResources().getConfiguration());
+            config.setLocale(locale);
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
         }
 
         private void startForegroundServiceWithNotification() {
@@ -53,4 +87,7 @@
             super.onDestroy();
             // Optional: Stop your sensor data collection here
         }
+
+
+
     }

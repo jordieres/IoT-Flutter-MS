@@ -161,6 +161,13 @@ public class MainActivity extends FlutterActivity {
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 
+    private void updateServiceLocale(String languageCode) {
+        Intent serviceIntent = new Intent(this, SensorService.class);
+        serviceIntent.putExtra("LANGUAGE_CODE", languageCode);
+
+        startService(serviceIntent);
+    }
+
     private void stopSensorService() {
         Intent serviceIntent = new Intent(this, SensorService.class);
         stopService(serviceIntent);
@@ -214,6 +221,7 @@ public class MainActivity extends FlutterActivity {
                         case "setLocale": {
                             String languageCode = call.argument("languageCode");
                             metaWearHandler.setLocale(languageCode);
+                            updateServiceLocale(languageCode);
                             result.success(null);
                             break;
                         }
