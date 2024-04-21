@@ -51,7 +51,7 @@ Future<bool> checkUploadStatus(
   int lastUploadTime = prefs.getInt('lastUploadTimestamp') ?? 0;
   int currentTime = DateTime.now().millisecondsSinceEpoch;
 
-  if ((currentTime - lastUploadTime) > 300000) {
+  if ((currentTime - lastUploadTime) > 7200000) {
     // 1800000 milliseconds = 30 minutes
     final directory = await getExternalStorageDirectory();
     final files = directory!.listSync().where((item) => item.path.endsWith('.gz'));
@@ -101,8 +101,8 @@ Future<bool> handleUploadFiles() async {
 
 void initializeBackgroundTask() {
   Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-  Workmanager().registerPeriodicTask("1", "checkUploadStatus", frequency: Duration(minutes: 16));
-  Workmanager().registerPeriodicTask("2", "uploadFiles", frequency: Duration(minutes: 17));
+  Workmanager().registerPeriodicTask("1", "checkUploadStatus", frequency: Duration(minutes: 125));
+  Workmanager().registerPeriodicTask("2", "uploadFiles", frequency: Duration(minutes: 63));
   // Workmanager().registerOneOffTask("3", "uploadFilesTest");
   // Workmanager().registerOneOffTask("4", "checkUploadStatusTest");
 }
