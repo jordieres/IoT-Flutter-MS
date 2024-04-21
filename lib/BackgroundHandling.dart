@@ -9,6 +9,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
+    final prefs = await SharedPreferences.getInstance();
+    String languageCode = prefs.getString('languageCode') ?? 'es';
+
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
@@ -32,7 +35,7 @@ void callbackDispatcher() {
 
     switch (task) {
       case 'checkUploadStatus':
-        return await checkUploadStatus(flutterLocalNotificationsPlugin);
+        return await checkUploadStatus(flutterLocalNotificationsPlugin, languageCode);
       case 'uploadFiles':
         return await handleUploadFiles();
       default:
@@ -43,7 +46,7 @@ void callbackDispatcher() {
 }
 
 Future<bool> checkUploadStatus(
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin, String languageCode) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int lastUploadTime = prefs.getInt('lastUploadTimestamp') ?? 0;
   int currentTime = DateTime.now().millisecondsSinceEpoch;
@@ -65,10 +68,18 @@ Future<bool> checkUploadStatus(
           showWhen: false,
         ),
       );
+
+      String title = (languageCode == "es")
+          ? "Fallo en la Entrega de datos al Servidor"
+          : "Failure in Data Delivery to the Server";
+      String message = (languageCode == "es")
+          ? "Hay $fileCount ficheros pendientes de entrega al servidor. Compruebe su acceso a Internet."
+          : "There are $fileCount files pending delivery to the server. Check your Internet access.";
+
       await flutterLocalNotificationsPlugin.show(
         0, // Notification ID
-        'Upload Reminder', // Title
-        'You have $fileCount files pending for upload.', // Body
+        title, // Title
+        message, // Body
         platformChannelSpecifics,
       );
     }
