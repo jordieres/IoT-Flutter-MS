@@ -735,7 +735,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _handleDeviceTap(String deviceName) {
+  void _handleDeviceTap(String deviceName) async {
     DeviceConnectionStatus status =
         deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected;
 
@@ -743,41 +743,44 @@ class _MyAppState extends State<MyApp> {
       // Disconnect
       switch (deviceName) {
         case 'SB':
-          SmartBandApi.disconnectDevice();
+          await SmartBandApi.disconnectDevice();
           break;
         case 'RH':
-          MetaWearApi.disconnectDevice(1);
+          await MetaWearApi.disconnectDevice(1);
           break;
         case 'LH':
-          MetaWearApi.disconnectDevice(2);
+          await MetaWearApi.disconnectDevice(2);
           break;
         case 'RF':
-          SensoriaApi.disconnectDevice(1);
+          await SensoriaApi.disconnectDevice(1);
           break;
         case 'LF':
-          SensoriaApi.disconnectDevice(2);
+          await SensoriaApi.disconnectDevice(2);
           break;
       }
     } else {
       // Connect
       switch (deviceName) {
         case 'SB':
-          SmartBandApi.scanConnectBind();
+          await SmartBandApi.scanConnectBind();
           break;
         case 'RH':
-          MetaWearApi.connectDevice(1);
+          await MetaWearApi.connectDevice(1);
           break;
         case 'LH':
-          MetaWearApi.connectDevice(2);
+          await MetaWearApi.connectDevice(2);
           break;
         case 'RF':
-          SensoriaApi.scanAndConnectWithCore(1);
+          await SensoriaApi.scanAndConnectWithCore(1);
           break;
         case 'LF':
-          SensoriaApi.scanAndConnectWithCore(2);
+          await SensoriaApi.scanAndConnectWithCore(2);
           break;
       }
     }
+
+    _updateDeviceStatus(
+        deviceName, deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected);
   }
 
   Widget buildLanguageDropdown() {
