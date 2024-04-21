@@ -1,9 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:flutter/services.dart';
-// import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'dart:async';
-// import 'StatusChecker.dart';
-// import 'dart:io';
+import 'StatusChecker.dart';
+import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class NotificationInfo {
@@ -45,6 +45,9 @@ class NotificationHandler {
 
   ////////Uploader times////////////////////////
   int notification_IntervalMinutes_Upload = 120;
+
+  ////////  interval for Mobile Device
+  int notification_IntervalMinutes_MobileDevice_Battery = 30;
 
   static String locale = "en";
 
@@ -119,6 +122,7 @@ class NotificationHandler {
           case "Battery Warning":
             return Duration(minutes: notification_IntervalMinutes_Sensoria_Battery);
         }
+        break;
       case "SmartBand":
         switch (activityName) {
           case "HR data reception":
@@ -138,8 +142,16 @@ class NotificationHandler {
           case "Uploading":
             return Duration(minutes: notification_IntervalMinutes_Upload);
         }
+        break;
+      case "Mobile Device":
+        if (activityName == "Battery Warning") {
+          return Duration(minutes: notification_IntervalMinutes_MobileDevice_Battery);
+        }
+        break;
+      default:
+        return Duration(minutes: 30);
     }
-    return Duration(minutes: 5);
+    return Duration(minutes: 30);
   }
 
   String _generateTitle(String deviceName, String activityName) {
@@ -153,6 +165,8 @@ class NotificationHandler {
           return "Smart Band Alert";
         case "Uploader":
           return "Failure in Data Delivery to the Server";
+        case "Mobile Device":
+          return "Battery Alert";
         default:
           return "$deviceName Alert";
       }
@@ -166,6 +180,8 @@ class NotificationHandler {
           return "Alerta de Pulsera Inteligente";
         case "Uploader":
           return "Fallo en la Entrega de datos al Servidor";
+        case "Mobile Device":
+          return "Alerta de Batería";
         default:
           return "Alerta de $deviceName";
       }
@@ -228,6 +244,10 @@ class NotificationHandler {
         }
       case "Uploader":
         return "There are $fileCount files pending delivery to the server. Check your Internet access.";
+
+      case "Mobile Device":
+        return "Your phone battery is low ";
+
       default:
         return "Failure in $activityName for $deviceName";
     }
@@ -279,6 +299,10 @@ class NotificationHandler {
         }
       case "Uploader":
         return "Hay $fileCount ficheros pendientes de entrega al servidor. Compruebe su acceso a Internet. ";
+
+      case "Mobile Device":
+        return "La batería de su teléfono está baja ";
+
       default:
         return "Fallo en $activityName para $deviceName";
     }
