@@ -246,7 +246,7 @@ public class MainActivity extends FlutterActivity {
                         }
                         case "requestStatusUpdate": {
                             int deviceIndex = call.argument("deviceIndex");
-                            String status = metaWearHandler.getCurrentStatus(deviceIndex); // Assume getCurrentStatus now takes an int parameter for deviceIndex
+                            String status = metaWearHandler.getCurrentStatus(deviceIndex);
                             result.success(status);
                             break;
                         }
