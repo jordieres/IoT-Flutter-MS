@@ -567,45 +567,13 @@ class _MyAppState extends State<MyApp> {
                               _buildDeviceBox(
                                 _locale.languageCode == 'en' ? 'Left MMR' : 'MMR izdo',
                                 "LH",
-                                Switch(
-                                  value: isLeftHandToggled,
-                                  onChanged: (value) async {
-                                    setState(() {
-                                      isLeftHandToggled = value;
-                                    });
-                                    if (value) {
-                                      await MetaWearApi.connectDevice(2);
-                                    } else {
-                                      await MetaWearApi.disconnectDevice(2);
-                                    }
-                                  },
-                                  activeColor: Colors.white,
-                                  activeTrackColor: Colors.blueAccent,
-                                  inactiveThumbColor: Colors.black,
-                                  inactiveTrackColor: Colors.white,
-                                ),
+                                () => _handleDeviceTap('LH'),
                                 batteryLevelLH,
                               ),
                               _buildDeviceBox(
                                 _locale.languageCode == 'en' ? 'Right MMR' : 'MMR dcho',
                                 "RH",
-                                Switch(
-                                  value: isRightHandToggled,
-                                  onChanged: (value) async {
-                                    setState(() {
-                                      isRightHandToggled = value;
-                                    });
-                                    if (value) {
-                                      await MetaWearApi.connectDevice(1);
-                                    } else {
-                                      await MetaWearApi.disconnectDevice(1);
-                                    }
-                                  },
-                                  activeColor: Colors.white,
-                                  activeTrackColor: Colors.green,
-                                  inactiveThumbColor: Colors.black,
-                                  inactiveTrackColor: Colors.white,
-                                ),
+                                () => _handleDeviceTap('RH'),
                                 batteryLevelRH,
                               ),
                             ],
@@ -617,46 +585,14 @@ class _MyAppState extends State<MyApp> {
                               _buildDeviceBox(
                                 _locale.languageCode == 'en' ? 'Left Sock' : 'Calcetín izdo',
                                 "LF",
-                                Switch(
-                                  value: isLeftFootToggled,
-                                  onChanged: (value) async {
-                                    setState(() {
-                                      isLeftFootToggled = value;
-                                    });
-                                    if (value) {
-                                      await SensoriaApi.scanAndConnectWithCore(2);
-                                    } else {
-                                      await SensoriaApi.disconnectDevice(2);
-                                    }
-                                  },
-                                  activeColor: Colors.white,
-                                  activeTrackColor: Colors.blueAccent,
-                                  inactiveThumbColor: Colors.black,
-                                  inactiveTrackColor: Colors.white,
-                                ),
+                                () => _handleDeviceTap('LF'),
                                 batteryLevelLF,
                               ),
                               // SizedBox(width: 2),
                               _buildDeviceBox(
                                 _locale.languageCode == 'en' ? ' Right Sock' : 'Calcetín dcho',
                                 "RF",
-                                Switch(
-                                  value: isRightFootToggled,
-                                  onChanged: (value) async {
-                                    setState(() {
-                                      isRightFootToggled = value;
-                                    });
-                                    if (value) {
-                                      await SensoriaApi.scanAndConnectWithCore(1);
-                                    } else {
-                                      await SensoriaApi.disconnectDevice(1);
-                                    }
-                                  },
-                                  activeColor: Colors.white,
-                                  activeTrackColor: Colors.green,
-                                  inactiveThumbColor: Colors.black,
-                                  inactiveTrackColor: Colors.white,
-                                ),
+                                () => _handleDeviceTap('RF'),
                                 batteryLevelRF,
                               ),
                             ],
@@ -665,23 +601,7 @@ class _MyAppState extends State<MyApp> {
                           _buildDeviceBox(
                             _locale.languageCode == 'en' ? 'Smart Band' : 'Pulsera Inteligente',
                             "SB",
-                            Switch(
-                              value: isBandToggled,
-                              onChanged: (value) {
-                                setState(() {
-                                  isBandToggled = value;
-                                  if (value) {
-                                    SmartBandApi.scanConnectBind();
-                                  } else {
-                                    SmartBandApi.disconnectDevice();
-                                  }
-                                });
-                              },
-                              activeColor: Colors.white,
-                              activeTrackColor: Colors.blue,
-                              inactiveThumbColor: Colors.black,
-                              inactiveTrackColor: Colors.white,
-                            ),
+                            () => _handleDeviceTap('SB'),
                             batteryLevelSB,
                           ),
                         ],
@@ -698,7 +618,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget _buildDeviceBox(String title, String deviceName, Widget switchWidget, int? batteryLevel) {
+  Widget _buildDeviceBox(String title, String deviceName, Function onTap, int? batteryLevel) {
     DeviceConnectionStatus status =
         deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected;
 
@@ -757,64 +677,95 @@ class _MyAppState extends State<MyApp> {
 
     return Opacity(
       opacity: _devicesEnabled ? 1.0 : 0.5,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-          child: Container(
-            width: boxWidth,
-            padding: EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: boxColor,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.9),
+      child: GestureDetector(
+        onTap: _devicesEnabled ? () => onTap() : null,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+            child: Container(
+              width: MediaQuery.of(context).size.width / 2 - 20,
+              padding: EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: boxColor,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white.withOpacity(0.9)),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.roboto(
-                      fontSize: 17.5, fontWeight: statusFontWeightTitle, color: titleColor),
-                  // TextStyle(fontWeight: statusFontWeightTitle, fontSize: 16, color: titleColor),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 9), // Spacing
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (status == DeviceConnectionStatus.connected && batteryIcon != null)
-                      Transform.rotate(
-                        angle: 3.14159 / 2,
-                        child: Icon(batteryIcon, color: iconColor),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.roboto(
+                        fontSize: 17.5, fontWeight: FontWeight.bold, color: titleColor),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 10), // Spacing
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (batteryLevel != null) Icon(batteryIcon, color: iconColor),
+                      SizedBox(width: 8), // Spacing
+                      Text(
+                        getConnectionStatusMessage(status, _locale),
+                        style: TextStyle(
+                            fontSize: 14, color: statusColor, fontWeight: statusFontWeight),
                       ),
-                    SizedBox(width: 4), // Spacing
-                    // Connection Status
-                    Text(
-                      // status.toString().split('.').last,
-                      statusMessage,
-                      style:
-                          TextStyle(fontSize: 16, color: statusColor, fontWeight: statusFontWeight),
-                    ),
-                  ],
-                ),
-
-                // Switch Widget or Lock Icon
-
-                _devicesEnabled
-                    ? switchWidget
-                    : Icon(
-                        Icons.lock,
-                        color: Colors.red,
-                      ),
-              ],
+                    ],
+                  ),
+                  if (!_devicesEnabled) Icon(Icons.lock, color: Colors.red, size: 24),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _handleDeviceTap(String deviceName) {
+    DeviceConnectionStatus status =
+        deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected;
+
+    if (status == DeviceConnectionStatus.connected) {
+      // Disconnect
+      switch (deviceName) {
+        case 'SB':
+          SmartBandApi.disconnectDevice();
+          break;
+        case 'RH':
+          MetaWearApi.disconnectDevice(1);
+          break;
+        case 'LH':
+          MetaWearApi.disconnectDevice(2);
+          break;
+        case 'RF':
+          SensoriaApi.disconnectDevice(1);
+          break;
+        case 'LF':
+          SensoriaApi.disconnectDevice(2);
+          break;
+      }
+    } else {
+      // Connect
+      switch (deviceName) {
+        case 'SB':
+          SmartBandApi.scanConnectBind();
+          break;
+        case 'RH':
+          MetaWearApi.connectDevice(1);
+          break;
+        case 'LH':
+          MetaWearApi.connectDevice(2);
+          break;
+        case 'RF':
+          SensoriaApi.scanAndConnectWithCore(1);
+          break;
+        case 'LF':
+          SensoriaApi.scanAndConnectWithCore(2);
+          break;
+      }
+    }
   }
 
   Widget buildLanguageDropdown() {
