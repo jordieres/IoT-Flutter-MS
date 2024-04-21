@@ -15,7 +15,6 @@ void callbackDispatcher() {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
-    // Initialize notification
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('ic_notification');
     final InitializationSettings initializationSettings = InitializationSettings(
@@ -52,7 +51,6 @@ Future<bool> checkUploadStatus(
   int currentTime = DateTime.now().millisecondsSinceEpoch;
 
   if ((currentTime - lastUploadTime) > 7200000) {
-    // 1800000 milliseconds = 30 minutes
     final directory = await getExternalStorageDirectory();
     final files = directory!.listSync().where((item) => item.path.endsWith('.gz'));
     int fileCount = files.length;
@@ -77,9 +75,9 @@ Future<bool> checkUploadStatus(
           : "There are $fileCount files pending delivery to the server. Check your Internet access.";
 
       await flutterLocalNotificationsPlugin.show(
-        0, // Notification ID
-        title, // Title
-        message, // Body
+        0,
+        title,
+        message,
         platformChannelSpecifics,
       );
     }
