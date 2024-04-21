@@ -315,6 +315,8 @@ class _MyAppState extends State<MyApp> {
   void setLocale(Locale newLocale) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('languageCode', newLocale.languageCode);
+
+    String check = prefs.getString('languageCode') ?? 'default';
     if (mounted) {
       setState(() {
         _locale = newLocale;
