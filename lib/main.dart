@@ -8,6 +8,7 @@ import 'AppLocal.dart';
 import 'NotificationHandler.dart';
 import 'dart:async';
 import 'BackgroundHandling.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'splash_screen.dart';
 
@@ -539,7 +540,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 SizedBox(
-                  height: 20,
+                  height: 50,
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10), // Match your container's border radius
@@ -668,14 +669,22 @@ class _MyAppState extends State<MyApp> {
         ? Colors.green.withOpacity(0.3)
         : Colors.blue.shade700.withOpacity(0.1);
     Color titleColor =
-        status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.blue.shade900;
+        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+            ? Colors.grey.shade700
+            : Colors.blue.shade900;
     Color statusColor =
-        status == DeviceConnectionStatus.connected ? Colors.grey.shade700 : Colors.grey.shade500;
+        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+            ? Colors.grey.shade700
+            : Colors.grey.shade500;
 
     FontWeight statusFontWeight =
-        status == DeviceConnectionStatus.connected ? FontWeight.bold : FontWeight.normal;
+        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+            ? FontWeight.bold
+            : FontWeight.normal;
     FontWeight statusFontWeightTitle =
-        status == DeviceConnectionStatus.connected ? FontWeight.normal : FontWeight.bold;
+        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+            ? FontWeight.normal
+            : FontWeight.bold;
 
     return Opacity(
       opacity: _devicesEnabled ? 1.0 : 0.5,
@@ -705,7 +714,7 @@ class _MyAppState extends State<MyApp> {
                     // TextStyle(fontWeight: statusFontWeightTitle, fontSize: 16, color: titleColor),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 9), // Spacing
+                  SizedBox(height: 30), // Spacing
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -722,6 +731,17 @@ class _MyAppState extends State<MyApp> {
                         style: TextStyle(
                             fontSize: 16, color: statusColor, fontWeight: statusFontWeight),
                       ),
+                      SizedBox(width: 2),
+                      if (status == DeviceConnectionStatus.connecting)
+                        SpinKitFadingCircle(
+                          color: Colors.red.shade500,
+                          size: 20.0,
+                        ),
+                      if (status == DeviceConnectionStatus.connected)
+                        SpinKitPumpingHeart(
+                          color: Colors.red.shade500,
+                          size: 15.0,
+                        ),
                     ],
                   ),
 
@@ -940,14 +960,14 @@ class _MyAppState extends State<MyApp> {
   String getConnectionStatusMessage(DeviceConnectionStatus status, Locale locale) {
     Map<DeviceConnectionStatus, String> enMessages = {
       DeviceConnectionStatus.disconnected: "Not connected",
-      DeviceConnectionStatus.connecting: "Connecting...",
+      DeviceConnectionStatus.connecting: "Connecting ",
       DeviceConnectionStatus.connected: "Connected",
       DeviceConnectionStatus.reconnecting: "Reconnecting..."
     };
 
     Map<DeviceConnectionStatus, String> esMessages = {
       DeviceConnectionStatus.disconnected: "No conectado",
-      DeviceConnectionStatus.connecting: "Conectando...",
+      DeviceConnectionStatus.connecting: "Conectando ",
       DeviceConnectionStatus.connected: "Conectado",
       DeviceConnectionStatus.reconnecting: "Reconectando..."
     };

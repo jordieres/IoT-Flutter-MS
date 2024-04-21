@@ -46,6 +46,7 @@ dependencies:
   battery_plus: ^6.0.1
   workmanager: ^0.5.2
   package_info: ^2.0.2
+  flutter_spinkit: ^5.2.1
   google_fonts: ^6.2.1
   geolocator: ^11.0.0
   http: ^1.1.1
