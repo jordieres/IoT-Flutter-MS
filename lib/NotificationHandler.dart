@@ -31,14 +31,18 @@ class NotificationHandler {
   int notification_IntervalMinutes_MMR_Temperature = 180;
   int notification_IntervalMinutes_MMR_AmbientLight = 120;
   int notification_IntervalMinutes_MMR_WriteFile = 30;
+  int notification_IntervalMinutes_MMR_Battery = 25;
   ////////Sensoria times////////////////////////
   int notification_IntervalMinutes_Sensoria = 20;
   int notification_IntervalMinutes_Sensoria_WriteFile = 30;
+  int notification_IntervalMinutes_Sensoria_Battery = 25;
   ////////SmartBand times////////////////////////
   int notification_IntervalMinutes_SmartBand_HR = 100;
   int notification_IntervalMinutes_SmartBand_BP = 130;
   int notification_IntervalMinutes_SmartBand_Step = 120;
   int notification_IntervalMinutes_SmartBand_WriteFile = 40;
+  int notification_IntervalMinutes_SmartBand_Battery = 20;
+
   ////////Uploader times////////////////////////
   int notification_IntervalMinutes_Upload = 120;
 
@@ -102,6 +106,8 @@ class NotificationHandler {
             return Duration(minutes: notification_IntervalMinutes_MMR_AmbientLight);
           case "Writing to file":
             return Duration(minutes: notification_IntervalMinutes_MMR_WriteFile);
+          case "Battery Warning":
+            return Duration(minutes: notification_IntervalMinutes_MMR_Battery);
         }
         break;
       case "Sensoria":
@@ -110,6 +116,8 @@ class NotificationHandler {
             return Duration(minutes: notification_IntervalMinutes_Sensoria);
           case "Sensoria writing to file":
             return Duration(minutes: notification_IntervalMinutes_Sensoria_WriteFile);
+          case "Battery Warning":
+            return Duration(minutes: notification_IntervalMinutes_Sensoria_Battery);
         }
       case "SmartBand":
         switch (activityName) {
@@ -121,6 +129,8 @@ class NotificationHandler {
             return Duration(minutes: notification_IntervalMinutes_SmartBand_Step);
           case "Data writing to file":
             return Duration(minutes: notification_IntervalMinutes_SmartBand_WriteFile);
+          case "Battery Warning":
+            return Duration(minutes: notification_IntervalMinutes_SmartBand_Battery);
         }
         break;
       case "Uploader":
@@ -185,6 +195,8 @@ class NotificationHandler {
             return "Failure in Light sensor for MMR ${deviceIndex == 1 ? "Right" : "Left"}";
           case "Writing to file":
             return "Failure in Writing to file for MMR ${deviceIndex == 1 ? "Right" : "Left"}";
+          case "Battery Warning":
+            return "Battery is low in MMR  ${deviceIndex == 1 ? "Right" : "Left"}";
           default:
             return "Failure in $activityName for MMR";
         }
@@ -194,6 +206,8 @@ class NotificationHandler {
             return "Failure in sensor for Sock ${deviceIndex == 1 ? "Right" : "Left"}";
           case "Sensoria writing to file":
             return "Failure in writing to file for Sock ${deviceIndex == 1 ? "Right" : "Left"}";
+          case "Battery Warning":
+            return "Battery is low in Sock  ${deviceIndex == 1 ? "Right" : "Left"}";
           default:
             return "Failure in $activityName for Sensoria";
         }
@@ -207,6 +221,8 @@ class NotificationHandler {
             return "Failure in Steps sensor for Smart Band";
           case "Data writing to file":
             return "Failure in Writing to file for Smart Band";
+          case "Battery Warning":
+            return "Battery is low in  Smart Band";
           default:
             return "Failure in $activityName for Smart Band";
         }
@@ -230,6 +246,8 @@ class NotificationHandler {
             return "Fallo en el sensor de Luz para MMR ${deviceIndex == 1 ? "Derecho" : "Izquierdo"}";
           case "Writing to file":
             return "Fallo en la escritura al archivo para MMR ${deviceIndex == 1 ? "Derecho" : "Izquierdo"}";
+          case "Battery Warning":
+            return "La batería está baja en MMR  ${deviceIndex == 1 ? "Right" : "Left"}";
           default:
             return "Fallo en $activityName para MMR";
         }
@@ -239,6 +257,8 @@ class NotificationHandler {
             return "Fallo en el sensor para el Calcetín ${deviceIndex == 1 ? "Derecho" : "Izquierdo"}";
           case "Sensoria writing to file":
             return "Fallo en la escritura al archivo para el Calcetín ${deviceIndex == 1 ? "Derecho" : "Izquierdo"}";
+          case "Battery Warning":
+            return "La batería está baja en el Calcetín  ${deviceIndex == 1 ? "Right" : "Left"}";
           default:
             return "Fallo en $activityName para Sensoria";
         }
@@ -252,6 +272,8 @@ class NotificationHandler {
             return "Fallo en el sensor de Pasos para la Pulsera Inteligente";
           case "Data writing to file":
             return "Fallo en la escritura al archivo para la Pulsera Inteligente";
+          case "Battery Warning":
+            return "La batería está baja en la Pulsera Inteligente";
           default:
             return "Fallo en $activityName para la Pulsera Inteligente";
         }
@@ -272,11 +294,15 @@ class NotificationHandler {
   }
 
   Future<void> _sendNotification(String title, String body) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'fail_channel', 'fail_channel',
-        importance: Importance.high, priority: Priority.high, ticker: 'ticker');
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(0, title, body, platformChannelSpecifics);
+    try {
+      const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+          'fail_channel', 'fail_channel',
+          importance: Importance.high, priority: Priority.high, ticker: 'ticker');
+      const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+      await flutterLocalNotificationsPlugin.show(0, title, body, platformChannelSpecifics);
+    } catch (e) {
+      print('Failed to send notification: $e');
+    }
   }
 }
