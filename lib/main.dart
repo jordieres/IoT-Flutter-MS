@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:healthywear/StatusChecker.dart';
-import 'SmartBandApi.dart';
-import 'MetaWearApi.dart';
-import 'SensoriaApi.dart';
-import 'Uploader.dart';
-import 'AppLocal.dart';
-import 'NotificationHandler.dart';
+import 'Service/StatusChecker.dart';
+import 'Api/SmartBandApi.dart';
+import 'Api/MetaWearApi.dart';
+import 'Api/SensoriaApi.dart';
+import 'Api/ServiceApi.dart';
+import 'Service/Uploader.dart';
+import 'Service/AppLocal.dart';
+import 'Service/NotificationHandler.dart';
 import 'dart:async';
-import 'BackgroundHandling.dart';
+import 'Service/BackgroundHandling.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'dart:io';
 
 import 'splash_screen.dart';
 
@@ -19,7 +21,8 @@ import 'dart:math';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:package_info/package_info.dart';
+// import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'enums/device_connection_status.dart';
 
@@ -43,6 +46,7 @@ class DeviceStatus {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await requestPermissions();
 
   initializeBackgroundTask(); //Backgroundhandling processes
@@ -59,6 +63,7 @@ void main() async {
   SmartBandApi.setAppVersion(appVersion);
   MetaWearApi.sendAppVersion(appVersion);
   SensoriaApi.sendAppVersion(appVersion);
+  ServiceApi.sendAppVersion(appVersion);
 
   //  update each API with the correct language code
   SmartBandApi.setLocale(languageCode);
@@ -91,43 +96,45 @@ class SplashApp extends StatelessWidget {
 }
 
 Future<void> requestPermissions() async {
-  // Check and request storage permission
-  var storageStatus = await Permission.storage.status;
-  if (!storageStatus.isGranted) {
-    await Permission.storage.request();
-  }
+  if (Platform.isAndroid) {
+    // Check and request storage permission
+    var storageStatus = await Permission.storage.status;
+    if (!storageStatus.isGranted) {
+      await Permission.storage.request();
+    }
 
-  // Check and request notification permission/
-  var notificationStatus = await Permission.notification.status;
-  if (!notificationStatus.isGranted) {
-    await Permission.notification.request();
-  }
+    // Check and request notification permission/
+    var notificationStatus = await Permission.notification.status;
+    if (!notificationStatus.isGranted) {
+      await Permission.notification.request();
+    }
 
-  // Check and request location permission
-  var locationStatus = await Permission.location.status;
-  if (!locationStatus.isGranted) {
-    await Permission.location.request();
-  }
+    // Check and request location permission
+    var locationStatus = await Permission.location.status;
+    if (!locationStatus.isGranted) {
+      await Permission.location.request();
+    }
 
-  // Check and request Bluetooth permissions
-  var bluetoothStatus = await Permission.bluetooth.status;
-  if (!bluetoothStatus.isGranted) {
-    await Permission.bluetooth.request();
-  }
+    // Check and request Bluetooth permissions
+    var bluetoothStatus = await Permission.bluetooth.status;
+    if (!bluetoothStatus.isGranted) {
+      await Permission.bluetooth.request();
+    }
 
-  var bluetoothScanStatus = await Permission.bluetoothScan.status;
-  if (!bluetoothScanStatus.isGranted) {
-    await Permission.bluetoothScan.request();
-  }
+    var bluetoothScanStatus = await Permission.bluetoothScan.status;
+    if (!bluetoothScanStatus.isGranted) {
+      await Permission.bluetoothScan.request();
+    }
 
-  var bluetoothConnectStatus = await Permission.bluetoothConnect.status;
-  if (!bluetoothConnectStatus.isGranted) {
-    await Permission.bluetoothConnect.request();
-  }
+    var bluetoothConnectStatus = await Permission.bluetoothConnect.status;
+    if (!bluetoothConnectStatus.isGranted) {
+      await Permission.bluetoothConnect.request();
+    }
 
-  var bluetoothAdvertiseStatus = await Permission.bluetoothAdvertise.status;
-  if (!bluetoothAdvertiseStatus.isGranted) {
-    await Permission.bluetoothAdvertise.request();
+    var bluetoothAdvertiseStatus = await Permission.bluetoothAdvertise.status;
+    if (!bluetoothAdvertiseStatus.isGranted) {
+      await Permission.bluetoothAdvertise.request();
+    }
   }
 }
 
@@ -339,9 +346,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print("Locale in build: $_locale");
     var localization = AppLocalizations.of(context);
-    print("Localization: $localization");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       locale: _locale,
@@ -354,10 +359,13 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         appBar: AppBar(
-          title: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            height: 45,
-            child: Image.asset('assets/images/SaludMadrid_logo.png', fit: BoxFit.scaleDown),
+          title: Align(
+            alignment: Alignment.centerLeft, // Aligns the container to the left
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              height: 45,
+              child: Image.asset('assets/images/SaludMadrid_logo.png', fit: BoxFit.scaleDown),
+            ),
           ),
           backgroundColor: Colors.white,
           actions: [
@@ -788,9 +796,13 @@ class _MyAppState extends State<MyApp> {
           break;
         case 'RH':
           await MetaWearApi.connectDevice(1);
+          // await MetaWearApi.startScan();
+
           break;
         case 'LH':
           await MetaWearApi.connectDevice(2);
+          // await MetaWearApi.startScan();
+
           break;
         case 'RF':
           await SensoriaApi.scanAndConnectWithCore(1);
@@ -863,9 +875,12 @@ class _MyAppState extends State<MyApp> {
     });
 
     if (idNumber.isNotEmpty && idNumberChecksum.isNotEmpty) {
+      ServiceApi.sendIdNumber(combinedIDChecksum);
       SmartBandApi.setIdNumber(combinedIDChecksum);
       SensoriaApi.sendIdNumber(combinedIDChecksum);
       MetaWearApi.sendIdNumber(combinedIDChecksum);
+
+      print("the id number sent from the main with the id $combinedIDChecksum");
     }
   }
 

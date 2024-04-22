@@ -235,9 +235,6 @@ public class MainActivity extends FlutterActivity {
                             break;
                         }
 
-
-
-
                         case "sendAppVersion": {
                             String appVersion = call.argument("appVersion");
                             MetaWearHandler.setAppVersion(appVersion);
