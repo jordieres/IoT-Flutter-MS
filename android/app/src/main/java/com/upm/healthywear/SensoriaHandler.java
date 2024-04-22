@@ -243,7 +243,6 @@ public class SensoriaHandler implements SADeviceInterface,SAServiceStreamingServ
 
     @Override
     public void didInitialized(SACore saCore) {
-        android.util.Log.d(TAG, "the core is initializedddddddddddddddddddddd");
     }
 
     class ScanConnectRequest {
@@ -281,11 +280,9 @@ public class SensoriaHandler implements SADeviceInterface,SAServiceStreamingServ
 
     // start scanning with the specified core.
     public void scanAndConnectWithCores(int coreIndex) {
-        android.util.Log.d(TAG, "request for the connectin is receiveddddddddd+++++++++++++ for the core "+coreIndex);
         activeCore = (coreIndex == 1) ? sacore1 : sacore2;
         if (!activeCore.isConnected()){
             if (activeCore != null) {
-            Log.d(TAG, "Starting scan with SACore --------------------------" + coreIndex);
             activeCore.startScan(3000); // 5 seconds scan can be changed
              }else{
                 android.util.Log.d(TAG, "active core is null: ");
@@ -529,7 +526,6 @@ public class SensoriaHandler implements SADeviceInterface,SAServiceStreamingServ
     public void didUninitialized(SACore saCore) {}
     @Override
     public void didDeviceScanning(SACore saCore) {
-        android.util.Log.d(TAG, "didDeviceScanning is starting-----------------------------");
     }
 
     @Override

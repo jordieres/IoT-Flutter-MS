@@ -133,11 +133,8 @@ public class MetaWearHandler {
     private Set<BluetoothDevice> scannedDevices = new HashSet<>();
 
     private boolean isScanning = false;
-
-
-    private Queue<Integer> connectionQueue = new LinkedList<>();
     private boolean isConnecting = false;
-
+    private Queue<Integer> connectionQueue = new LinkedList<>();
     private Set<String> connectedDevices = new HashSet<>();
 
 
@@ -162,16 +159,16 @@ public class MetaWearHandler {
     private String leftHandDeviceName = null;
     private String rightHandDeviceName = null;
 
-/////////////////SET language/////////////////
+    /////////////////SET language/////////////////
 // Method to change the locale
-public void setLocale(String languageCode) {
-    Locale locale = new Locale(languageCode);
-    Locale.setDefault(locale);
-    Configuration config = new Configuration(context.getResources().getConfiguration());
-    config.setLocale(locale);
-    context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+    public void setLocale(String languageCode) {
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration(context.getResources().getConfiguration());
+        config.setLocale(locale);
+        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
 
-}
+    }
 //---------------------------
 
     ///StatusCheker/////////
@@ -201,7 +198,7 @@ public void setLocale(String languageCode) {
 
 
 
-//    private List<String> dataBuffer = new ArrayList<>();
+    //    private List<String> dataBuffer = new ArrayList<>();
     private List<String> dataBuffer = new CopyOnWriteArrayList<>();
 
 
@@ -381,22 +378,22 @@ public void setLocale(String languageCode) {
 
 
 
-                if (scannedDevices.isEmpty()) {
+            if (scannedDevices.isEmpty()) {
 
-                    Handler mainHandler = new Handler(Looper.getMainLooper());
-                    String handName = (deviceIndex == 1) ? context.getString(R.string.right) : context.getString(R.string.left); // Using resource strings for "Right" and "Left"
-                    String toastMessage = String.format(context.getString(R.string.no_metawear_device_found), handName);
-                    mainHandler.post(() -> Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show());
-
-
-                    //change status of the device in the queue
-                    while (!connectionQueue.isEmpty()) {
-                        Integer queuedDeviceIndex = connectionQueue.poll(); // Retrieve and remove the head of the queue
-                        updateConnectionStatus(queuedDeviceIndex, "disconnected");
-                    }
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                String handName = (deviceIndex == 1) ? context.getString(R.string.right) : context.getString(R.string.left); // Using resource strings for "Right" and "Left"
+                String toastMessage = String.format(context.getString(R.string.no_metawear_device_found), handName);
+                mainHandler.post(() -> Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show());
 
 
-                }else{processNextConnection();}
+                //change status of the device in the queue
+                while (!connectionQueue.isEmpty()) {
+                    Integer queuedDeviceIndex = connectionQueue.poll(); // Retrieve and remove the head of the queue
+                    updateConnectionStatus(queuedDeviceIndex, "disconnected");
+                }
+
+
+            }else{processNextConnection();}
 
 
 
@@ -452,6 +449,7 @@ public void setLocale(String languageCode) {
         int maxRssi = Integer.MIN_VALUE;
 
         for (Map.Entry<BluetoothDevice, Integer> entry : deviceRssiMap.entrySet()) {
+
             BluetoothDevice device = entry.getKey();
             int rssi = entry.getValue();
 
@@ -485,7 +483,6 @@ public void setLocale(String languageCode) {
 //                    startStatusCheckerForBoard2();
 
 
-
                 }
 
                 if(isConnected) {
@@ -493,8 +490,6 @@ public void setLocale(String languageCode) {
                 } else {
                     updateConnectionStatus(deviceIndex, "disconnected");
                 }
-
-
 
 
 
@@ -538,8 +533,14 @@ public void setLocale(String languageCode) {
             });
         } else {
             Log.d(TAG, "No available device found with higher RSSI to connect.");
+
+
             isConnecting = false;
+
+
             updateConnectionStatus(deviceIndex, "disconnected");
+
+
             Handler mainHandler = new Handler(Looper.getMainLooper());
             String handName = (deviceIndex == 1) ? "Right" : "Left";
             mainHandler.post(() -> Toast.makeText(context, "No MetaWear device found for " + handName + " hand.", Toast.LENGTH_SHORT).show());
@@ -560,39 +561,55 @@ public void setLocale(String languageCode) {
         connectionQueue.clear();
         lastScanTimestamp = 0;
 
+        MetaWearBoard boardToDisconnect = (deviceIndex == 1) ? board1 : board2;
 
-
-
-        MetaWearBoard boardToDisconnect = null;
-
-        if (deviceIndex == 1) {
-            boardToDisconnect = board1;
-        } else if (deviceIndex == 2) {
-            boardToDisconnect = board2;
+        if (boardToDisconnect == null) {
+            Log.d(TAG, "No board found to disconnect for device index: " + deviceIndex);
+            return;
         }
 
-        if (boardToDisconnect != null) {
-            final String macAddress = boardToDisconnect.getMacAddress();
 
-            boardToDisconnect.disconnectAsync().continueWith(task -> {
-                if (!task.isFaulted()) {
-                    Log.i("MetaWearHandler", "Successfully disconnected from device index: " + deviceIndex);
-                    connectedDevices.remove(macAddress);
+        // Stop all sensors and unsubscribe
+        stopAllSensors(boardToDisconnect);
 
-                    if (deviceIndex == 1) {
-                        board1 = null;
-                    } else if (deviceIndex == 2) {
-                        board2 = null;
-                    }
-                } else {
-                    Log.e("MetaWearHandler", "Failed to disconnect from device index: " + deviceIndex);
+
+
+        // Disconnect the device asynchronously
+        boardToDisconnect.disconnectAsync().continueWith(task -> {
+            if (!task.isFaulted()) {
+                Log.i(TAG, "Successfully disconnected from device index: " + deviceIndex);
+                connectedDevices.remove(boardToDisconnect.getMacAddress());
+                if (deviceIndex == 1) {
+                    board1 = null;
+                } else if (deviceIndex == 2) {
+                    board2 = null;
                 }
-                return null;
-            });
-        } else {
-            Log.d("MetaWearHandler", "No board found to disconnect for device index: " + deviceIndex);
-        }
+            } else {
+                Log.e(TAG, "Failed to disconnect from device index: " + deviceIndex);
+            }
+            return null;
+        });
     }
+
+    private void stopAllSensors(MetaWearBoard board) {
+
+        Led led = board.getModule(Led.class);
+        if (led != null) {
+            led.stop(true);
+        }
+
+        SensorFusionBosch sensorFusion = board.getModule(SensorFusionBosch.class);
+        if (sensorFusion != null) {
+            sensorFusion.stop();
+        }
+
+
+
+    }
+
+
+
+
 
 
     private void setupUnexpectedDisconnectHandler(MetaWearBoard board, int deviceIndex) {
@@ -935,12 +952,12 @@ public void setLocale(String languageCode) {
                 String lightDataString = String.format(Locale.US, "%.2f,%d,%s", Light, timestamp, hand);
 
 
-                    // Update last data timestamp
-                    if ("Right".equals(hand)) {
-                        lastDataTimestampAmbientLightBoard1 = System.currentTimeMillis();
-                    } else if ("Left".equals(hand)) {
-                        lastDataTimestampAmbientLightBoard2 = System.currentTimeMillis();
-                    }
+                // Update last data timestamp
+                if ("Right".equals(hand)) {
+                    lastDataTimestampAmbientLightBoard1 = System.currentTimeMillis();
+                } else if ("Left".equals(hand)) {
+                    lastDataTimestampAmbientLightBoard2 = System.currentTimeMillis();
+                }
 
 
 
@@ -984,107 +1001,107 @@ public void setLocale(String languageCode) {
 
 //--------------Setup Temperature--------------------
 
-private void setupTemperatureSensors(MetaWearBoard board,  String hand) {
-    Temperature temperatureModule = board.getModule(Temperature.class);
+    private void setupTemperatureSensors(MetaWearBoard board,  String hand) {
+        Temperature temperatureModule = board.getModule(Temperature.class);
 
-    if (temperatureModule == null) {
-        Log.e(TAG, "This device does not support the Temperature module.");
-        return;
+        if (temperatureModule == null) {
+            Log.e(TAG, "This device does not support the Temperature module.");
+            return;
+        }
+
+        // assume here there is at least one sensor available
+        if (temperatureModule.sensors().length > 0) {
+            Temperature.Sensor sensor = temperatureModule.sensors()[0];
+
+            // To stream data
+            sensor.addRouteAsync(source -> source.stream((data, env) -> {
+                float temperature = data.value(Float.class);
+                long timestamp = System.currentTimeMillis();
+                String temperatureDataString = String.format(Locale.US, "%.2f,%d,%s", temperature, timestamp, hand);
+
+                if (temperature !=0){
+                    if ("Right".equals(hand)) {
+                        lastDataTimestampTemperatureBoard1 = System.currentTimeMillis();
+                    } else if ("Left".equals(hand)) {
+                        lastDataTimestampTemperatureBoard2 = System.currentTimeMillis();
+                    }
+                }
+
+                synchronized (temperatureBuffer) {
+                    temperatureBuffer.add(temperatureDataString);
+
+
+
+                    if (temperatureBuffer.size() ==10) {
+                        fetchLocationAndSaveData("MT", new ArrayList<>(temperatureBuffer));
+                        temperatureBuffer.clear();
+
+                    }
+                }
+
+
+
+            })).continueWith(task -> {
+                if (task.isFaulted()) {
+                    Log.e("MetaWear", "Failed to configure temperature data route.", task.getError());
+                } else {
+                    Log.d("MetaWear", "Successfully subscribed to temperature data.");
+                }
+                return null;
+            });
+
+            final Handler handler = new Handler(Looper.getMainLooper());
+            final Runnable readTemperatureTask = new Runnable() {
+                @Override
+                public void run() {
+                    sensor.read();
+
+                    handler.postDelayed(this, 600000);
+
+                }
+            };
+
+            handler.post(readTemperatureTask);
+        }
     }
 
-    // assume here there is at least one sensor available
-    if (temperatureModule.sensors().length > 0) {
-        Temperature.Sensor sensor = temperatureModule.sensors()[0];
 
-        // To stream data
-        sensor.addRouteAsync(source -> source.stream((data, env) -> {
-            float temperature = data.value(Float.class);
-            long timestamp = System.currentTimeMillis();
-            String temperatureDataString = String.format(Locale.US, "%.2f,%d,%s", temperature, timestamp, hand);
+    //------------Write to File-------------------------------
+    private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "Location permission not granted");
+            return;
+        }
 
-            if (temperature !=0){
-                if ("Right".equals(hand)) {
-                    lastDataTimestampTemperatureBoard1 = System.currentTimeMillis();
-                } else if ("Left".equals(hand)) {
-                    lastDataTimestampTemperatureBoard2 = System.currentTimeMillis();
-                }
-            }
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setNumUpdates(1);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-            synchronized (temperatureBuffer) {
-                temperatureBuffer.add(temperatureDataString);
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-
-
-                if (temperatureBuffer.size() ==10) {
-                    fetchLocationAndSaveData("MT", new ArrayList<>(temperatureBuffer));
-                    temperatureBuffer.clear();
-
-                }
-            }
-
-
-
-        })).continueWith(task -> {
-            if (task.isFaulted()) {
-                Log.e("MetaWear", "Failed to configure temperature data route.", task.getError());
-            } else {
-                Log.d("MetaWear", "Successfully subscribed to temperature data.");
-            }
-            return null;
-        });
-
-        final Handler handler = new Handler(Looper.getMainLooper());
-        final Runnable readTemperatureTask = new Runnable() {
+        LocationCallback locationCallback = new LocationCallback() {
             @Override
-            public void run() {
-                sensor.read();
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    Log.e(TAG, "Location result is null");
+                    return;
+                }
+                Location location = locationResult.getLocations().get(0);
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
 
-                handler.postDelayed(this, 600000);
+                if (dataType != null && !dataType.isEmpty() && dataBuffer != null && !dataBuffer.isEmpty()) {
 
+                    saveDataToFile(dataType, dataBuffer, latitude, longitude);
+                }
+                fusedLocationClient.removeLocationUpdates(this);
             }
         };
 
-        handler.post(readTemperatureTask);
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
-}
-
-
-//------------Write to File-------------------------------
-private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) {
-    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        Log.e(TAG, "Location permission not granted");
-        return;
-    }
-
-    LocationRequest locationRequest = LocationRequest.create();
-    locationRequest.setNumUpdates(1);
-    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-    locationRequest.setInterval(10000);
-    locationRequest.setFastestInterval(5000);
-    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-    LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            if (locationResult == null) {
-                Log.e(TAG, "Location result is null");
-                return;
-            }
-            Location location = locationResult.getLocations().get(0);
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-
-            if (dataType != null && !dataType.isEmpty() && dataBuffer != null && !dataBuffer.isEmpty()) {
-
-                saveDataToFile(dataType, dataBuffer, latitude, longitude);
-            }
-            fusedLocationClient.removeLocationUpdates(this);
-        }
-    };
-
-    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-}
 
 
     public void saveDataToFile(String dataType, List<String> dataBuffer,double latitude, double longitude) {
@@ -1250,7 +1267,7 @@ private void fetchLocationAndSaveData(String dataType, List<String> dataBuffer) 
             statusMap.put("lastDataWriteToTimestamp", "N/A");
             statusMap.put("isConnected", false);
         }
-String test=gson.toJson(statusMap);//todo must be deleted
+        String test=gson.toJson(statusMap);//todo must be deleted
 
         return gson.toJson(statusMap);
     }
@@ -1264,7 +1281,5 @@ String test=gson.toJson(statusMap);//todo must be deleted
 //////////-------END---------------------
 
 }
-
-
 
 
