@@ -179,6 +179,10 @@ Ensure you have a macOS computer to run Xcode and install all necessary software
 - Metawear disconnection improvement(Android)
 - iOS first release
 
+### version 1.0.7
+- UI improvement
+- Minor bugs fixed
+
 
 
 
