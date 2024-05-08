@@ -526,8 +526,29 @@ class _MyAppState extends State<MyApp> {
                                     ? Icon(
                                         Icons.check,
                                         color: Colors.white,
+                                        size: 30, // Set the size to a larger value
+                                        shadows: [
+                                          // Adding a shadow to make it appear "bolder"
+                                          Shadow(
+                                            blurRadius: 3.0,
+                                            color: Colors.black,
+                                            offset: Offset(0, 1),
+                                          ),
+                                        ],
                                       )
-                                    : Icon(Icons.edit, color: Colors.grey.shade300),
+                                    : Icon(
+                                        Icons.edit,
+                                        color: Colors.grey.shade300,
+                                        size: 30, // Set the size to a larger value
+                                        shadows: [
+                                          // Adding a shadow to make it appear "bolder"
+                                          Shadow(
+                                            blurRadius: 3.0,
+                                            color: Colors.black,
+                                            offset: Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
                                 onPressed: _handleCheckOrEdit,
                               ),
                             ],
