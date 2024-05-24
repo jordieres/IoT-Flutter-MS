@@ -19,6 +19,9 @@ migrate_working_dir/
 # Ignore real config file
 /assets/config.txt
 
+# Keystore file
+healthywear_keystore.jks
+
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
