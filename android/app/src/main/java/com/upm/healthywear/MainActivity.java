@@ -71,6 +71,9 @@ public class MainActivity extends FlutterActivity {
     private String idNumber; //field to store the Id number
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    private static boolean isSensoriaInitialized = false;
+
+
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -105,7 +108,15 @@ public class MainActivity extends FlutterActivity {
         Intent bindIntent = new Intent(this, BtleService.class);
         bindService(bindIntent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-        SensoriaSdk.initialize(false,true,VERBOSE,true);
+        Log.d(TAG, "Initializing SensoriaSdk");
+        if (!isSensoriaInitialized) {
+            SensoriaSdk.initialize(false, true, VERBOSE, true);
+            isSensoriaInitialized = true;
+            Log.d(TAG, "SensoriaSdk initialized successfully");
+        } else {
+            Log.d(TAG, "SensoriaSdk already initialized, skipping...");
+        }
+
         sensoriaHandler = new SensoriaHandler(this);
 
     }
