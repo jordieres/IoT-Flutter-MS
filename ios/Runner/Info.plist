@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>task-identifier</string>
+		<string>com.upm.healthywear.checkUploadStatus</string>
+		<string>com.upm.healthywear.uploadFiles</string>
+		<string>be.tramckrijte.workmanagerExample.iOSBackgroundAppRefresh</string>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -54,15 +61,6 @@
 		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-    <array>
-    	<string>task-identifier</string>
-    	<string>com.upm.healthywear.checkUploadStatus</string>
-            <string>com.upm.healthywear.uploadFiles</string>
-
-    	<!-- Register a periodic task in iOS 13+ -->
-    	<string>be.tramckrijte.workmanagerExample.iOSBackgroundAppRefresh</string>
-    </array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
