@@ -187,7 +187,6 @@ class SensoriaApi {
         });
         _alreadyListening = true;
       }
-//todo:must be uncommented
       if (coreIndex == 1) {
         updateRightFootConnectionStatus(DeviceConnectionStatus.connecting);
       } else {
