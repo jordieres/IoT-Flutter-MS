@@ -47,15 +47,29 @@ class DeviceStatus {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await requestPermissions();
+  // runApp(SplashApp());
 
-  initializeBackgroundTask(); //Backgroundhandling processes
+  // await requestPermissions(context);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String languageCode = prefs.getString('languageCode') ?? 'es';
 
   Locale initialLocale = Locale(languageCode);
+
+  runApp(SplashApp(initialLocale: initialLocale));
+
+  //splash screen//////////
+  // Future.delayed(Duration(seconds: 2), () {
+  //   runApp(MyApp(initialLocale: initialLocale));
+  // });
+
+  // Ensure permissions are requested after the app initializes
+  // WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //   await requestPermissions(navigatorKey.currentState!.context);
+  // });
+
+  initializeBackgroundTask(); //Backgroundhandling processes
 
   //to send the app version for the metadata
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -77,26 +91,45 @@ void main() async {
   SensoriaApi.setConnectionStatusListener(statusChecker.onConnectionStatusUpdate);
   /////////////
 
-  runApp(SplashApp());
-//splash screen//////////
-  Future.delayed(Duration(seconds: 2), () {
-    runApp(MyApp(initialLocale: initialLocale));
-  });
   Uploader.startMonitoringAndUploading();
 }
 
 class SplashApp extends StatelessWidget {
+  final Locale initialLocale;
+
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  SplashApp({required this.initialLocale});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: Builder(builder: (context) {
+        // Using a Builder to get the correct context
+        Future.delayed(Duration(seconds: 2), () {
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop(); // Pop current page if possible
+          }
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => MyApp(initialLocale: initialLocale)));
+        });
+        return SplashScreen();
+      }),
     );
   }
 }
 
-Future<void> requestPermissions() async {
+Future<void> requestPermissions(BuildContext context) async {
   if (Platform.isAndroid) {
+    // Check and request location permission
+    var locationStatus = await Permission.location.status;
+    if (!locationStatus.isGranted) {
+      // await Permission.location.request();
+      await showLocationPermissionDisclosure(context);
+    }
+
     // Check and request storage permission
     var storageStatus = await Permission.storage.status;
     if (!storageStatus.isGranted) {
@@ -107,12 +140,6 @@ Future<void> requestPermissions() async {
     var notificationStatus = await Permission.notification.status;
     if (!notificationStatus.isGranted) {
       await Permission.notification.request();
-    }
-
-    // Check and request location permission
-    var locationStatus = await Permission.location.status;
-    if (!locationStatus.isGranted) {
-      await Permission.location.request();
     }
 
     // Check and request Bluetooth permissions
@@ -135,6 +162,83 @@ Future<void> requestPermissions() async {
     if (!bluetoothAdvertiseStatus.isGranted) {
       await Permission.bluetoothAdvertise.request();
     }
+  }
+}
+
+// Future<void> showLocationPermissionDisclosure(BuildContext context) async {
+//   // Showing the disclosure dialog
+//   showDialog<void>(
+//     context: context,
+//     barrierDismissible: false,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: Text('Location Permission Needed'),
+//         content: Text('We need location access to enhance your experience. Do you agree to this?'),
+//         actions: <Widget>[
+//           TextButton(
+//             child: Text('Cancel'),
+//             onPressed: () => Navigator.of(context).pop(),
+//           ),
+//           TextButton(
+//             child: Text('OK'),
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//               requestLocationPermission(context);
+//             },
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
+
+Future<void> showLocationPermissionDisclosure(BuildContext context) async {
+  Completer<void> completer = Completer<void>();
+
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false, // User must tap a button to dismiss the dialog
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Se necesitan permisos'),
+        content: Text(
+            'Esta aplicación necesita acceder a su ubicación para mejorar la precisión de los datos de salud recopilados por los dispositivos portátiles. ¿Está de acuerdo con esto??'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              completer.complete(); // Complete the completer when user cancels
+            },
+          ),
+          TextButton(
+            child: Text('OK'),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              var status = await Permission.location.request();
+              if (status.isGranted) {
+                // Handle the granted scenario
+              } else {
+                // Handle the denied scenario
+              }
+              completer
+                  .complete(); // Complete the completer when user confirms and permission is processed
+            },
+          ),
+        ],
+      );
+    },
+  );
+
+  return completer.future; // This will make sure the code waits until the completer is completed
+}
+
+Future<void> requestLocationPermission(BuildContext context) async {
+  var status = await Permission.location.request();
+  if (status.isGranted) {
+    // Proceed with location-based functionality
+  } else {
+    // Handle permission denial
   }
 }
 
@@ -192,6 +296,10 @@ class _MyAppState extends State<MyApp> {
     _locale = widget.initialLocale;
 
     Uploader.loadConfig(); //load config file which include the url
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      requestPermissions(context);
+    });
 
 /////loader of IdNumber/////todo:if we want to activitate the mechanism to save the idnumber
     // _loadIdNumber().then((_) {
@@ -346,6 +454,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    print("MyApp is being builtttttttttttttttt");
+
     var localization = AppLocalizations.of(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
