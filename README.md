@@ -183,6 +183,10 @@ Ensure you have a macOS computer to run Xcode and install all necessary software
 - UI improvement
 - Minor bugs fixed
 
+### version 1.0.8
+- Location Disclosure added (Android only)
+
+
 
 
 

@@ -47,10 +47,6 @@ class DeviceStatus {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // runApp(SplashApp());
-
-  // await requestPermissions(context);
-
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String languageCode = prefs.getString('languageCode') ?? 'es';
@@ -58,16 +54,6 @@ void main() async {
   Locale initialLocale = Locale(languageCode);
 
   runApp(SplashApp(initialLocale: initialLocale));
-
-  //splash screen//////////
-  // Future.delayed(Duration(seconds: 2), () {
-  //   runApp(MyApp(initialLocale: initialLocale));
-  // });
-
-  // Ensure permissions are requested after the app initializes
-  // WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //   await requestPermissions(navigatorKey.currentState!.context);
-  // });
 
   initializeBackgroundTask(); //Backgroundhandling processes
 
@@ -126,7 +112,6 @@ Future<void> requestPermissions(BuildContext context) async {
     // Check and request location permission
     var locationStatus = await Permission.location.status;
     if (!locationStatus.isGranted) {
-      // await Permission.location.request();
       await showLocationPermissionDisclosure(context);
     }
 
@@ -165,33 +150,6 @@ Future<void> requestPermissions(BuildContext context) async {
   }
 }
 
-// Future<void> showLocationPermissionDisclosure(BuildContext context) async {
-//   // Showing the disclosure dialog
-//   showDialog<void>(
-//     context: context,
-//     barrierDismissible: false,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: Text('Location Permission Needed'),
-//         content: Text('We need location access to enhance your experience. Do you agree to this?'),
-//         actions: <Widget>[
-//           TextButton(
-//             child: Text('Cancel'),
-//             onPressed: () => Navigator.of(context).pop(),
-//           ),
-//           TextButton(
-//             child: Text('OK'),
-//             onPressed: () {
-//               Navigator.of(context).pop();
-//               requestLocationPermission(context);
-//             },
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }
-
 Future<void> showLocationPermissionDisclosure(BuildContext context) async {
   Completer<void> completer = Completer<void>();
 
@@ -205,14 +163,14 @@ Future<void> showLocationPermissionDisclosure(BuildContext context) async {
             'Esta aplicación necesita acceder a su ubicación para mejorar la precisión de los datos de salud recopilados por los dispositivos portátiles. ¿Está de acuerdo con esto??'),
         actions: <Widget>[
           TextButton(
-            child: Text('Cancel'),
+            child: Text('No'),
             onPressed: () {
               Navigator.of(context).pop();
               completer.complete(); // Complete the completer when user cancels
             },
           ),
           TextButton(
-            child: Text('OK'),
+            child: Text('Sí'),
             onPressed: () async {
               Navigator.of(context).pop();
               var status = await Permission.location.request();
@@ -454,8 +412,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print("MyApp is being builtttttttttttttttt");
-
     var localization = AppLocalizations.of(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
