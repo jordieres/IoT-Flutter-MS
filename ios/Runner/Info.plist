@@ -42,8 +42,6 @@
 	<string>Our application uses Bluetooth to connect to devices.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Our application uses Bluetooth to connect to devices.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Our application needs access to location services all the time.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Our application needs to access your location in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -54,7 +52,6 @@
 	<array>
 		<string>bluetooth-central</string>
 		<string>bluetooth-peripheral</string>
-		<string>external-accessory</string>
 		<string>fetch</string>
 		<string>location</string>
 		<string>nearby-interaction</string>
