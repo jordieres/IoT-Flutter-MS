@@ -39,15 +39,15 @@
 		<true/>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Our application uses Bluetooth to connect to devices.</string>
+	<string>Our application uses Bluetooth to connect to wearable devices to collect movement data for activity tracking and wellness monitoring.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Our application uses Bluetooth to connect to devices.</string>
+	<string>Our application uses Bluetooth to connect to wearable devices to collect movement data for activity tracking and wellness monitoring.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app requires continuous access to your location to deliver real-time, uninterrupted health tracking and insights, adapting to your environmental conditions. This ensures comprehensive health metrics and personalized advice are accurate, whether the app is active or running in the background.</string>
+	<string>This app requires continuous access to your location to support real-time, uninterrupted activity tracking and wellness insights, adapting to your environmental conditions. This helps maintain comprehensive activity metrics and supports healthy lifestyle choices, whether the app is active or running in the background.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app continuously uses your location to improve health monitoring and personalization by adapting services to your environmental conditions. This ensures precise, tailored health insights and data accuracy, even when the app is in the background.</string>
+	<string>This app continuously uses your location to enhance activity tracking and lifestyle personalization by adapting to your environmental conditions. This ensures precise, tailored insights for maintaining a healthy lifestyle, even when the app is in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app uses your location to enhance and personalize health insights while you use it, adjusting health data and suggestions based on your current environment for accuracy and relevance.</string>
+	<string>This app uses your location to improve activity tracking and personalize wellness insights while you use it, adjusting data based on your current environment to promote healthy lifestyle habits.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
