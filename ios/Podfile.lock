@@ -125,7 +125,7 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
-  fluttertoast: 9f2f8e81bb5ce18facb9748d7855bf5a756fe3db
+  fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
   FMDB: eae540775bf7d0c87a5af926ae37af69effe5a19
   geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
   iOSDFULibrary: ef7e1fbb3fc7a5fabd106297a9cd0e775bcfcec6
