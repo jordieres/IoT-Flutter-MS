@@ -83,7 +83,9 @@ class Uploader {
       if (streamedResponse.statusCode == 200) {
         final response = await streamedResponse.stream.bytesToString();
         if (response.contains('OK')) {
+          print("the SERVER response is OKKKKK");
           await file.delete();
+          print('the file is deletedddd');
           lastUploadTimestamp = DateTime.now();
 
           final prefs = await SharedPreferences.getInstance();
