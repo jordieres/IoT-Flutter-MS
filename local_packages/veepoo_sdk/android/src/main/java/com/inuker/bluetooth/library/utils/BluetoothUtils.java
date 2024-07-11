@@ -17,15 +17,29 @@ import com.inuker.bluetooth.library.BluetoothContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import android.util.Log;
 
 public class BluetoothUtils {
    private static BluetoothManager mBluetoothManager;
    private static BluetoothAdapter mBluetoothAdapter;
    private static Handler mHandler;
 
+//   public static Context getContext() {
+//      return BluetoothContext.get();
+//   }
+
+
    public static Context getContext() {
-      return BluetoothContext.get();
+      // Ensuring the use of the application context to prevent leaking.
+      Context context = BluetoothContext.get();
+      if (context == null) {
+         Log.e("BluetoothUtils", "Context is null");
+         return null;
+      }
+      return context.getApplicationContext();
    }
+
+
 
    private static Handler getHandler() {
       if (mHandler == null) {
@@ -44,13 +58,26 @@ public class BluetoothUtils {
    }
 
 
+
+
    private static void registerGlobalReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        getContext().registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED);
-    } else {
-        getContext().registerReceiver(receiver, filter);
-    }
-}
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+         // Explicitly stating that the receiver is not exported.
+         getContext().registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED);
+
+
+      } else {
+         getContext().registerReceiver(receiver, filter);
+
+      }
+   }
+
+
+
+
+//   private static void registerGlobalReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+//      getContext().registerReceiver(receiver, filter);
+//   }
 
    public static void unregisterReceiver(BroadcastReceiver receiver) {
       unregisterGlobalReceiver(receiver);
