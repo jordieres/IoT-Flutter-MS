@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import android.util.Log;
 import java.util.Arrays;
+import android.Manifest;
 
 
 import androidx.annotation.NonNull;
@@ -155,7 +156,8 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
 
         switch (call.method) {
             case "requestPermission":
-                BluetoothUtil.requestPermission(activity);
+                String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+                BluetoothUtil.requestPermission(activity, permissions);
                 result.success(null);
                 break;
 
