@@ -13,6 +13,13 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+
+
+
 
 
 
@@ -21,8 +28,12 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        <service android:name="com.mbientlab.metawear.android.BtleService" />
-        <service android:name=".SensorService" />
+        <service android:name="com.mbientlab.metawear.android.BtleService" android:exported="false" />
+        <service
+            android:name=".SensorService"
+            android:foregroundServiceType="dataSync|connectedDevice|location|specialUse"
+            android:exported="false">
+        </service>
 
         <activity
             android:name=".MainActivity"
