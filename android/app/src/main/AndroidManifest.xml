@@ -31,7 +31,7 @@
         <service android:name="com.mbientlab.metawear.android.BtleService" android:exported="false" />
         <service
             android:name=".SensorService"
-            android:foregroundServiceType="dataSync|specialUse"
+            android:foregroundServiceType="dataSync|location|connectedDevice|specialUse"
             android:exported="false">
         </service>
 

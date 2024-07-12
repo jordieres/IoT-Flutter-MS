@@ -11,6 +11,9 @@
     import java.util.Locale;
     import android.content.SharedPreferences;
     import android.preference.PreferenceManager;
+    import androidx.core.content.ContextCompat;
+    import android.Manifest;
+    import android.content.pm.PackageManager;
 
 
     import android.os.Build;
@@ -31,6 +34,12 @@
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
+
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "Location permission not granted");
+                // Depending on your service's design, consider stopping the service or taking other actions.
+                stopSelf(); // Stop the service if required permissions are not granted
+            }
 
             if (intent != null && intent.hasExtra("LANGUAGE_CODE")) {
                 String languageCode = intent.getStringExtra("LANGUAGE_CODE");
