@@ -92,6 +92,57 @@ public class MainActivity extends FlutterActivity {
         }
     };
 
+    ///////---foreground service permission check
+
+    private final int MAX_RETRIES = 10;
+    private int currentRetry = 0;
+
+    private void permissionCheckAndStartService() {
+        if (checkAllPermissions()) {
+            startSensorService();
+        } else {
+            if (currentRetry < MAX_RETRIES) {
+                currentRetry++; // Increment the retry count
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        permissionCheckAndStartService(); // Recursively check permissions
+                    }
+                }, 20000);
+            } else {
+                Log.d(TAG, "Maximum retries reached. Not starting SensorService.");
+            }
+        }
+    }
+
+
+private boolean checkAllPermissions() {
+    boolean allPermissionsGranted = true;
+
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        Log.d(TAG, "Permission Denied: ACCESS_FINE_LOCATION");
+        allPermissionsGranted = false;
+    } else {
+        Log.d(TAG, "Permission Granted: ACCESS_FINE_LOCATION");
+    }
+
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        Log.d(TAG, "Permission Denied: ACCESS_COARSE_LOCATION");
+        allPermissionsGranted = false;
+    } else {
+        Log.d(TAG, "Permission Granted: ACCESS_COARSE_LOCATION");
+    }
+
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+        Log.d(TAG, "Permission Denied: BLUETOOTH");
+        allPermissionsGranted = false;
+    } else {
+        Log.d(TAG, "Permission Granted: BLUETOOTH");
+    }
+
+    return allPermissionsGranted;
+}
+    ////////////////////
 
 
     @Override
@@ -99,9 +150,26 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
 
         createNotificationChannel();
-        // Start the sensor service
-        startSensorService();
 
+        permissionCheckAndStartService();
+        // Start the sensor service
+//        startSensorService();
+
+//        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION }, LOCATION_PERMISSION_REQUEST_CODE);
+//        } else {
+//            startSensorService();
+//        }
+
+
+        // delayed permission check
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+////                checkAndRequestPermissions();
+//                startSensorService();
+//            }
+//        }, 10000); // Delay of 5000 milliseconds (5 seconds)
 
 
         //MetaWear btle Service binding
