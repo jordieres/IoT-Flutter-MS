@@ -37,7 +37,6 @@
 
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "Location permission not granted");
-                // Depending on your service's design, consider stopping the service or taking other actions.
                 stopSelf(); // Stop the service if required permissions are not granted
             }
 
