@@ -11,7 +11,7 @@ import 'dart:async';
 import 'Service/BackgroundHandling.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'splash_screen.dart';
 
 import 'dart:ui'; //to use ImageFilter.
@@ -711,10 +711,141 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
+        /////////////////////////////////////////////////////////////////////////////////
+        /// ADDED CODE START: Adding Floating Action Buttons for Test and History
+        floatingActionButton: Stack(
+          children: [
+            Positioned(
+              left: 16,
+              bottom: 16,
+              child: FloatingActionButton(
+                heroTag: 'history',
+                backgroundColor: Colors.blueAccent,
+                onPressed: _openTestHistory, // new function defined below
+                child: Icon(Icons.history),
+              ),
+            ),
+            Positioned(
+              right: 16,
+              bottom: 16,
+              child: FloatingActionButton(
+                heroTag: 'test',
+                backgroundColor: _isSensoriaConnected() ? Colors.green : Colors.grey,
+                onPressed: _isSensoriaConnected()
+                    ? _openTestSelectionSheet
+                    : null, // new function defined below
+                child: Icon(Icons.fitness_center),
+              ),
+            ),
+          ],
+        ),
+
+        /// ADDED CODE END
         backgroundColor: Colors.white,
       ),
     );
   }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /// ADDED CODE START: New functions for Test & History functionality
+
+  // Use existing deviceStatuses instead of _sensoriaconnectedDevices.
+  bool _isSensoriaConnected() {
+    return (deviceStatuses['RF'] == DeviceConnectionStatus.connected ||
+        deviceStatuses['LF'] == DeviceConnectionStatus.connected);
+  }
+
+  // Function to open Test History page.
+  void _openTestHistory() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TestHistoryPage(codeID: _idController.text.trim())),
+    );
+  }
+
+  // Function to open bottom sheet for test selection.
+  void _openTestSelectionSheet() async {
+    final selectedTest = await showModalBottomSheet<String>(
+      context: context,
+      builder: (BuildContext ctx) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Select a Test', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ListTile(
+                title: Text('Up & Go Test'),
+                onTap: () => Navigator.pop(ctx, 'Up & Go Test'),
+              ),
+              ListTile(
+                title: Text('Two Minutes Walking'),
+                onTap: () => Navigator.pop(ctx, 'Two Minutes Walking'),
+              ),
+              ListTile(
+                title: Text('T25FW'),
+                onTap: () => Navigator.pop(ctx, 'T25FW'),
+              ),
+              ListTile(
+                title: Text('Six Minute Walking Test'),
+                onTap: () => Navigator.pop(ctx, 'Six Minute Walking Test'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (selectedTest != null) {
+      _startTest(selectedTest);
+    }
+  }
+
+  // Function to start a test by recording start time and opening TestInProgressScreen.
+  void _startTest(String testType) {
+    DateTime startTime = DateTime.now();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TestInProgressScreen(
+          testType: testType,
+          startTime: startTime,
+          onEndTest: (DateTime endTime) {
+            _sendTestInfoToEndpoint(testType, startTime, endTime);
+          },
+        ),
+      ),
+    );
+  }
+
+  // Function to send the test information to the endpoint.
+  Future<void> _sendTestInfoToEndpoint(
+      String testType, DateTime startTime, DateTime endTime) async {
+    final codeID = _idController.text.trim(); // This is your idNumber code
+    final payload = {
+      'codeid': codeID,
+      'test': testType,
+      'datetime_from': startTime.toIso8601String(),
+      'datetime_until': endTime.toIso8601String(),
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://138.100.82.181/AppCognit/eventoHW'),
+        body: payload,
+      );
+      if (response.statusCode == 200) {
+        print('Test info sent successfully. Server says: ${response.body}');
+      } else {
+        print('Failed to send test info. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error sending test info: $e');
+    }
+  }
+
+  /// ADDED CODE END
+  ////////////////////////////////////////////////////////////////////////////////
 
   Widget _buildDeviceBox(String title, String deviceName, Function onTap, int? batteryLevel) {
     DeviceConnectionStatus status =
@@ -1080,3 +1211,160 @@ class _MyAppState extends State<MyApp> {
     return messages[status] ?? "Unknown";
   }
 }
+
+/// ADDED CODE START: New pages for Test History, Test In Progress and Thank You screen
+
+// Test History Page
+class TestHistoryPage extends StatefulWidget {
+  final String codeID;
+  TestHistoryPage({required this.codeID});
+
+  @override
+  _TestHistoryPageState createState() => _TestHistoryPageState();
+}
+
+class _TestHistoryPageState extends State<TestHistoryPage> {
+  List<Map<String, String>> testHistory =
+      []; // Dummy data – replace with actual model/API call later.
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTestHistory();
+  }
+
+  Future<void> _fetchTestHistory() async {
+    setState(() {
+      isLoading = true;
+    });
+    // Simulate an API call; replace with your actual API call.
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      testHistory = [
+        {'test': 'Up & Go Test', 'start': '2025-04-15 10:00 AM', 'duration': '1 min 30 sec'},
+        {'test': 'Two Minutes Walking', 'start': '2025-04-14 09:15 AM', 'duration': '2 min 0 sec'},
+      ];
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Test History'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _fetchTestHistory,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: testHistory.length,
+                itemBuilder: (context, index) {
+                  final record = testHistory[index];
+                  return Card(
+                    margin: EdgeInsets.all(8.0),
+                    child: ListTile(
+                      leading: Icon(Icons.fitness_center),
+                      title: Text(record['test'] ?? ''),
+                      subtitle: Text('Start: ${record['start']}\nDuration: ${record['duration']}'),
+                    ),
+                  );
+                },
+              ),
+      ),
+    );
+  }
+}
+
+// Test In Progress Screen
+class TestInProgressScreen extends StatefulWidget {
+  final String testType;
+  final DateTime startTime;
+  final Function(DateTime endTime) onEndTest;
+
+  TestInProgressScreen({required this.testType, required this.startTime, required this.onEndTest});
+
+  @override
+  _TestInProgressScreenState createState() => _TestInProgressScreenState();
+}
+
+class _TestInProgressScreenState extends State<TestInProgressScreen> {
+  late Timer _timer;
+  Duration _elapsed = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _elapsed = DateTime.now().difference(widget.startTime);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    return "${twoDigits(d.inMinutes.remainder(60))}:${twoDigits(d.inSeconds.remainder(60))}";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.testType),
+        automaticallyImplyLeading: false,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Test in Progress', style: TextStyle(fontSize: 20)),
+            SizedBox(height: 20),
+            Text(
+              _formatDuration(_elapsed),
+              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                DateTime endTime = DateTime.now();
+                widget.onEndTest(endTime);
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (context) => ThankYouScreen()));
+              },
+              child: Text('End Test'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Thank You Screen
+class ThankYouScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(Duration(seconds: 5), () {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    });
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Thank You!',
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+/// ADDED CODE END
