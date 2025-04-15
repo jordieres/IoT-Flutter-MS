@@ -1,0 +1,11 @@
+services:
+  healthywear:
+    build: .
+    container_name: healthywear-dev
+    command: bash
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - ../../healthywear_keystore.jks:/app/android/healthywear_keystore.jks
+    working_dir: /app
