@@ -741,17 +741,21 @@ class _MyAppState extends State<MyApp> {
             ),
 
             // Test FAB: only add it when Sensoria is connected
-            if (_isSensoriaConnected())
-              Positioned(
-                right: 16,
-                bottom: 15,
+            Positioned(
+              right: 16,
+              bottom: 15,
+              child: Opacity(
+                // fade it when disconnected:
+                opacity: _isSensoriaConnected() ? 1.0 : 0.2,
                 child: FloatingActionButton(
                   heroTag: 'test',
-                  backgroundColor: Colors.green,
-                  onPressed: _openTestSelectionSheet,
+                  backgroundColor: Colors.blue,
+                  // disable the tap when disconnected:
+                  onPressed: _isSensoriaConnected() ? _openTestSelectionSheet : null,
                   child: Icon(Icons.fitness_center),
                 ),
               ),
+            ),
           ],
         ),
 
@@ -843,7 +847,7 @@ class _MyAppState extends State<MyApp> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(display, style: TextStyle(fontSize: 18)),
+                    child: Text(display, style: TextStyle(fontSize: 18, color: Colors.white)),
                     onPressed: () => Navigator.pop(context, value),
                   ),
                 );
@@ -1605,49 +1609,50 @@ class TestInstructionScreen extends StatelessWidget {
   static const _instructions = {
     'Timed Up & Go Test': {
       'en':
-          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press End Test.',
+          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press Stop button.',
       'es':
-          'Levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible.',
+          'Presione el botón Inicio, levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible. Al sentarse, presione Detener',
     },
     'Prueba de Timed Up & Go': {
       'en':
-          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press End Test.',
+          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press Stop button.',
       'es':
-          'Levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible.',
+          'Presione el botón Inicio, levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible. Al sentarse, presione Detener',
     },
     'Two Minutes Walking Test': {
       'en':
           'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
       'es':
-          'Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible.',
+          'Presione el botón Inicio, Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible. La prueba finalizará automáticamente tras 2 minutos.',
     },
     'Prueba de Marcha de 2 Minutos': {
       'en':
           'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
       'es':
-          'Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible.',
+          'Presione el botón Inicio, Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible. La prueba finalizará automáticamente tras 2 minutos.',
     },
     'Timed 25-Foot Walk Test': {
       'en':
-          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press End Test.',
-      'es': 'Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible.',
+          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press stop button.',
+      'es':
+          'Presione el botón Inicio, Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible. Al finalizar, presione Detener.',
     },
     'Marcha de 25 Pies Cronometrada': {
       'en':
-          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press End Test.',
+          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press stop button.',
       'es': 'Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible.',
     },
     'Six Minute Walking Test': {
       'en':
           'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
       'es':
-          'Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible.',
+          'Presione el botón Inicio, Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible. La prueba finalizará automáticamente tras 6 minutos.',
     },
     'Prueba de Marcha de 6 Minutos': {
       'en':
           'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
       'es':
-          'Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible.',
+          'Presione el botón Inicio, Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible.La prueba finalizará automáticamente tras 6 minutos',
     },
   };
 
