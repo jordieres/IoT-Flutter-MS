@@ -742,13 +742,14 @@ class _MyAppState extends State<MyApp> {
               right: 16,
               bottom: 15,
               child: FloatingActionButton(
-                heroTag: 'test',
-                backgroundColor: _isSensoriaConnected() ? Colors.green : Colors.grey,
-                onPressed: _isSensoriaConnected()
-                    ? _openTestSelectionSheet
-                    : null, // new function defined below
-                child: Icon(Icons.fitness_center),
-              ),
+                  heroTag: 'test',
+                  backgroundColor:
+                      _isSensoriaConnected() ? Colors.green : Colors.white.withOpacity(0.8),
+                  onPressed: _isSensoriaConnected()
+                      ? _openTestSelectionSheet
+                      : null, // new function defined below
+                  // child: Icon(Icons.fitness_center),
+                  child: Text("Test")),
             ),
           ],
         ),
