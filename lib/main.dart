@@ -717,40 +717,41 @@ class _MyAppState extends State<MyApp> {
         /// ADDED CODE START: Adding Floating Action Buttons for Test and History
         floatingActionButton: Stack(
           children: [
+            // History FAB (unchanged)
             Positioned(
               left: 40,
               bottom: 15,
               child: Opacity(
-                opacity: _devicesEnabled ? 1.0 : 0.5, // same logic as device boxes
+                opacity: _devicesEnabled ? 1.0 : 0.5,
                 child: FloatingActionButton(
                   heroTag: 'history',
                   backgroundColor: _devicesEnabled ? Colors.blueAccent : Colors.grey,
-                  onPressed: _devicesEnabled ? _openTestHistory : null, // disable if not valid
+                  onPressed: _devicesEnabled ? _openTestHistory : null,
                   child: _devicesEnabled
                       ? Icon(Icons.history)
                       : Stack(
                           alignment: Alignment.center,
                           children: [
                             Icon(Icons.history, color: Colors.white54),
-                            Icon(Icons.lock, color: Colors.red, size: 24), // lock overlay
+                            Icon(Icons.lock, color: Colors.red, size: 24),
                           ],
                         ),
                 ),
               ),
             ),
-            Positioned(
-              right: 16,
-              bottom: 15,
-              child: FloatingActionButton(
+
+            // Test FAB: only add it when Sensoria is connected
+            if (_isSensoriaConnected())
+              Positioned(
+                right: 16,
+                bottom: 15,
+                child: FloatingActionButton(
                   heroTag: 'test',
-                  backgroundColor:
-                      _isSensoriaConnected() ? Colors.green : Colors.white.withOpacity(0.8),
-                  onPressed: _isSensoriaConnected()
-                      ? _openTestSelectionSheet
-                      : null, // new function defined below
-                  // child: Icon(Icons.fitness_center),
-                  child: Text("Test")),
-            ),
+                  backgroundColor: Colors.green,
+                  onPressed: _openTestSelectionSheet,
+                  child: Icon(Icons.fitness_center),
+                ),
+              ),
           ],
         ),
 
@@ -837,7 +838,7 @@ class _MyAppState extends State<MyApp> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade600,
-                      padding: EdgeInsets.symmetric(vertical: 14),
+                      minimumSize: Size(double.infinity, 60), // ← full width, 60px tall
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
