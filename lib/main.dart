@@ -780,62 +780,80 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  /////
+  /// Somewhere at the top of your file:
+  final _availableTests = [
+    {
+      'value_en': 'Timed Up & Go Test',
+      'value_es': 'Prueba de Timed Up & Go',
+      'display_en': 'Timed Up & Go',
+      'display_es': 'Timed Up & Go',
+    },
+    {
+      'value_en': 'Two Minutes Walking Test',
+      'value_es': 'Prueba de Marcha de 2 Minutos',
+      'display_en': 'Two Minutes Walking',
+      'display_es': 'Marcha de 2 Minutos',
+    },
+    {
+      'value_en': 'Timed 25-Foot Walk Test',
+      'value_es': 'Marcha de 25 Pies Cronometrada',
+      'display_en': '25‑Foot Walk',
+      'display_es': 'Marcha 25 Pies',
+    },
+    {
+      'value_en': 'Six Minute Walking Test',
+      'value_es': 'Prueba de Marcha de 6 Minutos',
+      'display_en': 'Six Minute Walk',
+      'display_es': 'Marcha 6 Minutos',
+    },
+  ];
   // Function to open bottom sheet for test selection.
   void _openTestSelectionSheet() async {
-    final selectedTest = await showModalBottomSheet<String>(
+    final lang = _locale.languageCode;
+    final selected = await showModalBottomSheet<String>(
       context: context,
-      builder: (BuildContext ctx) {
+      backgroundColor: Colors.transparent,
+      builder: (_) {
         return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
           padding: EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(_locale.languageCode == 'en' ? 'Select a Test' : 'Seleccionar una prueba',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ListTile(
-                title: Text(_locale.languageCode == 'en' ? 'Timed Up & Go' : 'Timed Up & Go'),
-                onTap: () => Navigator.pop(
-                    ctx,
-                    _locale.languageCode == 'en'
-                        ? 'Timed Up & Go Test'
-                        : 'Prueba de Timed Up & Go'),
+              Text(
+                lang == 'en' ? 'Select a Test' : 'Seleccionar Prueba',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              ListTile(
-                title: Text(
-                    _locale.languageCode == 'en' ? 'Two Minutes Walking' : 'Marcha de 2 Minutos'),
-                onTap: () => Navigator.pop(
-                    ctx,
-                    _locale.languageCode == 'en'
-                        ? 'Two Minutes Walking Test'
-                        : 'Prueba de Marcha de 2 Minutos'),
-              ),
-              ListTile(
-                title: Text(_locale.languageCode == 'en'
-                    ? 'Timed 25-Foot Walk'
-                    : 'Marcha de 25 Pies Cronometrada'),
-                onTap: () => Navigator.pop(
-                    ctx,
-                    _locale.languageCode == 'en'
-                        ? 'Timed 25-Foot Walk Test'
-                        : 'Marcha de 25 Pies Cronometrada'),
-              ),
-              ListTile(
-                title: Text(
-                    _locale.languageCode == 'en' ? 'Six Minute Walking ' : 'Marcha de 6 Minutos'),
-                onTap: () => Navigator.pop(
-                    ctx,
-                    _locale.languageCode == 'en'
-                        ? 'Six Minute Walking Test'
-                        : 'Prueba de Marcha de 6 Minutos'),
-              ),
+              SizedBox(height: 12),
+              ..._availableTests.map((t) {
+                final display = lang == 'en' ? t['display_en']! : t['display_es']!;
+                final value = lang == 'en' ? t['value_en']! : t['value_es']!;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade600,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(display, style: TextStyle(fontSize: 18)),
+                    onPressed: () => Navigator.pop(context, value),
+                  ),
+                );
+              }).toList(),
             ],
           ),
         );
       },
     );
-    if (selectedTest != null) {
-      _startTest(selectedTest);
-    }
+
+    if (selected != null) _startTest(selected);
   }
 
   // Function to start a test by recording start time and opening TestInProgressScreen.
@@ -871,11 +889,8 @@ class _MyAppState extends State<MyApp> {
   // Function to send the test information to the endpoint.
   Future<void> _sendTestInfoToEndpoint(
       String testType, DateTime startTime, DateTime endTime) async {
-    // Combine id and checksum as before.
-    final codeID = "${_idController.text.trim()}-${_checksumController.text.trim()}";
-
-    // Define a mapping from full test names to their abbreviations
-    Map<String, String> testNameMap = {
+    // restore your mapping from full name → short code
+    const testNameMap = {
       'Timed Up & Go Test': 'TUG',
       'Prueba de Timed Up & Go': 'TUG',
       'Two Minutes Walking Test': '2MWT',
@@ -883,16 +898,15 @@ class _MyAppState extends State<MyApp> {
       'Timed 25-Foot Walk Test': 'T25FW',
       'Marcha de 25 Pies Cronometrada': 'T25FW',
       'Six Minute Walking Test': '6MWT',
-      'Prueba de Marcha de 6 Minutos': '6MWT'
+      'Prueba de Marcha de 6 Minutos': '6MWT',
     };
 
-    // Get abbreviated test name, or if not found, make sure it is no more than 10 characters.
     final abbreviatedTest =
         testNameMap[testType] ?? (testType.length > 10 ? testType.substring(0, 10) : testType);
 
     final payload = {
-      'codeid': codeID,
-      'test': abbreviatedTest, // Use the abbreviated test value here.
+      'codeid': "${_idController.text.trim()}-${_checksumController.text.trim()}",
+      'test': abbreviatedTest,
       'datetime_from': startTime.toIso8601String(),
       'datetime_until': endTime.toIso8601String(),
     };
@@ -1517,7 +1531,6 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final lang = widget.locale.languageCode;
     final isAuto = _autoDurations.containsKey(widget.testType);
 
     return Scaffold(
@@ -1530,11 +1543,22 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
               _format(_elapsed),
               style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 24),
+            SizedBox(height: 30),
             if (!isAuto)
-              ElevatedButton(
-                onPressed: _finish,
-                child: Text(lang == 'en' ? 'End Test' : 'Finalizar Prueba'),
+              GestureDetector(
+                onTap: _finish,
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
+                  ),
+                  child: Center(
+                    child: Icon(Icons.stop, size: 36, color: Colors.white),
+                  ),
+                ),
               ),
           ],
         ),
@@ -1592,18 +1616,35 @@ class TestInstructionScreen extends StatelessWidget {
     },
     'Two Minutes Walking Test': {
       'en':
-          'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
+          'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
+      'es':
+          'Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible.',
+    },
+    'Prueba de Marcha de 2 Minutos': {
+      'en':
+          'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
       'es':
           'Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible.',
     },
     'Timed 25-Foot Walk Test': {
       'en':
-          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press End Test.',
-      'es': 'Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible.',
+          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press End Test.',
+      'es': 'Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible.',
+    },
+    'Marcha de 25 Pies Cronometrada': {
+      'en':
+          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press End Test.',
+      'es': 'Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible.',
     },
     'Six Minute Walking Test': {
       'en':
-          'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
+          'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
+      'es':
+          'Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible.',
+    },
+    'Prueba de Marcha de 6 Minutos': {
+      'en':
+          'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
       'es':
           'Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible.',
     },
@@ -1616,42 +1657,62 @@ class TestInstructionScreen extends StatelessWidget {
   };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
     final code = testType;
-    final lang = locale.languageCode;
-    final instr = _instructions[code]?[lang] ?? '';
+    final instr = _instructions[testType]?[locale.languageCode] ?? '';
     final hasAuto = _durations.containsKey(code);
 
     return Scaffold(
       appBar: AppBar(title: Text(code)),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              locale.languageCode == 'en' ? 'Instruction:' : 'Instrucciones:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(instr),
-            Spacer(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () => onStart(),
-                child: Text(locale.languageCode == 'en' ? 'Start Test' : 'Iniciar Prueba'),
-              ),
-            ),
-            if (hasAuto)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  locale.languageCode == 'en'
-                      ? 'This test will auto‑finish after ${_durations[code]!.inMinutes} minutes.'
-                      : 'Esta prueba terminará automáticamente después de ${_durations[code]!.inMinutes} minutos.',
-                  textAlign: TextAlign.center,
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Text(
+                    instr,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18, height: 1.4),
+                  ),
                 ),
               ),
+            ),
+
+            // Start button
+            GestureDetector(
+              onTap: () => onStart(),
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8)],
+                ),
+                child: Center(
+                  child: Text(
+                    locale.languageCode == 'en' ? 'START' : 'INICIO',
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+
+            if (hasAuto)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(
+                  locale.languageCode == 'en'
+                      ? 'Auto‑finish after ${_durations[code]!.inMinutes}m'
+                      : 'Se autotermina en ${_durations[code]!.inMinutes} min',
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                ),
+              ),
+
+            SizedBox(height: 24),
           ],
         ),
       ),
