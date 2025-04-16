@@ -773,7 +773,9 @@ class _MyAppState extends State<MyApp> {
     final codeID = "${_idController.text.trim()}-${_checksumController.text.trim()}";
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TestHistoryPage(codeID: codeID)),
+      MaterialPageRoute(
+        builder: (context) => TestHistoryPage(codeID: codeID, locale: _locale),
+      ),
     );
   }
 
@@ -842,6 +844,7 @@ class _MyAppState extends State<MyApp> {
       context,
       MaterialPageRoute(
         builder: (context) => TestInProgressScreen(
+          locale: _locale,
           testType: testType,
           startTime: startTime,
           onEndTest: (DateTime endTime) {
@@ -1270,8 +1273,9 @@ class _MyAppState extends State<MyApp> {
 
 // Test History Page
 class TestHistoryPage extends StatefulWidget {
-  final String codeID; // e.g., "AMIR-48" passed from the parent widget
-  TestHistoryPage({required this.codeID});
+  final String codeID;
+  final Locale locale;
+  TestHistoryPage({required this.codeID, required this.locale});
 
   @override
   _TestHistoryPageState createState() => _TestHistoryPageState();
@@ -1406,9 +1410,11 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Locale currentLocale = widget.locale;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Test History'),
+        title: Text(currentLocale.languageCode == 'en' ? 'Test History' : 'Historial de Pruebas'),
       ),
       body: RefreshIndicator(
         onRefresh: _fetchTestHistory,
@@ -1431,9 +1437,14 @@ class TestInProgressScreen extends StatefulWidget {
   final String testType;
   final DateTime startTime;
   final Function(DateTime endTime) onEndTest;
+  final Locale locale; // add this parameter
 
-  TestInProgressScreen({required this.testType, required this.startTime, required this.onEndTest});
-
+  TestInProgressScreen({
+    required this.testType,
+    required this.startTime,
+    required this.onEndTest,
+    required this.locale,
+  });
   @override
   _TestInProgressScreenState createState() => _TestInProgressScreenState();
 }
@@ -1465,6 +1476,8 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Locale currentLocale = widget.locale;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.testType),
@@ -1474,7 +1487,8 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Test in Progress', style: TextStyle(fontSize: 20)),
+            Text(currentLocale.languageCode == 'en' ? 'Test in Progress' : 'Prueba en Progreso',
+                style: TextStyle(fontSize: 20)),
             SizedBox(height: 20),
             Text(
               _formatDuration(_elapsed),
@@ -1485,10 +1499,10 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
               onPressed: () {
                 DateTime endTime = DateTime.now();
                 widget.onEndTest(endTime);
-                Navigator.of(context)
-                    .pushReplacement(MaterialPageRoute(builder: (context) => ThankYouScreen()));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => ThankYouScreen(locale: widget.locale)));
               },
-              child: Text('End Test'),
+              child: Text(currentLocale.languageCode == 'en' ? 'End Test' : 'Finalizar Prueba'),
             ),
           ],
         ),
@@ -1499,15 +1513,22 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
 
 // Thank You Screen
 class ThankYouScreen extends StatelessWidget {
+  final Locale locale; // your passed‑in locale
+
+  ThankYouScreen({required this.locale});
+
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 5), () {
+    final Locale currentLocale = locale;
+
+    Future.delayed(Duration(seconds: 2), () {
       Navigator.of(context).popUntil((route) => route.isFirst);
     });
+
     return Scaffold(
       body: Center(
         child: Text(
-          'Thank You!',
+          currentLocale.languageCode == 'en' ? 'Thank You!' : '¡Gracias!',
           style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
         ),
       ),
