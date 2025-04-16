@@ -1643,13 +1643,13 @@ class TestInstructionScreen extends StatelessWidget {
       'en':
           'Press START, walk 25 ft (7.62 m) straight as quickly & safely as possible. Then press STOP.',
       'es':
-          'Presione INICIO, camine 25 pies en línea recta lo más rápido y seguro posible. Al finalizar, presione DETENER.',
+          'Presione INICIO, camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible. Al finalizar, presione DETENER.',
     },
     'Marcha de 25 Pies Cronometrada': {
       'en':
           'Press START, walk 25 ft (7.62 m) straight as quickly & safely as possible. Then press STOP.',
       'es':
-          'Presione INICIO, camine 25 pies en línea recta lo más rápido y seguro posible. Al finalizar, presione DETENER.',
+          'Presione INICIO, camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible. Al finalizar, presione DETENER.',
     },
     'Six Minute Walking Test': {
       'en':
@@ -1681,7 +1681,7 @@ class TestInstructionScreen extends StatelessWidget {
     final isAuto = autoDur != null;
 
     return Scaffold(
-      appBar: AppBar(title: Text(testType)),
+      appBar: AppBar(title: Text(testType, style: GoogleFonts.lato(fontSize: 20))),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -1692,7 +1692,7 @@ class TestInstructionScreen extends StatelessWidget {
                 lang == 'en'
                     ? 'Time: ${autoDur!.inMinutes} minutes'
                     : 'Tiempo: ${autoDur!.inMinutes} minutos',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 12),
             ],
@@ -1703,7 +1703,8 @@ class TestInstructionScreen extends StatelessWidget {
                 child: Text(
                   instr,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, height: 1.4),
+                  style:
+                      GoogleFonts.openSans(fontSize: 24, fontWeight: FontWeight.bold, height: 1.4),
                 ),
               ),
             ),
@@ -1722,8 +1723,8 @@ class TestInstructionScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     lang == 'en' ? 'START' : 'INICIO',
-                    style:
-                        TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.lato(
+                        color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
