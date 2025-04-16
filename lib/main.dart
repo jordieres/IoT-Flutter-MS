@@ -14,6 +14,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'splash_screen.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import 'dart:ui'; //to use ImageFilter.
 import 'package:google_fonts/google_fonts.dart';
@@ -1244,8 +1245,7 @@ class _MyAppState extends State<MyApp> {
 
 // Test History Page
 class TestHistoryPage extends StatefulWidget {
-  final String codeID; // e.g. "AMIR-48"
-
+  final String codeID; // e.g., "AMIR-48" passed from the parent widget
   TestHistoryPage({required this.codeID});
 
   @override
@@ -1262,55 +1262,60 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
     _fetchTestHistory();
   }
 
+  /// Formats the raw ISO8601 date string into a user-friendly format.
+  String _formatDate(String rawDate) {
+    try {
+      final dt = DateTime.parse(rawDate);
+      // Format into "yyyy-MM-dd HH:mm"
+      return DateFormat('yyyy-MM-dd HH:mm').format(dt);
+    } catch (e) {
+      return rawDate; // In case of error, return raw string.
+    }
+  }
+
+  /// Fetches test history from the server.
+  /// This function makes a POST request sending the combined codeID.
   Future<void> _fetchTestHistory() async {
     setState(() {
       isLoading = true;
     });
-
     try {
-      // 1. Build the URI to your "listarHWevento" endpoint.
+      // Build the URL to your endpoint that returns history data.
       final url = Uri.parse('http://138.100.82.181/AppCognit/listaHWevento');
 
-      // 2. Perform a POST request with form-encoded body: codeid=AMIR-48
+      // POST the codeID (the combined reference)
       final response = await http.post(
         url,
         body: {
-          'codeid': widget.codeID, // e.g. "AMIR-48"
+          'codeid': widget.codeID, // e.g., "AMIR-48"
         },
       );
 
       if (response.statusCode == 200) {
-        // 3. Decode the JSON response.
-        final responseBody = json.decode(response.body);
+        // Decode the JSON response.
+        final Map<String, dynamic> responseBody = json.decode(response.body);
 
-        // 4. Check status == "ok" or parse accordingly.
+        // Check that the response status is "ok"
         if (responseBody['status'] == 'ok') {
-          // The data is in "message": [...]
           final List<dynamic> data = responseBody['message'];
 
           setState(() {
-            // 5. Convert each item into a map with keys "test" and "start".
-            //    Because the response objects are { "d_from": "...", "t_code": "..." }
+            // Map each JSON object to a local Map with keys 'test' and 'start'
             testHistory = data.map<Map<String, String>>((item) {
               return {
-                // "test" corresponds to the "t_code" field from your JSON
                 'test': item['t_code']?.toString() ?? '',
-                // "start" corresponds to the "d_from" field (date/time)
-                'start': item['d_from']?.toString() ?? '',
+                'start': item['d_from']?.toString() ?? ''
               };
             }).toList();
-
             isLoading = false;
           });
         } else {
-          // If "status" != "ok", handle error or show message
-          print('Fetch failed. Response status was not "ok": ${response.body}');
+          print('Response status not ok: ${responseBody['message']}');
           setState(() {
             isLoading = false;
           });
         }
       } else {
-        // Non-200 HTTP status
         print('Failed to load test history. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
         setState(() {
@@ -1318,7 +1323,6 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
         });
       }
     } catch (e) {
-      // Exception during network / JSON decode
       print('Error fetching test history: $e');
       setState(() {
         isLoading = false;
@@ -1326,7 +1330,55 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
     }
   }
 
-  // The build method can remain the same, just reading from "testHistory".
+  /// Builds a single history item using a glass-style container.
+  Widget _buildHistoryGlassCard(Map<String, String> record) {
+    final formattedDate = _formatDate(record['start'] ?? '');
+    final testName = record['test'] ?? '';
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.blueAccent.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white.withOpacity(0.9)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Test name styled similar to device tiles
+                Text(
+                  testName,
+                  style: GoogleFonts.roboto(
+                      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                SizedBox(height: 4),
+                // Start date/time in a friendly format
+                Text(
+                  'Start: $formattedDate',
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1341,14 +1393,7 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
                 itemCount: testHistory.length,
                 itemBuilder: (context, index) {
                   final record = testHistory[index];
-                  return Card(
-                    margin: EdgeInsets.all(8.0),
-                    child: ListTile(
-                      leading: Icon(Icons.fitness_center),
-                      title: Text(record['test'] ?? ''),
-                      subtitle: Text('Start: ${record['start']}'),
-                    ),
-                  );
+                  return _buildHistoryGlassCard(record);
                 },
               ),
       ),
