@@ -13,6 +13,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'splash_screen.dart';
+import 'dart:convert';
 
 import 'dart:ui'; //to use ImageFilter.
 import 'package:google_fonts/google_fonts.dart';
@@ -479,7 +480,7 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               children: [
                 Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: ClipRRect(
                       borderRadius:
                           BorderRadius.circular(10), // Match your container's border radius
@@ -635,7 +636,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 SizedBox(
-                  height: 50,
+                  height: 20,
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10), // Match your container's border radius
@@ -716,8 +717,8 @@ class _MyAppState extends State<MyApp> {
         floatingActionButton: Stack(
           children: [
             Positioned(
-              left: 16,
-              bottom: 16,
+              left: 40,
+              bottom: 15,
               child: FloatingActionButton(
                 heroTag: 'history',
                 backgroundColor: Colors.blueAccent,
@@ -727,7 +728,7 @@ class _MyAppState extends State<MyApp> {
             ),
             Positioned(
               right: 16,
-              bottom: 16,
+              bottom: 15,
               child: FloatingActionButton(
                 heroTag: 'test',
                 backgroundColor: _isSensoriaConnected() ? Colors.green : Colors.grey,
@@ -757,9 +758,10 @@ class _MyAppState extends State<MyApp> {
 
   // Function to open Test History page.
   void _openTestHistory() {
+    final codeID = "${_idController.text.trim()}-${_checksumController.text.trim()}";
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TestHistoryPage(codeID: _idController.text.trim())),
+      MaterialPageRoute(builder: (context) => TestHistoryPage(codeID: codeID)),
     );
   }
 
@@ -818,12 +820,27 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Function to send the test information to the endpoint.
+  // Function to send the test information to the endpoint.
   Future<void> _sendTestInfoToEndpoint(
       String testType, DateTime startTime, DateTime endTime) async {
-    final codeID = _idController.text.trim(); // This is your idNumber code
+    // Combine id and checksum as before.
+    final codeID = "${_idController.text.trim()}-${_checksumController.text.trim()}";
+
+    // Define a mapping from full test names to their abbreviations
+    Map<String, String> testNameMap = {
+      'Up & Go Test': 'UpGoTest',
+      'Two Minutes Walking': '2MinWalk',
+      'T25FW': 'T25FW',
+      'Six Minute Walking Test': '6MinWalk'
+    };
+
+    // Get abbreviated test name, or if not found, make sure it is no more than 10 characters.
+    final abbreviatedTest =
+        testNameMap[testType] ?? (testType.length > 10 ? testType.substring(0, 10) : testType);
+
     final payload = {
       'codeid': codeID,
-      'test': testType,
+      'test': abbreviatedTest, // Use the abbreviated test value here.
       'datetime_from': startTime.toIso8601String(),
       'datetime_until': endTime.toIso8601String(),
     };
@@ -1216,7 +1233,8 @@ class _MyAppState extends State<MyApp> {
 
 // Test History Page
 class TestHistoryPage extends StatefulWidget {
-  final String codeID;
+  final String codeID; // e.g. "AMIR-48"
+
   TestHistoryPage({required this.codeID});
 
   @override
@@ -1224,8 +1242,7 @@ class TestHistoryPage extends StatefulWidget {
 }
 
 class _TestHistoryPageState extends State<TestHistoryPage> {
-  List<Map<String, String>> testHistory =
-      []; // Dummy data – replace with actual model/API call later.
+  List<Map<String, String>> testHistory = [];
   bool isLoading = true;
 
   @override
@@ -1238,17 +1255,67 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
     setState(() {
       isLoading = true;
     });
-    // Simulate an API call; replace with your actual API call.
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {
-      testHistory = [
-        {'test': 'Up & Go Test', 'start': '2025-04-15 10:00 AM', 'duration': '1 min 30 sec'},
-        {'test': 'Two Minutes Walking', 'start': '2025-04-14 09:15 AM', 'duration': '2 min 0 sec'},
-      ];
-      isLoading = false;
-    });
+
+    try {
+      // 1. Build the URI to your "listarHWevento" endpoint.
+      final url = Uri.parse('http://138.100.82.181/AppCognit/listaHWevento');
+
+      // 2. Perform a POST request with form-encoded body: codeid=AMIR-48
+      final response = await http.post(
+        url,
+        body: {
+          'codeid': widget.codeID, // e.g. "AMIR-48"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // 3. Decode the JSON response.
+        final responseBody = json.decode(response.body);
+
+        // 4. Check status == "ok" or parse accordingly.
+        if (responseBody['status'] == 'ok') {
+          // The data is in "message": [...]
+          final List<dynamic> data = responseBody['message'];
+
+          setState(() {
+            // 5. Convert each item into a map with keys "test" and "start".
+            //    Because the response objects are { "d_from": "...", "t_code": "..." }
+            testHistory = data.map<Map<String, String>>((item) {
+              return {
+                // "test" corresponds to the "t_code" field from your JSON
+                'test': item['t_code']?.toString() ?? '',
+                // "start" corresponds to the "d_from" field (date/time)
+                'start': item['d_from']?.toString() ?? '',
+              };
+            }).toList();
+
+            isLoading = false;
+          });
+        } else {
+          // If "status" != "ok", handle error or show message
+          print('Fetch failed. Response status was not "ok": ${response.body}');
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        // Non-200 HTTP status
+        print('Failed to load test history. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      // Exception during network / JSON decode
+      print('Error fetching test history: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
+  // The build method can remain the same, just reading from "testHistory".
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1268,7 +1335,7 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
                     child: ListTile(
                       leading: Icon(Icons.fitness_center),
                       title: Text(record['test'] ?? ''),
-                      subtitle: Text('Start: ${record['start']}\nDuration: ${record['duration']}'),
+                      subtitle: Text('Start: ${record['start']}'),
                     ),
                   );
                 },
