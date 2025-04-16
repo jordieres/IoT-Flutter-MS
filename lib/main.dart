@@ -840,16 +840,27 @@ class _MyAppState extends State<MyApp> {
 
   // Function to start a test by recording start time and opening TestInProgressScreen.
   void _startTest(String testType) {
-    DateTime startTime = DateTime.now();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TestInProgressScreen(
+        builder: (ctx) => TestInstructionScreen(
           locale: _locale,
           testType: testType,
-          startTime: startTime,
-          onEndTest: (DateTime endTime) {
-            _sendTestInfoToEndpoint(testType, startTime, endTime);
+          onStart: () {
+            // when “Start Test” tapped → go to in‐progress
+            DateTime start = DateTime.now();
+            Navigator.of(ctx).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => TestInProgressScreen(
+                  locale: _locale,
+                  testType: testType,
+                  startTime: start,
+                  onEndTest: (end) {
+                    _sendTestInfoToEndpoint(testType, start, end);
+                  },
+                ),
+              ),
+            );
           },
         ),
       ),
@@ -1437,8 +1448,8 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
 class TestInProgressScreen extends StatefulWidget {
   final String testType;
   final DateTime startTime;
-  final Function(DateTime endTime) onEndTest;
-  final Locale locale; // add this parameter
+  final Function(DateTime) onEndTest;
+  final Locale locale;
 
   TestInProgressScreen({
     required this.testType,
@@ -1446,6 +1457,7 @@ class TestInProgressScreen extends StatefulWidget {
     required this.onEndTest,
     required this.locale,
   });
+
   @override
   _TestInProgressScreenState createState() => _TestInProgressScreenState();
 }
@@ -1454,14 +1466,47 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
   late Timer _timer;
   Duration _elapsed = Duration.zero;
 
+  // tests that auto‑finish
+  static const _autoDurations = {
+    'Two Minutes Walking Test': Duration(minutes: 2),
+    'Six Minute Walking Test': Duration(minutes: 6),
+  };
+
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        _elapsed = DateTime.now().difference(widget.startTime);
+    final code = widget.testType;
+    // if it's auto, schedule finish
+    if (_autoDurations.containsKey(code)) {
+      final limit = _autoDurations[code]!;
+      _timer = Timer.periodic(Duration(seconds: 1), (t) {
+        final e = DateTime.now().difference(widget.startTime);
+        setState(() => _elapsed = e);
+        if (e >= limit) _finish();
       });
-    });
+    } else {
+      // manual: just tick for display
+      _timer = Timer.periodic(Duration(seconds: 1), (_) {
+        setState(() {
+          _elapsed = DateTime.now().difference(widget.startTime);
+        });
+      });
+    }
+  }
+
+  void _finish() {
+    _timer.cancel();
+    widget.onEndTest(DateTime.now());
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => ThankYouScreen(locale: widget.locale),
+      ),
+    );
+  }
+
+  String _format(Duration d) {
+    final two = (int n) => n.toString().padLeft(2, '0');
+    return '${two(d.inMinutes.remainder(60))}:${two(d.inSeconds.remainder(60))}';
   }
 
   @override
@@ -1470,41 +1515,27 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
     super.dispose();
   }
 
-  String _formatDuration(Duration d) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    return "${twoDigits(d.inMinutes.remainder(60))}:${twoDigits(d.inSeconds.remainder(60))}";
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Locale currentLocale = widget.locale;
+    final lang = widget.locale.languageCode;
+    final isAuto = _autoDurations.containsKey(widget.testType);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.testType),
-        automaticallyImplyLeading: false,
-      ),
+      appBar: AppBar(title: Text(widget.testType)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(currentLocale.languageCode == 'en' ? 'Test in Progress' : 'Prueba en Progreso',
-                style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
+          children: [
             Text(
-              _formatDuration(_elapsed),
+              _format(_elapsed),
               style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: () {
-                DateTime endTime = DateTime.now();
-                widget.onEndTest(endTime);
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => ThankYouScreen(locale: widget.locale)));
-              },
-              child: Text(currentLocale.languageCode == 'en' ? 'End Test' : 'Finalizar Prueba'),
-            ),
+            SizedBox(height: 24),
+            if (!isAuto)
+              ElevatedButton(
+                onPressed: _finish,
+                child: Text(lang == 'en' ? 'End Test' : 'Finalizar Prueba'),
+              ),
           ],
         ),
       ),
@@ -1514,23 +1545,114 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
 
 // Thank You Screen
 class ThankYouScreen extends StatelessWidget {
-  final Locale locale; // your passed‑in locale
-
+  final Locale locale;
   ThankYouScreen({required this.locale});
 
   @override
   Widget build(BuildContext context) {
-    final Locale currentLocale = locale;
-
+    final lang = locale.languageCode;
     Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context).popUntil((r) => r.isFirst);
     });
-
     return Scaffold(
       body: Center(
         child: Text(
-          currentLocale.languageCode == 'en' ? 'Thank You!' : '¡Gracias!',
+          lang == 'en' ? 'Thank You!' : '¡Gracias!',
           style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class TestInstructionScreen extends StatelessWidget {
+  final String testType;
+  final Locale locale;
+  final Function onStart;
+
+  TestInstructionScreen({
+    required this.testType,
+    required this.locale,
+    required this.onStart,
+  });
+
+  // Map each test to its instructions (and optional duration)
+  static const _instructions = {
+    'Timed Up & Go Test': {
+      'en':
+          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press End Test.',
+      'es':
+          'Levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible.',
+    },
+    'Prueba de Timed Up & Go': {
+      'en':
+          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press End Test.',
+      'es':
+          'Levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible.',
+    },
+    'Two Minutes Walking Test': {
+      'en':
+          'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
+      'es':
+          'Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible.',
+    },
+    'Timed 25-Foot Walk Test': {
+      'en':
+          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press End Test.',
+      'es': 'Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible.',
+    },
+    'Six Minute Walking Test': {
+      'en':
+          'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
+      'es':
+          'Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible.',
+    },
+  };
+
+  static const _durations = {
+    'Two Minutes Walking Test': Duration(minutes: 2),
+    'Six Minute Walking Test': Duration(minutes: 6),
+    // the others are manual
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final code = testType;
+    final lang = locale.languageCode;
+    final instr = _instructions[code]?[lang] ?? '';
+    final hasAuto = _durations.containsKey(code);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(code)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              locale.languageCode == 'en' ? 'Instruction:' : 'Instrucciones:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(instr),
+            Spacer(),
+            Center(
+              child: ElevatedButton(
+                onPressed: () => onStart(),
+                child: Text(locale.languageCode == 'en' ? 'Start Test' : 'Iniciar Prueba'),
+              ),
+            ),
+            if (hasAuto)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  locale.languageCode == 'en'
+                      ? 'This test will auto‑finish after ${_durations[code]!.inMinutes} minutes.'
+                      : 'Esta prueba terminará automáticamente después de ${_durations[code]!.inMinutes} minutos.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+          ],
         ),
       ),
     );
