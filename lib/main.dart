@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'splash_screen.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 import 'dart:ui'; //to use ImageFilter.
 import 'package:google_fonts/google_fonts.dart';
@@ -1464,10 +1465,13 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
 }
 
 // Test In Progress Screen
+// -----------------------------------------------------------------------------
+// 2) TestInProgressScreen
+// -----------------------------------------------------------------------------
 class TestInProgressScreen extends StatefulWidget {
   final String testType;
   final DateTime startTime;
-  final Function(DateTime) onEndTest;
+  final void Function(DateTime endTime) onEndTest;
   final Locale locale;
 
   TestInProgressScreen({
@@ -1485,30 +1489,30 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
   late Timer _timer;
   Duration _elapsed = Duration.zero;
 
-  // tests that auto‑finish
+  // exactly the same auto‑map from the instruction screen
   static const _autoDurations = {
     'Two Minutes Walking Test': Duration(minutes: 2),
+    'Prueba de Marcha de 2 Minutos': Duration(minutes: 2),
     'Six Minute Walking Test': Duration(minutes: 6),
+    'Prueba de Marcha de 6 Minutos': Duration(minutes: 6),
   };
 
   @override
   void initState() {
     super.initState();
     final code = widget.testType;
-    // if it's auto, schedule finish
-    if (_autoDurations.containsKey(code)) {
-      final limit = _autoDurations[code]!;
+    final autoDur = _autoDurations[code];
+
+    // if auto: tick & finish when reached
+    if (autoDur != null) {
       _timer = Timer.periodic(Duration(seconds: 1), (t) {
-        final e = DateTime.now().difference(widget.startTime);
-        setState(() => _elapsed = e);
-        if (e >= limit) _finish();
+        setState(() => _elapsed = DateTime.now().difference(widget.startTime));
+        if (_elapsed >= autoDur) _finish();
       });
     } else {
-      // manual: just tick for display
+      // otherwise just tick display
       _timer = Timer.periodic(Duration(seconds: 1), (_) {
-        setState(() {
-          _elapsed = DateTime.now().difference(widget.startTime);
-        });
+        setState(() => _elapsed = DateTime.now().difference(widget.startTime));
       });
     }
   }
@@ -1524,7 +1528,7 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
   }
 
   String _format(Duration d) {
-    final two = (int n) => n.toString().padLeft(2, '0');
+    String two(int n) => n.toString().padLeft(2, '0');
     return '${two(d.inMinutes.remainder(60))}:${two(d.inSeconds.remainder(60))}';
   }
 
@@ -1544,11 +1548,14 @@ class _TestInProgressScreenState extends State<TestInProgressScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // timer display
             Text(
               _format(_elapsed),
               style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 30),
+
+            // only show STOP for non‑auto
             if (!isAuto)
               GestureDetector(
                 onTap: _finish,
@@ -1594,10 +1601,13 @@ class ThankYouScreen extends StatelessWidget {
   }
 }
 
+// -----------------------------------------------------------------------------
+// 1) TestInstructionScreen
+// -----------------------------------------------------------------------------
 class TestInstructionScreen extends StatelessWidget {
   final String testType;
   final Locale locale;
-  final Function onStart;
+  final VoidCallback onStart;
 
   TestInstructionScreen({
     required this.testType,
@@ -1605,90 +1615,102 @@ class TestInstructionScreen extends StatelessWidget {
     required this.onStart,
   });
 
-  // Map each test to its instructions (and optional duration)
+  // All instruction texts:
   static const _instructions = {
     'Timed Up & Go Test': {
-      'en':
-          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press Stop button.',
+      'en': 'Press START, rise from a chair, walk 3 m, turn, walk back, sit down. Then press STOP.',
       'es':
-          'Presione el botón Inicio, levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible. Al sentarse, presione Detener',
+          'Presione INICIO, levántese de la silla, camine 3 m, dé la vuelta, regrese y siéntese. Al finalizar, presione DETENER.',
     },
     'Prueba de Timed Up & Go': {
-      'en':
-          'Press start button, rise from a chair, walk 3 meters, turn around, walk back, and sit down as quickly and safely as possible. When seated, press Stop button.',
+      'en': 'Press START, rise from a chair, walk 3 m, turn, walk back, sit down. Then press STOP.',
       'es':
-          'Presione el botón Inicio, levántese de la silla, camine 3 metros, dé la vuelta, regrese y siéntese lo más rápido y seguro posible. Al sentarse, presione Detener',
+          'Presione INICIO, levántese de la silla, camine 3 m, dé la vuelta, regrese y siéntese. Al finalizar, presione DETENER.',
     },
     'Two Minutes Walking Test': {
       'en':
-          'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
+          'Press START, walk continuously for 2 min at your comfort pace. The test will finish automatically after 2  min.',
       'es':
-          'Presione el botón Inicio, Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible. La prueba finalizará automáticamente tras 2 minutos.',
+          'Presione INICIO, camine durante 2 min a su ritmo. La prueba finalizará automáticamente tras 2 minutos.',
     },
     'Prueba de Marcha de 2 Minutos': {
       'en':
-          'Press start button, walk continuously for 2 minutes at your comfortable pace. Cover as much distance as possible. The test will finish automatically after 2 min.',
+          'Press START, walk continuously for 2 min at your comfort pace. The test will finish automatically after 2  min.',
       'es':
-          'Presione el botón Inicio, Camine continuamente durante 2 minutos a su ritmo habitual. Cubra la mayor distancia posible. La prueba finalizará automáticamente tras 2 minutos.',
+          'Presione INICIO, camine durante 2 min a su ritmo. La prueba finalizará automáticamente tras 2 minutos.',
     },
     'Timed 25-Foot Walk Test': {
       'en':
-          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press stop button.',
+          'Press START, walk 25 ft (7.62 m) straight as quickly & safely as possible. Then press STOP.',
       'es':
-          'Presione el botón Inicio, Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible. Al finalizar, presione Detener.',
+          'Presione INICIO, camine 25 pies en línea recta lo más rápido y seguro posible. Al finalizar, presione DETENER.',
     },
     'Marcha de 25 Pies Cronometrada': {
       'en':
-          'Press start button, walk 25 feet (7.62 m) in a straight line as quickly and safely as possible. When finished, press stop button.',
-      'es': 'Camine 25 pies (7.62 metros) en línea recta lo más rápido y seguro posible.',
+          'Press START, walk 25 ft (7.62 m) straight as quickly & safely as possible. Then press STOP.',
+      'es':
+          'Presione INICIO, camine 25 pies en línea recta lo más rápido y seguro posible. Al finalizar, presione DETENER.',
     },
     'Six Minute Walking Test': {
       'en':
-          'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
+          'Press START, walk for 6 min at your pace. The test will finish automatically after 6 min.',
       'es':
-          'Presione el botón Inicio, Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible. La prueba finalizará automáticamente tras 6 minutos.',
+          'Presione INICIO, camine durante 6 min a su ritmo. La prueba finalizará automáticamente tras 6 minutos.',
     },
     'Prueba de Marcha de 6 Minutos': {
       'en':
-          'Press start button, walk for 6 minutes at your own pace. You may stop if needed, but resume walking as soon as possible. The test will finish automatically after 6 min.',
+          'Press START, walk for 6 min at your pace. The test will finish automatically after 6 min.',
       'es':
-          'Presione el botón Inicio, Camine durante 6 minutos a su propio ritmo. Puede detenerse si es necesario, pero reanude la marcha lo antes posible.La prueba finalizará automáticamente tras 6 minutos',
+          'Presione INICIO, camine durante 6 min a su ritmo. La prueba finalizará automáticamente tras 6 minutos.',
     },
   };
 
-  static const _durations = {
+  // Which tests auto‑finish?
+  static const _autoDurations = {
     'Two Minutes Walking Test': Duration(minutes: 2),
+    'Prueba de Marcha de 2 Minutos': Duration(minutes: 2),
     'Six Minute Walking Test': Duration(minutes: 6),
-    // the others are manual
+    'Prueba de Marcha de 6 Minutos': Duration(minutes: 6),
   };
 
   @override
   Widget build(BuildContext ctx) {
-    final code = testType;
-    final instr = _instructions[testType]?[locale.languageCode] ?? '';
-    final hasAuto = _durations.containsKey(code);
+    final lang = locale.languageCode;
+    final instr = _instructions[testType]![lang]!;
+    final autoDur = _autoDurations[testType];
+    final isAuto = autoDur != null;
 
     return Scaffold(
-      appBar: AppBar(title: Text(code)),
+      appBar: AppBar(title: Text(testType)),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
+            // **Time:** header for auto‑finish tests
+            if (isAuto) ...[
+              Text(
+                lang == 'en'
+                    ? 'Time: ${autoDur!.inMinutes} minutes'
+                    : 'Tiempo: ${autoDur!.inMinutes} minutos',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 12),
+            ],
+
+            // Instruction text
             Expanded(
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Text(
-                    instr,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, height: 1.4),
-                  ),
+              child: SingleChildScrollView(
+                child: Text(
+                  instr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, height: 1.4),
                 ),
               ),
             ),
 
-            // Start button
+            // Big START button
             GestureDetector(
-              onTap: () => onStart(),
+              onTap: onStart,
               child: Container(
                 width: 100,
                 height: 100,
@@ -1699,24 +1721,13 @@ class TestInstructionScreen extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    locale.languageCode == 'en' ? 'START' : 'INICIO',
+                    lang == 'en' ? 'START' : 'INICIO',
                     style:
                         TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
             ),
-
-            if (hasAuto)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text(
-                  locale.languageCode == 'en'
-                      ? 'Auto‑finish after ${_durations[code]!.inMinutes}m'
-                      : 'Se autotermina en ${_durations[code]!.inMinutes} min',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                ),
-              ),
 
             SizedBox(height: 24),
           ],
