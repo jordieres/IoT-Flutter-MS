@@ -787,22 +787,43 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Select a Test', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(_locale.languageCode == 'en' ? 'Select a Test' : 'Seleccionar una prueba',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ListTile(
-                title: Text('Up & Go Test'),
-                onTap: () => Navigator.pop(ctx, 'Up & Go Test'),
+                title: Text(_locale.languageCode == 'en' ? 'Timed Up & Go' : 'Timed Up & Go'),
+                onTap: () => Navigator.pop(
+                    ctx,
+                    _locale.languageCode == 'en'
+                        ? 'Timed Up & Go Test'
+                        : 'Prueba de Timed Up & Go'),
               ),
               ListTile(
-                title: Text('Two Minutes Walking'),
-                onTap: () => Navigator.pop(ctx, 'Two Minutes Walking'),
+                title: Text(
+                    _locale.languageCode == 'en' ? 'Two Minutes Walking' : 'Marcha de 2 Minutos'),
+                onTap: () => Navigator.pop(
+                    ctx,
+                    _locale.languageCode == 'en'
+                        ? 'Two Minutes Walking Test'
+                        : 'Prueba de Marcha de 2 Minutos'),
               ),
               ListTile(
-                title: Text('T25FW'),
-                onTap: () => Navigator.pop(ctx, 'T25FW'),
+                title: Text(_locale.languageCode == 'en'
+                    ? 'Timed 25-Foot Walk'
+                    : 'Marcha de 25 Pies Cronometrada'),
+                onTap: () => Navigator.pop(
+                    ctx,
+                    _locale.languageCode == 'en'
+                        ? 'Timed 25-Foot Walk Test'
+                        : 'Marcha de 25 Pies Cronometrada'),
               ),
               ListTile(
-                title: Text('Six Minute Walking Test'),
-                onTap: () => Navigator.pop(ctx, 'Six Minute Walking Test'),
+                title: Text(
+                    _locale.languageCode == 'en' ? 'Six Minute Walking ' : 'Marcha de 6 Minutos'),
+                onTap: () => Navigator.pop(
+                    ctx,
+                    _locale.languageCode == 'en'
+                        ? 'Six Minute Walking Test'
+                        : 'Prueba de Marcha de 6 Minutos'),
               ),
             ],
           ),
@@ -840,10 +861,14 @@ class _MyAppState extends State<MyApp> {
 
     // Define a mapping from full test names to their abbreviations
     Map<String, String> testNameMap = {
-      'Up & Go Test': 'UpGoTest',
-      'Two Minutes Walking': '2MinWalk',
-      'T25FW': 'T25FW',
-      'Six Minute Walking Test': '6MinWalk'
+      'Timed Up & Go Test': 'TUG',
+      'Prueba de Timed Up & Go': 'TUG',
+      'Two Minutes Walking Test': '2MWT',
+      'Prueba de Marcha de 2 Minutos': '2MWT',
+      'Timed 25-Foot Walk Test': 'T25FW',
+      'Marcha de 25 Pies Cronometrada': 'T25FW',
+      'Six Minute Walking Test': '6MWT',
+      'Prueba de Marcha de 6 Minutos': '6MWT'
     };
 
     // Get abbreviated test name, or if not found, make sure it is no more than 10 characters.
