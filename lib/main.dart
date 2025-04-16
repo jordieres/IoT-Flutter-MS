@@ -719,11 +719,22 @@ class _MyAppState extends State<MyApp> {
             Positioned(
               left: 40,
               bottom: 15,
-              child: FloatingActionButton(
-                heroTag: 'history',
-                backgroundColor: Colors.blueAccent,
-                onPressed: _openTestHistory, // new function defined below
-                child: Icon(Icons.history),
+              child: Opacity(
+                opacity: _devicesEnabled ? 1.0 : 0.5, // same logic as device boxes
+                child: FloatingActionButton(
+                  heroTag: 'history',
+                  backgroundColor: _devicesEnabled ? Colors.blueAccent : Colors.grey,
+                  onPressed: _devicesEnabled ? _openTestHistory : null, // disable if not valid
+                  child: _devicesEnabled
+                      ? Icon(Icons.history)
+                      : Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Icon(Icons.history, color: Colors.white54),
+                            Icon(Icons.lock, color: Colors.red, size: 24), // lock overlay
+                          ],
+                        ),
+                ),
               ),
             ),
             Positioned(
