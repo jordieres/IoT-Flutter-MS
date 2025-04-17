@@ -187,7 +187,8 @@ Ensure you have a macOS computer to run Xcode and install all necessary software
 - Location Disclosure added (Android only)
 
 
-
+### version 2.0.0
+-Test Recording Feature is added
 
 
 

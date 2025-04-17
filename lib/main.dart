@@ -346,7 +346,7 @@ class _MyAppState extends State<MyApp> {
     if (_areAllDevicesDisconnected()) {
       _startOrRestartDisconnectTimer();
     } else {
-      // If any device is connected, ensure the timer is cancelled
+      // If any device is connected, it ensures the timer is cancelled
       _cancelDisconnectTimer();
     }
   }
@@ -484,11 +484,9 @@ class _MyAppState extends State<MyApp> {
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(10), // Match your container's border radius
+                      borderRadius: BorderRadius.circular(10), // Match container's border radius
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                            sigmaX: 0.0, sigmaY: 0.0), // Adjust blur radius as needed
+                        filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0), //  blur radius
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.blue.shade600
@@ -504,8 +502,8 @@ class _MyAppState extends State<MyApp> {
                               ),
                             ],
                           ),
-                          padding: EdgeInsets.all(
-                              12), // Add some padding inside the container for aesthetics
+                          padding:
+                              EdgeInsets.all(12), // padding inside the container for aesthetics
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
@@ -595,7 +593,7 @@ class _MyAppState extends State<MyApp> {
                                     ? Icon(
                                         Icons.check,
                                         color: Colors.white,
-                                        size: 30, // Set the size to a larger value
+                                        size: 30,
                                         shadows: [
                                           // Adding a shadow to make it appear "bolder"
                                           Shadow(
@@ -608,7 +606,7 @@ class _MyAppState extends State<MyApp> {
                                     : Icon(
                                         Icons.edit,
                                         color: Colors.grey.shade300,
-                                        size: 30, // Set the size to a larger value
+                                        size: 30,
                                         shadows: [
                                           // Adding a shadow to make it appear "bolder"
                                           Shadow(
@@ -641,13 +639,12 @@ class _MyAppState extends State<MyApp> {
                   height: 20,
                 ),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(10), // Match your container's border radius
+                  borderRadius: BorderRadius.circular(10), //  container's border radius
                   child: BackdropFilter(
-                    filter:
-                        ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), // Adjust blur radius as needed
+                    filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), //  blur radius
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white, // Adjust opacity as needed
+                        color: Colors.white, // Adjust opacity
                         borderRadius:
                             BorderRadius.circular(10), // Round the corners of the container
                         boxShadow: [
@@ -714,8 +711,9 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
+
         /////////////////////////////////////////////////////////////////////////////////
-        /// ADDED CODE START: Adding Floating Action Buttons for Test and History
+        ///////  Adding Floating Action Buttons for Test and History
         floatingActionButton: Stack(
           children: [
             // History FAB (unchanged)
@@ -741,7 +739,6 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
 
-            // Test FAB: only add it when Sensoria is connected
             Positioned(
               right: 16,
               bottom: 15,
@@ -760,16 +757,14 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
 
-        /// ADDED CODE END
         backgroundColor: Colors.white,
       ),
     );
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  /// ADDED CODE START: New functions for Test & History functionality
+  ///// functions for Test & History functionality
 
-  // Use existing deviceStatuses instead of _sensoriaconnectedDevices.
   bool _isSensoriaConnected() {
     return (deviceStatuses['RF'] == DeviceConnectionStatus.connected ||
         deviceStatuses['LF'] == DeviceConnectionStatus.connected);
@@ -843,7 +838,7 @@ class _MyAppState extends State<MyApp> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade600,
-                      minimumSize: Size(double.infinity, 60), // ← full width, 60px tall
+                      minimumSize: Size(double.infinity, 60),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -862,7 +857,7 @@ class _MyAppState extends State<MyApp> {
     if (selected != null) _startTest(selected);
   }
 
-  // Function to start a test by recording start time and opening TestInProgressScreen.
+  ////// Function to start a test by recording start time and opening TestInProgressScreen.
   void _startTest(String testType) {
     Navigator.push(
       context,
@@ -891,11 +886,10 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  // Function to send the test information to the endpoint.
-  // Function to send the test information to the endpoint.
+  //////////////// Function to send the test information to the endpoint.
   Future<void> _sendTestInfoToEndpoint(
       String testType, DateTime startTime, DateTime endTime) async {
-    // restore your mapping from full name → short code
+    ///// mapping from full name → short code
     const testNameMap = {
       'Timed Up & Go Test': 'TUG',
       'Prueba de Timed Up & Go': 'TUG',
@@ -933,7 +927,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  /// ADDED CODE END
   ////////////////////////////////////////////////////////////////////////////////
 
   Widget _buildDeviceBox(String title, String deviceName, Function onTap, int? batteryLevel) {
@@ -1301,8 +1294,7 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-/// ADDED CODE START: New pages for Test History, Test In Progress and Thank You screen
-
+/////////////////////New pages for Test History, Test In Progress and Thank You screen
 // Test History Page
 class TestHistoryPage extends StatefulWidget {
   final String codeID;
@@ -1323,7 +1315,7 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
     _fetchTestHistory();
   }
 
-  /// Formats the raw ISO8601 date string into a user-friendly format.
+  /////// Formats the raw ISO8601 date string into a user-friendly format.
   String _formatDate(String rawDate) {
     try {
       final dt = DateTime.parse(rawDate);
@@ -1334,21 +1326,21 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
     }
   }
 
-  /// Fetches test history from the server.
-  /// This function makes a POST request sending the combined codeID.
+  ////// Fetches test history from the server.
+  ////// This function makes a POST request sending the combined codeID.
   Future<void> _fetchTestHistory() async {
     setState(() {
       isLoading = true;
     });
     try {
-      // Build the URL to your endpoint that returns history data.
+      ////// Build the URL to the endpoint that returns history data.
       final url = Uri.parse('http://138.100.82.181/AppCognit/listaHWevento');
 
       // POST the codeID (the combined reference)
       final response = await http.post(
         url,
         body: {
-          'codeid': widget.codeID, // e.g., "AMIR-48"
+          'codeid': widget.codeID, // example, "AMIR-48"
         },
       );
 
@@ -1391,7 +1383,7 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
     }
   }
 
-  /// Builds a single history item using a glass-style container.
+  //// Builds a single history item using a glass-style container.
   Widget _buildHistoryGlassCard(Map<String, String> record) {
     final formattedDate = _formatDate(record['start'] ?? '');
     final testName = record['test'] ?? '';
@@ -1465,8 +1457,6 @@ class _TestHistoryPageState extends State<TestHistoryPage> {
 }
 
 // Test In Progress Screen
-// -----------------------------------------------------------------------------
-// 2) TestInProgressScreen
 // -----------------------------------------------------------------------------
 class TestInProgressScreen extends StatefulWidget {
   final String testType;
@@ -1602,7 +1592,7 @@ class ThankYouScreen extends StatelessWidget {
 }
 
 // -----------------------------------------------------------------------------
-// 1) TestInstructionScreen
+// TestInstructionScreen
 // -----------------------------------------------------------------------------
 class TestInstructionScreen extends StatelessWidget {
   final String testType;
@@ -1737,5 +1727,3 @@ class TestInstructionScreen extends StatelessWidget {
     );
   }
 }
-
-/// ADDED CODE END
