@@ -7,13 +7,16 @@ import 'package:share_plus/share_plus.dart';
 import 'package:cross_file/cross_file.dart';
 
 class ShareFilesPage extends StatefulWidget {
+  final Locale locale;
+  ShareFilesPage({required this.locale});
+
   @override
   _ShareFilesPageState createState() => _ShareFilesPageState();
 }
 
 class _ShareFilesPageState extends State<ShareFilesPage> {
   List<File> _allFiles = [];
-  Set<File> _selected = Set();
+  Set<File> _selected = {};
   bool _selectAll = false;
 
   @override
@@ -40,55 +43,71 @@ class _ShareFilesPageState extends State<ShareFilesPage> {
   void _toggleSelectAll(bool? v) {
     setState(() {
       _selectAll = v ?? false;
-      if (_selectAll) {
-        _selected = Set.from(_allFiles);
-      } else {
-        _selected.clear();
-      }
+      _selected = _selectAll ? Set.from(_allFiles) : {};
     });
   }
 
   Future<void> _share() async {
     if (_selected.isEmpty) return;
+    final lang = widget.locale.languageCode;
+
     final xfiles = _selected.map((f) => XFile(f.path)).toList();
     await Share.shareXFiles(
       xfiles,
-      text: 'Here are my pending data files.',
+      text:
+          lang == 'en' ? 'Here are my pending data files.' : 'Aquí están mis archivos pendientes.',
     );
+
     final keep = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Delete after sharing?'),
-        content: Text('Do you want to delete the shared files from local storage?'),
+        title: Text(lang == 'en' ? 'Delete after sharing?' : '¿Borrar después de compartir?'),
+        content: Text(lang == 'en'
+            ? 'Do you want to delete the shared files from local storage?'
+            : '¿Deseas eliminar los archivos compartidos del almacenamiento?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Keep')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: Text('Delete')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(lang == 'en' ? 'Keep' : 'Conservar')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(lang == 'en' ? 'Delete' : 'Borrar')),
         ],
       ),
     );
+
     if (keep == true) {
       for (var f in _selected) {
         try {
           await f.delete();
         } catch (_) {}
       }
+      await _loadFiles();
     }
-    await _loadFiles();
   }
 
   Future<void> _deleteSelected() async {
     if (_selected.isEmpty) return;
+    final lang = widget.locale.languageCode;
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Delete files?'),
-        content: Text('Permanently delete ${_selected.length} files?'),
+        title: Text(lang == 'en' ? 'Delete files?' : '¿Borrar archivos?'),
+        content: Text(lang == 'en'
+            ? 'Permanently delete ${_selected.length} files?'
+            : '¿Eliminar permanentemente ${_selected.length} archivos?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Cancel')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: Text('Delete')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(lang == 'en' ? 'Cancel' : 'Cancelar')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(lang == 'en' ? 'Delete' : 'Borrar')),
         ],
       ),
     );
+
     if (confirm == true) {
       for (var f in _selected) {
         try {
@@ -101,14 +120,18 @@ class _ShareFilesPageState extends State<ShareFilesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = widget.locale.languageCode;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pending Files (${_allFiles.length})'),
+        title: Text(lang == 'en'
+            ? 'Pending Files (${_allFiles.length})'
+            : 'Archivos pendientes (${_allFiles.length})'),
       ),
       body: Column(
         children: [
           CheckboxListTile(
-            title: Text('Select All'),
+            title: Text(lang == 'en' ? 'Select All' : 'Seleccionar todo'),
             value: _selectAll,
             onChanged: _toggleSelectAll,
           ),
@@ -138,13 +161,13 @@ class _ShareFilesPageState extends State<ShareFilesPage> {
               children: [
                 ElevatedButton.icon(
                   icon: Icon(Icons.share),
-                  label: Text('Share'),
+                  label: Text(lang == 'en' ? 'Share' : 'Compartir'),
                   onPressed: _selected.isEmpty ? null : _share,
                 ),
                 SizedBox(width: 16),
                 ElevatedButton.icon(
                   icon: Icon(Icons.delete),
-                  label: Text('Delete'),
+                  label: Text(lang == 'en' ? 'Delete' : 'Borrar'),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: _selected.isEmpty ? null : _deleteSelected,
                 ),
