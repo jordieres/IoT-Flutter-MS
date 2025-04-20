@@ -696,6 +696,7 @@ class _MyAppState extends State<MyApp> {
                             ],
                           ),
                           SizedBox(height: 5),
+                          if (Platform.isAndroid)///////////////Becasue the App stoer doesnt accept the smartband
                           _buildDeviceBox(
                             _locale.languageCode == 'en' ? 'Smart Band' : 'Pulsera Inteligente',
                             "SB",
