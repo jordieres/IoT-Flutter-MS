@@ -50,6 +50,10 @@
 	<string>This app uses your location to improve activity tracking and personalize wellness insights while you use it, adjusting data based on your current environment to promote healthy lifestyle habits.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIFileSharingEnabled</key>
+<true/>
+<key>LSSupportsOpeningDocumentsInPlace</key>
+<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
