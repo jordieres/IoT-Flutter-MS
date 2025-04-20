@@ -113,47 +113,77 @@ class AppDelegate: FlutterAppDelegate, CBCentralManagerDelegate, FlutterStreamHa
                 }
                 
 
+//            case "scanAndConnectToSensoriaDevice":
+//                print("received request for connection in appDelegate")
+//                if let args = call.arguments as? [String: Any],
+//                   let coreIndex = args["coreIndex"] as? Int {
+//                    print("received request for connection in appDelegate for coreIndex \(coreIndex)")
+//
+//                    // Function to start scanning
+//                    func startScan(for index: Int) {
+//                        if index == 1 {
+//                            self?.sensoriaHandlerRight?.startScan()
+//                        } else if index == 2 {
+//                            self?.sensoriaHandlerLeft?.startScan()
+//                        }
+//                    }
+//
+//                    // Introduce a delay for the second device
+//                    if coreIndex == 1 {
+//                        startScan(for: coreIndex)
+//                        // If the first device is coreIndex 1, delay the scan for coreIndex 2
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//                            startScan(for: 2)
+//                        }
+//                    } else if coreIndex == 2 {
+//                        startScan(for: coreIndex)
+//                        // If the first device is coreIndex 2, delay the scan for coreIndex 1
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//                            startScan(for: 1)
+//                        }
+//                    } else {
+//                        result(FlutterError(code: "INVALID_INDEX",
+//                                            message: "Invalid coreIndex. Must be 1 or 2.",
+//                                            details: nil))
+//                        return
+//                    }
+//                    result(nil)
+//                } else {
+//                    result(FlutterError(code: "ERROR",
+//                                        message: "coreIndex is null or not passed correctly",
+//                                        details: nil))
+//                }
+
             case "scanAndConnectToSensoriaDevice":
-                print("received request for connection in appDelegate")
-                if let args = call.arguments as? [String: Any],
-                   let coreIndex = args["coreIndex"] as? Int {
-                    print("received request for connection in appDelegate for coreIndex \(coreIndex)")
-
-                    // Function to start scanning
-                    func startScan(for index: Int) {
-                        if index == 1 {
-                            self?.sensoriaHandlerRight?.startScan()
-                        } else if index == 2 {
-                            self?.sensoriaHandlerLeft?.startScan()
-                        }
-                    }
-
-                    // Introduce a delay for the second device
-                    if coreIndex == 1 {
-                        startScan(for: coreIndex)
-                        // If the first device is coreIndex 1, delay the scan for coreIndex 2
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            startScan(for: 2)
-                        }
-                    } else if coreIndex == 2 {
-                        startScan(for: coreIndex)
-                        // If the first device is coreIndex 2, delay the scan for coreIndex 1
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            startScan(for: 1)
-                        }
-                    } else {
-                        result(FlutterError(code: "INVALID_INDEX",
-                                            message: "Invalid coreIndex. Must be 1 or 2.",
-                                            details: nil))
-                        return
-                    }
-                    result(nil)
-                } else {
-                    result(FlutterError(code: "ERROR",
-                                        message: "coreIndex is null or not passed correctly",
-                                        details: nil))
+                guard let args = call.arguments as? [String: Any],
+                      let coreIndex = args["coreIndex"] as? Int else {
+                    result(FlutterError(
+                        code: "ERROR",
+                        message: "coreIndex is missing or invalid",
+                        details: nil
+                    ))
+                    return
                 }
 
+                switch coreIndex {
+                case 1:
+                    print("Starting RIGHT‑foot scan")
+                    self?.sensoriaHandlerRight?.startScan()
+                case 2:
+                    print("Starting LEFT‑foot scan")
+                    self?.sensoriaHandlerLeft?.startScan()
+                default:
+                    result(FlutterError(
+                        code: "INVALID_INDEX",
+                        message: "coreIndex must be 1 or 2",
+                        details: nil
+                    ))
+                    return
+                }
+
+                result(nil)
+                
+                
             case "disconnectDevice":
                 print("received request for connection in appdelegate")
                             if let args = call.arguments as? [String: Any],
