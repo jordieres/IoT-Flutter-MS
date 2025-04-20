@@ -16,6 +16,7 @@ import 'splash_screen.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'Service/share_files.dart';
 
 import 'dart:ui'; //to use ImageFilter.
 import 'package:google_fonts/google_fonts.dart';
@@ -481,6 +482,26 @@ class _MyAppState extends State<MyApp> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                // ——— Share button row ———
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 8, 0),
+                  child: Row(
+                    children: [
+                      Spacer(), // pushes the button to the right
+                      IconButton(
+                        icon: Icon(Icons.share, color: Colors.blue),
+                        tooltip: 'Manage pending files',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => ShareFilesPage()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ClipRRect(
@@ -696,13 +717,14 @@ class _MyAppState extends State<MyApp> {
                             ],
                           ),
                           SizedBox(height: 5),
-                          if (Platform.isAndroid)///////////////Becasue the App stoer doesnt accept the smartband
-                          _buildDeviceBox(
-                            _locale.languageCode == 'en' ? 'Smart Band' : 'Pulsera Inteligente',
-                            "SB",
-                            () => _handleDeviceTap('SB'),
-                            batteryLevelSB,
-                          ),
+                          if (Platform
+                              .isAndroid) ///////////////Becasue the App stoer doesnt accept the smartband
+                            _buildDeviceBox(
+                              _locale.languageCode == 'en' ? 'Smart Band' : 'Pulsera Inteligente',
+                              "SB",
+                              () => _handleDeviceTap('SB'),
+                              batteryLevelSB,
+                            ),
                         ],
                       ),
                     ),
