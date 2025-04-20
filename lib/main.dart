@@ -490,18 +490,20 @@ class _MyAppState extends State<MyApp> {
                       Spacer(), // pushes the button to the right
                       IconButton(
                         icon: Icon(Icons.share, color: Colors.blue),
-                        tooltip: 'Manage pending files',
+                        tooltip: _locale.languageCode == 'en'
+                            ? 'Manage pending files'
+                            : 'Gestionar archivos pendientes',
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => ShareFilesPage()),
+                            MaterialPageRoute(builder: (_) => ShareFilesPage(locale: _locale)),
                           );
                         },
                       ),
                     ],
                   ),
                 ),
-
+                SizedBox(height: 20),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ClipRRect(
