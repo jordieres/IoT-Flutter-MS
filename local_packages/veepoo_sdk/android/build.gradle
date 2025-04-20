@@ -26,7 +26,8 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 34
+      namespace 'vn.com.tma.ehealth.veepoo_sdk'    // ← add this line
+      compileSdk = 35                               // ← bump to match your app 34
 
     defaultConfig {
         minSdkVersion 22
