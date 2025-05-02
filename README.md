@@ -190,6 +190,10 @@ Ensure you have a macOS computer to run Xcode and install all necessary software
 ### version 2.0.0
 -Test Recording Feature is added
 
+### version 2.0.1
+-Some improvement in UI
+-Version is in splash screen
+
 
 
 
