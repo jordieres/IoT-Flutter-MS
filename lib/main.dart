@@ -449,7 +449,6 @@ class _MyAppState extends State<MyApp> {
               child: Theme(
                 data: Theme.of(context).copyWith(
                   canvasColor: Colors.red.shade400, // Sets dropdown background color
-
                   popupMenuTheme: PopupMenuThemeData(
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -476,6 +475,20 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
             ),
+            IconButton(
+              icon: Icon(Icons.share, color: Colors.blue),
+              tooltip: _locale.languageCode == 'en'
+                  ? 'Manage pending files'
+                  : 'Gestionar archivos pendientes',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ShareFilesPage(locale: _locale),
+                  ),
+                );
+              },
+            ),
           ],
         ),
         body: Center(
@@ -483,26 +496,6 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               children: [
                 // ——— Share button row ———
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 8, 0),
-                  child: Row(
-                    children: [
-                      Spacer(), // pushes the button to the right
-                      IconButton(
-                        icon: Icon(Icons.share, color: Colors.blue),
-                        tooltip: _locale.languageCode == 'en'
-                            ? 'Manage pending files'
-                            : 'Gestionar archivos pendientes',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => ShareFilesPage(locale: _locale)),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 20),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -744,7 +737,7 @@ class _MyAppState extends State<MyApp> {
             // History FAB (unchanged)
             Positioned(
               left: 40,
-              bottom: 15,
+              bottom: Platform.isIOS ? 30 : 5,
               child: Opacity(
                 opacity: _devicesEnabled ? 1.0 : 0.5,
                 child: FloatingActionButton(
@@ -766,7 +759,7 @@ class _MyAppState extends State<MyApp> {
 
             Positioned(
               right: 16,
-              bottom: 15,
+              bottom: Platform.isIOS ? 30 : 5,
               child: Opacity(
                 // fade it when disconnected:
                 opacity: _isSensoriaConnected() ? 1.0 : 0.2,
