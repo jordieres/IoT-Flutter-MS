@@ -11,7 +11,7 @@ ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH="$JAVA_HOME/bin:$PATH"
 
 # Install Flutter SDK
-RUN git clone --depth 1 -b 3.19.6 https://github.com/flutter/flutter.git /opt/flutter
+RUN git clone --depth 1 -b 3.22.2 https://github.com/flutter/flutter.git /opt/flutter
 ENV PATH="/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
 # Precache Flutter artifacts

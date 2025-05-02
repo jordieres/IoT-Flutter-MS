@@ -31,7 +31,6 @@ PODS:
     - FMDB/Core
   - geolocator_apple (1.2.0):
     - Flutter
-    - FlutterMacOS
   - iOSDFULibrary (4.15.3):
     - ZIPFoundation (= 0.9.19)
   - MetaWear (4.1.3):
@@ -72,7 +71,7 @@ DEPENDENCIES:
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - MetaWear (~> 4.1.3)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -106,7 +105,7 @@ EXTERNAL SOURCES:
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geolocator_apple:
-    :path: ".symlinks/plugins/geolocator_apple/darwin"
+    :path: ".symlinks/plugins/geolocator_apple/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
@@ -133,7 +132,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
   FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
-  geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
+  geolocator_apple: 9bcea1918ff7f0062d98345d238ae12718acfbc1
   iOSDFULibrary: ef7e1fbb3fc7a5fabd106297a9cd0e775bcfcec6
   MetaWear: 172042a920e6853083f1fd94fb4f509016188586
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4

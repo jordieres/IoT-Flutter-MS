@@ -1,23 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-import 'package:flutter/material.dart';
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
-class SplashScreen extends StatelessWidget {
+class _SplashScreenState extends State<SplashScreen> {
+  String _version = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = packageInfo.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size; // Screen size for responsive layout
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Color(0xFF4091E6), // Blue background color
+      backgroundColor: Color(0xFF4091E6),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Main axis alignment
-        crossAxisAlignment: CrossAxisAlignment.stretch, // Stretch across the screen width
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: size.height * 0.1), // Adjust top spacing
-          // Healthy Wear text in the middle
+          SizedBox(height: size.height * 0.1),
           Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Healthy',
@@ -33,14 +51,13 @@ class SplashScreen extends StatelessWidget {
               ),
             ],
           ),
-          // Designed by text and UPM logo at the bottom
           Column(
             children: [
               Text(
                 'Designed by:',
                 style: TextStyle(
-                  fontSize: 16, // Adjust font size to match design
-                  color: Color(0xFF7DB6D5), // Light blue color for 'Designed by'
+                  fontSize: 16,
+                  color: Color(0xFF7DB6D5),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -49,7 +66,18 @@ class SplashScreen extends StatelessWidget {
                 width: size.width * 0.7,
                 height: size.height * 0.130,
               ),
-              SizedBox(height: size.height * 0.05), // Bottom spacing
+              SizedBox(height: size.height * 0.02),
+              if (_version.isNotEmpty)
+                Text(
+                  'Version $_version',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white70,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              SizedBox(height: 8),
+              SizedBox(height: size.height * 0.05),
             ],
           ),
         ],
