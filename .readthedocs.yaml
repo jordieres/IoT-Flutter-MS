@@ -1,0 +1,47 @@
+# ── .readthedocs.yml ────────────────────────────────────────────────────────
+# RTD configuration for a mixed-language (Flutter, Swift, Java, Python) repo.
+# Only the docs themselves (written in Markdown/ReST) are built; no code
+# compilation takes place during the RTD build.
+
+version: 2          # RTD config-file spec; always keep at "2"
+
+##############################################################################
+# 1. Build image & toolchain
+##############################################################################
+build:
+  os: ubuntu-22.04   # new default; supports Python 3.11, Git ≥2.39, etc.
+  tools:
+    python: "3.11"   # Sphinx/Myst needs Python; pick any supported version
+
+##############################################################################
+# 2. Python environment (ONLY for building the docs, not your app itself)
+##############################################################################
+python:
+  install:
+    # All doc-time Python deps live here (Sphinx, myst-parser, themes, etc.)
+    - requirements: docs/requirements.txt
+
+##############################################################################
+# 3. Sphinx (the actual documentation generator RTD runs)
+##############################################################################
+sphinx:
+  # The “conf.py” you’ll create in docs/ controls everything (theme, myst, …)
+  configuration: docs/conf.py
+
+##############################################################################
+# 4. Output formats you want RTD to publish
+##############################################################################
+formats:
+  - htmlzip          # zipped HTML
+  - epub             # e-book
+  - pdf              # via LaTeX; remove if you don’t need a PDF
+
+##############################################################################
+# 5. Build optimisations & housekeeping
+##############################################################################
+#  • No need to check system packages (keeps builds reproducible)
+#  • Large binary folders are ignored via Sphinx’s `exclude_patterns`
+#      (see the comment below the YAML)
+#  • If your repo uses Git-based submodules add:  submodules: true
+##############################################################################
+
