@@ -6,6 +6,7 @@ Welcome to the documentation site for the **HealthyWear** project.
 :maxdepth: 2
 :caption: Contents
 
+getting_started
 flutter
 ios
 java
