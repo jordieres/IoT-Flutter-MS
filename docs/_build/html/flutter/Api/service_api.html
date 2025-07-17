@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ServiceApi.dart &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="iOS Module" href="../../ios.html" />
+    <link rel="prev" title="SmartBandApi.dart" href="smartband_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Flutter Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../main_dart.html">main.dart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../splash_screen.html">splash_screen.dart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metawear_api.html">    MetaWear API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria_api.html">    Sensoria API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartband_api.html">    Smart Band API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">    Service API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform-channel-definition">Platform Channel Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sendidnumber-string-refnumber"><code class="docutils literal notranslate"><span class="pre">sendIdNumber(String</span> <span class="pre">refNumber)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sendappversion-string-appversion"><code class="docutils literal notranslate"><span class="pre">sendAppVersion(String</span> <span class="pre">appVersion)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ios.html">iOS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Flutter Module</a></li>
+      <li class="breadcrumb-item active">ServiceApi.dart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/flutter/Api/service_api.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="serviceapi-dart">
+<h1>ServiceApi.dart<a class="headerlink" href="#serviceapi-dart" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#imports" id="id2">Imports</a></p></li>
+<li><p><a class="reference internal" href="#platform-channel-definition" id="id3">Platform Channel Definition</a></p></li>
+<li><p><a class="reference internal" href="#methods" id="id4">Methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sendidnumber-string-refnumber" id="id5"><code class="docutils literal notranslate"><span class="pre">sendIdNumber(String</span> <span class="pre">refNumber)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#sendappversion-string-appversion" id="id6"><code class="docutils literal notranslate"><span class="pre">sendAppVersion(String</span> <span class="pre">appVersion)</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#notes" id="id7">Notes</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ServiceApi.dart</span></code> provides a platform channel interface to communicate reference ID numbers and app version information to the native Android/iOS layers of the HealthyWear application.</p>
+</section>
+<hr class="docutils" />
+<section id="imports">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Imports</a><a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter/services.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:async&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Used to define and invoke asynchronous method channel communication between Flutter and native code.</p>
+</section>
+<hr class="docutils" />
+<section id="platform-channel-definition">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Platform Channel Definition</a><a class="headerlink" href="#platform-channel-definition" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">_platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MethodChannel</span><span class="p">(</span><span class="s1">&#39;com.example.healthywear/service&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Defines a method channel with the name <code class="docutils literal notranslate"><span class="pre">com.example.healthywear/service</span></code> used to communicate with the platform-specific code.</p>
+</section>
+<hr class="docutils" />
+<section id="methods">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Methods</a><a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<section id="sendidnumber-string-refnumber">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">sendIdNumber(String</span> <span class="pre">refNumber)</span></code></a><a class="headerlink" href="#sendidnumber-string-refnumber" title="Link to this heading"></a></h3>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span><span class="w"> </span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sendIdNumber</span><span class="p">(</span><span class="kt">String</span><span class="w"> </span><span class="n">refNumber</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">await</span><span class="w"> </span><span class="n">_platform</span><span class="p">.</span><span class="n">invokeMethod</span><span class="p">(</span><span class="s1">&#39;sendIdNumber&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;refNumber&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">refNumber</span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="kd">on</span><span class="w"> </span><span class="n">PlatformException</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Failed to send Id ref number: &#39;</span><span class="si">${</span><span class="n">e</span><span class="p">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Sends a reference number (<code class="docutils literal notranslate"><span class="pre">refNumber</span></code>) to the native layer.</p></li>
+<li><p>Catches and logs any errors from the platform side.</p></li>
+</ul>
+</section>
+<section id="sendappversion-string-appversion">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">sendAppVersion(String</span> <span class="pre">appVersion)</span></code></a><a class="headerlink" href="#sendappversion-string-appversion" title="Link to this heading"></a></h3>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span><span class="w"> </span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sendAppVersion</span><span class="p">(</span><span class="kt">String</span><span class="w"> </span><span class="n">appVersion</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">await</span><span class="w"> </span><span class="n">_platform</span><span class="p">.</span><span class="n">invokeMethod</span><span class="p">(</span><span class="s1">&#39;sendAppVersion&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;appVersion&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">appVersion</span><span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Sends the app version string to the native layer for logging or analytics.</p></li>
+<li><p>Does not handle exceptions explicitly here.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="notes">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Notes</a><a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Native implementations must define methods for <code class="docutils literal notranslate"><span class="pre">sendIdNumber</span></code> and <code class="docutils literal notranslate"><span class="pre">sendAppVersion</span></code> under the given channel.</p></li>
+<li><p>Typically used during app initialization or user identification flow.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="smartband_api.html" class="btn btn-neutral float-left" title="SmartBandApi.dart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../ios.html" class="btn btn-neutral float-right" title="iOS Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

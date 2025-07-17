@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="flutter/overview.html" />
+    <link rel="next" title="iOS Module" href="ios.html" />
     <link rel="prev" title="Overview" href="getting_started.html" /> 
 </head>
 
@@ -47,7 +47,35 @@
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html#getting-started">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Flutter Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a><ul class="simple">
+<li class="toctree-l2"><a class="reference internal" href="#main-dart">main.dart</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entry-point">Entry Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#myapp-widget"><code class="docutils literal notranslate"><span class="pre">MyApp</span></code> Widget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#myappstate-class"><code class="docutils literal notranslate"><span class="pre">_MyAppState</span></code> Class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fields">Fields</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initstate"><code class="docutils literal notranslate"><span class="pre">initState()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initialize"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ui-theming">UI Theming</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#localization">Localization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#background-services-initialization">Background Services Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#splash-screen-dart">splash_screen.dart</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#splashscreen-widget"><code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code> Widget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#splashscreenstate-class"><code class="docutils literal notranslate"><span class="pre">_SplashScreenState</span></code> Class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">initState()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#loadversion"><code class="docutils literal notranslate"><span class="pre">_loadVersion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -83,11 +111,324 @@
              
   <section id="flutter-module">
 <h1>Flutter Module<a class="headerlink" href="#flutter-module" title="Link to this heading"></a></h1>
-<p>Instructions and guides for the Flutter app.</p>
-<section id="contents">
-<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
-<div class="toctree-wrapper compound">
+<section id="main-dart">
+<h2>main.dart<a class="headerlink" href="#main-dart" title="Link to this heading"></a></h2>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id6">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#imports" id="id7">Imports</a></p></li>
+<li><p><a class="reference internal" href="#entry-point" id="id8">Entry Point</a></p></li>
+<li><p><a class="reference internal" href="#myapp-widget" id="id9"><code class="docutils literal notranslate"><span class="pre">MyApp</span></code> Widget</a></p></li>
+<li><p><a class="reference internal" href="#myappstate-class" id="id10"><code class="docutils literal notranslate"><span class="pre">_MyAppState</span></code> Class</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fields" id="id11">Fields</a></p></li>
+<li><p><a class="reference internal" href="#initstate" id="id12"><code class="docutils literal notranslate"><span class="pre">initState()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#initialize" id="id13"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#build" id="id14"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ui-theming" id="id15">UI Theming</a></p></li>
+<li><p><a class="reference internal" href="#localization" id="id16">Localization</a></p></li>
+<li><p><a class="reference internal" href="#background-services-initialization" id="id17">Background Services Initialization</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">main.dart</span></code> is the <strong>entry point</strong> of the Flutter application. It initializes platform services, loads localization, and renders the first widget (<code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code>). It also handles theming and prepares the app to interface with background services and sensor modules.</p>
+</section>
+<hr class="docutils" />
+<section id="imports">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Imports</a><a class="headerlink" href="#imports" title="Link to this heading"></a></h3>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Service/StatusChecker.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Api/SmartBandApi.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Api/MetaWearApi.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Api/SensoriaApi.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Api/ServiceApi.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Service/Uploader.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Service/AppLocal.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Service/NotificationHandler.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Service/BackgroundHandling.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;splash_screen.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;Service/share_files.dart&#39;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:async&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:convert&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:io&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:math&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:ui&#39;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter_spinkit/flutter_spinkit.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:google_fonts/google_fonts.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:intl/intl.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter_localizations/flutter_localizations.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:shared_preferences/shared_preferences.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:package_info_plus/package_info_plus.dart&#39;</span><span class="p">;</span>
+</pre></div>
 </div>
+<ul class="simple">
+<li><p><strong>Custom Modules</strong>: APIs for wearable sensors and services (Uploader, Notification, etc.)</p></li>
+<li><p><strong>Localization &amp; Fonts</strong>: <code class="docutils literal notranslate"><span class="pre">intl</span></code>, <code class="docutils literal notranslate"><span class="pre">google_fonts</span></code>, <code class="docutils literal notranslate"><span class="pre">flutter_localizations</span></code></p></li>
+<li><p><strong>Native APIs</strong>: <code class="docutils literal notranslate"><span class="pre">package_info_plus</span></code>, file handling, background tasks</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="entry-point">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Entry Point</a><a class="headerlink" href="#entry-point" title="Link to this heading"></a></h3>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">WidgetsFlutterBinding</span><span class="p">.</span><span class="n">ensureInitialized</span><span class="p">();</span>
+<span class="w">  </span><span class="n">runApp</span><span class="p">(</span><span class="n">MyApp</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">WidgetsFlutterBinding.ensureInitialized()</span></code> is required before calling platform channels or initializing async services.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">runApp(MyApp())</span></code> starts the widget tree with the root <code class="docutils literal notranslate"><span class="pre">MyApp</span></code>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="myapp-widget">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">MyApp</span></code> Widget</a><a class="headerlink" href="#myapp-widget" title="Link to this heading"></a></h3>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nc">MyApp</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">StatefulWidget</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">_MyAppState</span><span class="w"> </span><span class="n">createState</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_MyAppState</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">StatefulWidget</span></code> is used here to dynamically handle localization and startup logic.</p>
+</section>
+<hr class="docutils" />
+<section id="myappstate-class">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">_MyAppState</span></code> Class</a><a class="headerlink" href="#myappstate-class" title="Link to this heading"></a></h3>
+<p>Controls the app’s internal startup routine, theming, and locale handling.</p>
+<section id="fields">
+<h4><a class="toc-backref" href="#id11" role="doc-backlink">Fields</a><a class="headerlink" href="#fields" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">Locale</span><span class="o">?</span><span class="w"> </span><span class="n">_locale</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">isReady</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_locale</span></code>: stores the user’s current locale (used in internationalization).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isReady</span></code>: flag to delay rendering the main screen until initialization finishes.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="initstate">
+<h4><a class="toc-backref" href="#id12" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">initState()</span></code></a><a class="headerlink" href="#initstate" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="nd">@override</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">initState</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">super</span><span class="p">.</span><span class="n">initState</span><span class="p">();</span>
+<span class="w">  </span><span class="n">initialize</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Triggers <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> once the widget is mounted. This prepares localization and preferences.</p>
+</section>
+<hr class="docutils" />
+<section id="initialize">
+<h4><a class="toc-backref" href="#id13" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a><a class="headerlink" href="#initialize" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">initialize</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">await</span><span class="w"> </span><span class="n">AppLocal</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">prefs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">SharedPreferences</span><span class="p">.</span><span class="n">getInstance</span><span class="p">();</span>
+<span class="w">  </span><span class="n">setState</span><span class="p">(()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">_locale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AppLocal</span><span class="p">.</span><span class="n">getLocaleFromPrefs</span><span class="p">(</span><span class="n">prefs</span><span class="p">);</span>
+<span class="w">    </span><span class="n">isReady</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Initializes app language system using a helper (<code class="docutils literal notranslate"><span class="pre">AppLocal</span></code>)</p></li>
+<li><p>Retrieves <code class="docutils literal notranslate"><span class="pre">SharedPreferences</span></code> for persistent locale</p></li>
+<li><p>Once complete, updates the widget state to show the interface</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="build">
+<h4><a class="toc-backref" href="#id14" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a><a class="headerlink" href="#build" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="nd">@override</span>
+<span class="n">Widget</span><span class="w"> </span><span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isReady</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Center</span><span class="p">(</span><span class="nl">child:</span><span class="w"> </span><span class="n">CircularProgressIndicator</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">MaterialApp</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">debugShowCheckedModeBanner:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">locale:</span><span class="w"> </span><span class="n">_locale</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">supportedLocales:</span><span class="w"> </span><span class="n">AppLocal</span><span class="p">.</span><span class="n">supportedLocales</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">localizationsDelegates:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="n">AppLocal</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">      </span><span class="n">GlobalMaterialLocalizations</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">      </span><span class="n">GlobalWidgetsLocalizations</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">      </span><span class="n">GlobalCupertinoLocalizations</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nl">theme:</span><span class="w"> </span><span class="n">ThemeData</span><span class="p">(...),</span>
+<span class="w">    </span><span class="nl">home:</span><span class="w"> </span><span class="n">SplashScreen</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Waits until <code class="docutils literal notranslate"><span class="pre">isReady</span></code> before showing the main interface.</p></li>
+<li><p>Configures localization via delegates.</p></li>
+<li><p>Loads the first screen (<code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code>) after setting locale.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ui-theming">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">UI Theming</a><a class="headerlink" href="#ui-theming" title="Link to this heading"></a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">ThemeData</span></code> block is applied, likely styled elsewhere. It can include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">primaryColor</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaffoldBackgroundColor</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">textTheme</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">appBarTheme</span></code></p></li>
+</ul>
+<p>These themes apply globally across the app.</p>
+</section>
+<hr class="docutils" />
+<section id="localization">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Localization</a><a class="headerlink" href="#localization" title="Link to this heading"></a></h3>
+<p>The app supports multiple locales via:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AppLocal</span></code> (custom handler)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flutter_localizations</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">intl</span></code></p></li>
+</ul>
+<p>It uses <code class="docutils literal notranslate"><span class="pre">SharedPreferences</span></code> to persist user locale settings across app restarts.</p>
+</section>
+<hr class="docutils" />
+<section id="background-services-initialization">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Background Services Initialization</a><a class="headerlink" href="#background-services-initialization" title="Link to this heading"></a></h3>
+<p>These are imported but not explicitly initialized in <code class="docutils literal notranslate"><span class="pre">main.dart</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Uploader</span></code>: Handles telemetry aggregation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StatusChecker</span></code>: Checks BLE connectivity</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BackgroundHandling</span></code>: Keeps services alive in background</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NotificationHandler</span></code>: Likely initializes foreground and background push notifications</p></li>
+</ul>
+<p>Initialization might happen elsewhere (e.g., in <code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code>, or background isolates).</p>
+<!-- /////////////////////////////////////////// -->
+</section>
+</section>
+<section id="splash-screen-dart">
+<h2>splash_screen.dart<a class="headerlink" href="#splash-screen-dart" title="Link to this heading"></a></h2>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#id2" id="id18">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id19">Imports</a></p></li>
+<li><p><a class="reference internal" href="#splashscreen-widget" id="id20"><code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code> Widget</a></p></li>
+<li><p><a class="reference internal" href="#splashscreenstate-class" id="id21"><code class="docutils literal notranslate"><span class="pre">_SplashScreenState</span></code> Class</a></p>
+<ul>
+<li><p><a class="reference internal" href="#variables" id="id22">Variables</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id23"><code class="docutils literal notranslate"><span class="pre">initState()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#loadversion" id="id24"><code class="docutils literal notranslate"><span class="pre">_loadVersion()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#id5" id="id25"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dependencies" id="id26">Dependencies</a></p></li>
+</ul>
+</nav>
+<section id="id2">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Purpose</a><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>This file defines the <code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code> widget, a simple introductory screen shown during app startup. It retrieves the app version and displays the logo and version text.</p>
+</section>
+<hr class="docutils" />
+<section id="id3">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Imports</a><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:google_fonts/google_fonts.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:package_info_plus/package_info_plus.dart&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Flutter Core</strong>: UI and layout.</p></li>
+<li><p><strong>Google Fonts</strong>: Custom text styling.</p></li>
+<li><p><strong>Package Info Plus</strong>: Fetches the app version dynamically.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="splashscreen-widget">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code> Widget</a><a class="headerlink" href="#splashscreen-widget" title="Link to this heading"></a></h3>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nc">SplashScreen</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">StatefulWidget</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">_SplashScreenState</span><span class="w"> </span><span class="n">createState</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_SplashScreenState</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">StatefulWidget</span></code> that holds dynamic UI logic, such as retrieving the version at runtime.</p>
+</section>
+<hr class="docutils" />
+<section id="splashscreenstate-class">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">_SplashScreenState</span></code> Class</a><a class="headerlink" href="#splashscreenstate-class" title="Link to this heading"></a></h3>
+<section id="variables">
+<h4><a class="toc-backref" href="#id22" role="doc-backlink">Variables</a><a class="headerlink" href="#variables" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kt">String</span><span class="w"> </span><span class="n">_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Stores the version number fetched from the platform.</p>
+</section>
+<hr class="docutils" />
+<section id="id4">
+<h4><a class="toc-backref" href="#id23" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">initState()</span></code></a><a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="nd">@override</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">initState</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">super</span><span class="p">.</span><span class="n">initState</span><span class="p">();</span>
+<span class="w">  </span><span class="n">_loadVersion</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Initializes the widget and calls the method to load the app version.</p>
+</section>
+<hr class="docutils" />
+<section id="loadversion">
+<h4><a class="toc-backref" href="#id24" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">_loadVersion()</span></code></a><a class="headerlink" href="#loadversion" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_loadVersion</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">packageInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">PackageInfo</span><span class="p">.</span><span class="n">fromPlatform</span><span class="p">();</span>
+<span class="w">  </span><span class="n">setState</span><span class="p">(()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">packageInfo</span><span class="p">.</span><span class="n">version</span><span class="p">;</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">PackageInfo.fromPlatform()</span></code> to retrieve the version and updates the UI.</p>
+</section>
+<hr class="docutils" />
+<section id="id5">
+<h4><a class="toc-backref" href="#id25" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a><a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="nd">@override</span>
+<span class="n">Widget</span><span class="w"> </span><span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Size</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MediaQuery</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="n">size</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The layout is composed of:</p>
+<ul class="simple">
+<li><p>A column with a logo (<code class="docutils literal notranslate"><span class="pre">Image.asset</span></code>)</p></li>
+<li><p>Two <code class="docutils literal notranslate"><span class="pre">Text</span></code> widgets: one for app name and one for version</p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">GoogleFonts.roboto</span></code> for styling</p></li>
+</ul>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">Column</span><span class="p">(</span>
+<span class="w">  </span><span class="nl">mainAxisAlignment:</span><span class="w"> </span><span class="n">MainAxisAlignment</span><span class="p">.</span><span class="n">center</span><span class="p">,</span>
+<span class="w">  </span><span class="nl">children:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="n">Image</span><span class="p">.</span><span class="n">asset</span><span class="p">(</span><span class="s1">&#39;assets/logo.png&#39;</span><span class="p">,</span><span class="w"> </span><span class="nl">width:</span><span class="w"> </span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">0.4</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Text</span><span class="p">(</span><span class="s1">&#39;HealthyWear&#39;</span><span class="p">,</span><span class="w"> </span><span class="nl">style:</span><span class="w"> </span><span class="n">GoogleFonts</span><span class="p">.</span><span class="n">roboto</span><span class="p">(...)),</span>
+<span class="w">    </span><span class="n">Text</span><span class="p">(</span><span class="s1">&#39;v</span><span class="si">$</span><span class="n">_version</span><span class="s1">&#39;</span><span class="p">,</span><span class="w"> </span><span class="nl">style:</span><span class="w"> </span><span class="n">GoogleFonts</span><span class="p">.</span><span class="n">roboto</span><span class="p">(...)),</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="p">),</span>
+</pre></div>
+</div>
+<p>Ensure <code class="docutils literal notranslate"><span class="pre">logo.png</span></code> is present in <code class="docutils literal notranslate"><span class="pre">assets/</span></code> and listed in <code class="docutils literal notranslate"><span class="pre">pubspec.yaml</span></code>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="dependencies">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Dependencies</a><a class="headerlink" href="#dependencies" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">assets/logo.png</span></code> — image must exist in asset bundle.</p></li>
+<li><p>Declared in <code class="docutils literal notranslate"><span class="pre">pubspec.yaml</span></code> under <code class="docutils literal notranslate"><span class="pre">assets:</span></code> section.</p></li>
+</ul>
+</section>
 </section>
 </section>
 
@@ -96,7 +437,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="getting_started.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="flutter/overview.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ios.html" class="btn btn-neutral float-right" title="iOS Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

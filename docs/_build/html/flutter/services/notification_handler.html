@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NotificationHandler.dart &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Flutter Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ios.html">iOS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">NotificationHandler.dart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/flutter/services/notification_handler.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="notificationhandler-dart">
+<h1>NotificationHandler.dart<a class="headerlink" href="#notificationhandler-dart" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#imports" id="id2">Imports</a></p></li>
+<li><p><a class="reference internal" href="#notificationinfo-class" id="id3">NotificationInfo Class</a></p></li>
+<li><p><a class="reference internal" href="#notificationhandler-class" id="id4">NotificationHandler Class</a></p></li>
+<li><p><a class="reference internal" href="#notification-intervals" id="id5">Notification Intervals</a></p>
+<ul>
+<li><p><a class="reference internal" href="#categorized-intervals" id="id6">Categorized Intervals:</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#functions-not-fully-listed-in-preview-but-assumed" id="id7">Functions (Not fully listed in preview but assumed)</a></p></li>
+<li><p><a class="reference internal" href="#usage-context" id="id8">Usage Context</a></p></li>
+<li><p><a class="reference internal" href="#notes" id="id9">Notes</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">NotificationHandler.dart</span></code> manages the logic for issuing notifications in the background. It uses <code class="docutils literal notranslate"><span class="pre">flutter_local_notifications</span></code> to alert the user when data collection intervals exceed expected limits, device behavior is abnormal, or battery status must be checked.</p>
+</section>
+<hr class="docutils" />
+<section id="imports">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Imports</a><a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter_local_notifications/flutter_local_notifications.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter/services.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:convert&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:async&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;StatusChecker.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:io&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:path_provider/path_provider.dart&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Used for:</p>
+<ul class="simple">
+<li><p>Local notifications</p></li>
+<li><p>File I/O</p></li>
+<li><p>Checking system/device status</p></li>
+<li><p>Persisting data</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="notificationinfo-class">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">NotificationInfo Class</a><a class="headerlink" href="#notificationinfo-class" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nc">NotificationInfo</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">deviceName</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">deviceIndex</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">activityName</span><span class="p">;</span>
+<span class="w">  </span><span class="n">DateTime</span><span class="w"> </span><span class="n">lastNotificationTime</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Stores information about each device’s last notification.</p></li>
+<li><p>Prevents sending duplicate notifications too frequently.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="notificationhandler-class">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">NotificationHandler Class</a><a class="headerlink" href="#notificationhandler-class" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nc">NotificationHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">FlutterLocalNotificationsPlugin</span><span class="w"> </span><span class="n">flutterLocalNotificationsPlugin</span><span class="p">;</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">NotificationInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sentNotifications</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Manages all notifications using Flutter’s notification plugin.</p></li>
+<li><p>Maintains a list of previously sent notifications to avoid redundancy.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="notification-intervals">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Notification Intervals</a><a class="headerlink" href="#notification-intervals" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">notification_IntervalMinutes_MMR_SensorFusion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">notification_IntervalMinutes_Sensoria</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">notification_IntervalMinutes_SmartBand_HR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">;</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>These intervals define the minimum time (in minutes) before a similar notification can be sent again for each device and metric.</p>
+<section id="categorized-intervals">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Categorized Intervals:</a><a class="headerlink" href="#categorized-intervals" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>MetaWear</strong>: Sensor Fusion, Temperature, Ambient Light, WriteFile, Battery</p></li>
+<li><p><strong>Sensoria</strong>: Motion/Battery/File</p></li>
+<li><p><strong>SmartBand</strong>: Heart Rate, Blood Pressure, Step Count</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="functions-not-fully-listed-in-preview-but-assumed">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Functions (Not fully listed in preview but assumed)</a><a class="headerlink" href="#functions-not-fully-listed-in-preview-but-assumed" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sendNotification(...)</span></code>: Sends an alert to the user.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shouldNotify(...)</span></code>: Checks whether a notification should be sent based on time elapsed and previous records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">saveToFile(...)</span> <span class="pre">/</span> <span class="pre">loadFromFile(...)</span></code>: Manages persistence of sent notifications.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">initializePlugin()</span></code>: Likely sets up the plugin and notification channel.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="usage-context">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Usage Context</a><a class="headerlink" href="#usage-context" title="Link to this heading"></a></h2>
+<p>Used in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BackgroundHandling.dart</span></code> as the default notification manager</p></li>
+<li><p>BLE service status monitoring and alerts</p></li>
+<li><p>Error reporting for data sensors</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="notes">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Notes</a><a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<p>This system helps ensure the user is informed about sensor-related issues, like inactivity or battery drain, without being spammed repeatedly.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

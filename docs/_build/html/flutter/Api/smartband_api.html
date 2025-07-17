@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartBandApi.dart &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="iOS Module" href="../../ios.html" />
+    <link rel="prev" title="SensoriaApi.dart" href="sensoria_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Flutter Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../main_dart.html">main.dart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../splash_screen.html">splash_screen.dart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metawear_api.html">    MetaWear API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria_api.html">    Sensoria API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">    Smartband API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#band-discovery-and-connection">Band Discovery and Connection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ble-device-scanning">BLE Device Scanning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#connect-to-band">Connect to Band</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#data-collection">Data Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permissions">Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#localization-support">Localization Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-storage">File Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ios.html">iOS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Flutter Module</a></li>
+      <li class="breadcrumb-item active">SmartBandApi.dart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/flutter/Api/smartband_api.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="smartbandapi-dart">
+<h1>SmartBandApi.dart<a class="headerlink" href="#smartbandapi-dart" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#imports" id="id2">Imports</a></p></li>
+<li><p><a class="reference internal" href="#band-discovery-and-connection" id="id3">Band Discovery and Connection</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ble-device-scanning" id="id4">BLE Device Scanning</a></p></li>
+<li><p><a class="reference internal" href="#connect-to-band" id="id5">Connect to Band</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#data-collection" id="id6">Data Collection</a></p></li>
+<li><p><a class="reference internal" href="#permissions" id="id7">Permissions</a></p></li>
+<li><p><a class="reference internal" href="#localization-support" id="id8">Localization Support</a></p></li>
+<li><p><a class="reference internal" href="#file-storage" id="id9">File Storage</a></p></li>
+<li><p><a class="reference internal" href="#dependencies" id="id10">Dependencies</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>This file manages communication between the Flutter app and smart bands using the <code class="docutils literal notranslate"><span class="pre">veepoo_sdk</span></code>. It controls connection handling, data collection (e.g., heart rate, SpO2, blood pressure), and interaction with native device features.</p>
+</section>
+<hr class="docutils" />
+<section id="imports">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Imports</a><a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:convert&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:async&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:io&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:veepoo_sdk/veepoo_sdk.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:veepoo_sdk/model/search_result.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:path_provider/path_provider.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:permission_handler/permission_handler.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:fluttertoast/fluttertoast.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:veepoo_sdk/model/bp_data.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:veepoo_sdk/model/spo2h_data.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:veepoo_sdk/model/origin_data.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:veepoo_sdk/model/origin_v3_data.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:veepoo_sdk/model/spo2h_origin_data.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:geolocator/geolocator.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter_reactive_ble/flutter_reactive_ble.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:collection/collection.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter_localizations/flutter_localizations.dart&#39;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;../Service/AppLocal.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;../Service/StatusChecker.dart&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">veepoo_sdk</span></code> to interface with smart band hardware.</p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">permission_handler</span></code>, <code class="docutils literal notranslate"><span class="pre">geolocator</span></code>, <code class="docutils literal notranslate"><span class="pre">fluttertoast</span></code>, and I/O libraries.</p></li>
+<li><p>Supports localization and BLE checks.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="band-discovery-and-connection">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Band Discovery and Connection</a><a class="headerlink" href="#band-discovery-and-connection" title="Link to this heading"></a></h2>
+<p>The SDK supports BLE scanning and connection. The following components are involved:</p>
+<section id="ble-device-scanning">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">BLE Device Scanning</a><a class="headerlink" href="#ble-device-scanning" title="Link to this heading"></a></h3>
+<p>Smart bands are scanned using the <code class="docutils literal notranslate"><span class="pre">veepoo_sdk</span></code> methods.</p>
+</section>
+<section id="connect-to-band">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Connect to Band</a><a class="headerlink" href="#connect-to-band" title="Link to this heading"></a></h3>
+<p>Connects to a selected smart band using <code class="docutils literal notranslate"><span class="pre">SearchResult</span></code> or a device ID.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="data-collection">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Data Collection</a><a class="headerlink" href="#data-collection" title="Link to this heading"></a></h2>
+<p>Data types supported via the SDK:</p>
+<ul class="simple">
+<li><p><strong>Heart Rate (HR)</strong></p></li>
+<li><p><strong>SpO2 (Oxygen Saturation)</strong></p></li>
+<li><p><strong>Blood Pressure (BP)</strong></p></li>
+<li><p><strong>Step/Activity Data</strong></p></li>
+<li><p><strong>Sleep Data</strong></p></li>
+<li><p><strong>Original Raw Data (v3, SpO2H, etc.)</strong></p></li>
+</ul>
+<p>SDK models used:</p>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">BpData</span><span class="p">,</span><span class="w"> </span><span class="n">Spo2hData</span><span class="p">,</span><span class="w"> </span><span class="n">OriginData</span><span class="p">,</span><span class="w"> </span><span class="n">OriginV3Data</span><span class="p">,</span><span class="w"> </span><span class="n">Spo2hOriginData</span>
+</pre></div>
+</div>
+<p>These classes are parsed and stored using file I/O or memory.</p>
+</section>
+<hr class="docutils" />
+<section id="permissions">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Permissions</a><a class="headerlink" href="#permissions" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">Permission</span><span class="p">.</span><span class="n">location</span>
+<span class="n">Permission</span><span class="p">.</span><span class="n">bluetooth</span>
+<span class="n">Permission</span><span class="p">.</span><span class="n">storage</span>
+</pre></div>
+</div>
+<p>Proper permissions must be requested and handled before BLE scanning or saving files.</p>
+</section>
+<hr class="docutils" />
+<section id="localization-support">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Localization Support</a><a class="headerlink" href="#localization-support" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">AppLocal</span><span class="p">.</span><span class="n">getText</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;some_key&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Localization is integrated using custom <code class="docutils literal notranslate"><span class="pre">AppLocal</span></code> service and <code class="docutils literal notranslate"><span class="pre">flutter_localizations</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="file-storage">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">File Storage</a><a class="headerlink" href="#file-storage" title="Link to this heading"></a></h2>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">path_provider</span></code> and <code class="docutils literal notranslate"><span class="pre">dart:io</span></code> to persist collected data.</p>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">final</span><span class="w"> </span><span class="n">directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">getApplicationDocumentsDirectory</span><span class="p">();</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">${</span><span class="n">directory</span><span class="p">.</span><span class="n">path</span><span class="si">}</span><span class="s1">/smartband_data.json&#39;</span><span class="p">);</span>
+<span class="kd">await</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">writeAsString</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Collected biometric data can be saved for later upload or analysis.</p>
+</section>
+<hr class="docutils" />
+<section id="dependencies">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Dependencies</a><a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">veepoo_sdk</span></code>: Core SDK for smart band communication</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geolocator</span></code>, <code class="docutils literal notranslate"><span class="pre">permission_handler</span></code>, <code class="docutils literal notranslate"><span class="pre">fluttertoast</span></code>: for runtime environment setup</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AppLocal</span></code>: For localized UI messages</p></li>
+<li><p>Native Bluetooth and BLE permission support</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sensoria_api.html" class="btn btn-neutral float-left" title="SensoriaApi.dart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../ios.html" class="btn btn-neutral float-right" title="iOS Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
