@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BackgroundHandling.dart &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Flutter Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ios.html">iOS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">BackgroundHandling.dart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/flutter/services/background_handling.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="backgroundhandling-dart">
+<h1>BackgroundHandling.dart<a class="headerlink" href="#backgroundhandling-dart" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#key-imports" id="id2">Key Imports</a></p></li>
+<li><p><a class="reference internal" href="#callback-dispatcher" id="id3">Callback Dispatcher</a></p></li>
+<li><p><a class="reference internal" href="#notification-setup" id="id4">Notification Setup</a></p></li>
+<li><p><a class="reference internal" href="#integration-with-other-services" id="id5">Integration with Other Services</a></p></li>
+<li><p><a class="reference internal" href="#tasks" id="id6">Tasks</a></p></li>
+<li><p><a class="reference internal" href="#platform-notes" id="id7">Platform Notes</a></p></li>
+<li><p><a class="reference internal" href="#integration-in-main-dart" id="id8">Integration in <code class="docutils literal notranslate"><span class="pre">main.dart</span></code></a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>This file manages background tasks using the <code class="docutils literal notranslate"><span class="pre">workmanager</span></code> plugin. It schedules, configures, and executes background uploads and notification handling for data collected by the app.</p>
+</section>
+<hr class="docutils" />
+<section id="key-imports">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Key Imports</a><a class="headerlink" href="#key-imports" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:async&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;dart:io&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:path_provider/path_provider.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:shared_preferences/shared_preferences.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:workmanager/workmanager.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:flutter_local_notifications/flutter_local_notifications.dart&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">workmanager</span></code>: Schedules background tasks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flutter_local_notifications</span></code>: Manages Android local notifications</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shared_preferences</span></code>: Stores the current app language</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">path_provider</span></code>: Used for file system access</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="callback-dispatcher">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Callback Dispatcher</a><a class="headerlink" href="#callback-dispatcher" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="n">callbackDispatcher</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Main entry point for <code class="docutils literal notranslate"><span class="pre">Workmanager</span></code> to execute background jobs. Inside it:</p>
+<ul class="simple">
+<li><p>Initializes local notification plugin</p></li>
+<li><p>Creates Android notification channel</p></li>
+<li><p>Reads preferred language from shared preferences</p></li>
+<li><p>Calls <code class="docutils literal notranslate"><span class="pre">checkUploadStatus</span></code> task handler</p></li>
+</ul>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">final</span><span class="w"> </span><span class="n">prefs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">SharedPreferences</span><span class="p">.</span><span class="n">getInstance</span><span class="p">();</span>
+<span class="kt">String</span><span class="w"> </span><span class="n">languageCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prefs</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="s1">&#39;languageCode&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">&#39;es&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="notification-setup">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Notification Setup</a><a class="headerlink" href="#notification-setup" title="Link to this heading"></a></h2>
+<p>Creates Android-specific channel for upload notifications:</p>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">AndroidNotificationChannel</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AndroidNotificationChannel</span><span class="p">(</span>
+<span class="w">  </span><span class="s1">&#39;upload_channel&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="s1">&#39;Data Upload Notifications&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nl">importance:</span><span class="w"> </span><span class="n">Importance</span><span class="p">.</span><span class="n">high</span><span class="p">,</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>This ensures the OS can show relevant notifications even when the app is inactive.</p>
+</section>
+<hr class="docutils" />
+<section id="integration-with-other-services">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Integration with Other Services</a><a class="headerlink" href="#integration-with-other-services" title="Link to this heading"></a></h2>
+<p>This file relies on:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NotificationHandler.dart</span></code>: For managing localized and platform-specific notifications</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Uploader.dart</span></code>: To check and perform data uploads</p></li>
+</ul>
+<p>These services are invoked when <code class="docutils literal notranslate"><span class="pre">Workmanager</span></code> executes the task.</p>
+</section>
+<hr class="docutils" />
+<section id="tasks">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Tasks</a><a class="headerlink" href="#tasks" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">task</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">case</span><span class="w"> </span><span class="s1">&#39;checkUploadStatus&#39;</span><span class="o">:</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">checkUploadStatus</span><span class="p">(</span><span class="n">flutterLocalNotificationsPlugin</span><span class="p">,</span><span class="w"> </span><span class="n">languageCode</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">checkUploadStatus</span></code> function is assumed to check whether data needs to be uploaded, trigger an upload, and notify the user.</p>
+</section>
+<hr class="docutils" />
+<section id="platform-notes">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Platform Notes</a><a class="headerlink" href="#platform-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Currently Android-only behavior is implemented.</p></li>
+<li><p>iOS implementation would require background fetch via different plugins or native code.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="integration-in-main-dart">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Integration in <code class="docutils literal notranslate"><span class="pre">main.dart</span></code></a><a class="headerlink" href="#integration-in-main-dart" title="Link to this heading"></a></h2>
+<p>Ensure this is included when initializing the app:</p>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">Workmanager</span><span class="p">().</span><span class="n">initialize</span><span class="p">(</span><span class="n">callbackDispatcher</span><span class="p">,</span><span class="w"> </span><span class="nl">isInDebugMode:</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

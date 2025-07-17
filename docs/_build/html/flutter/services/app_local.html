@@ -1,0 +1,227 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AppLocal.dart &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Flutter Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ios.html">iOS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">AppLocal.dart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/flutter/services/app_local.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="applocal-dart">
+<h1>AppLocal.dart<a class="headerlink" href="#applocal-dart" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#localization-entry-point" id="id2">Localization Entry Point</a></p></li>
+<li><p><a class="reference internal" href="#supported-locales" id="id3">Supported Locales</a></p></li>
+<li><p><a class="reference internal" href="#localization-delegate" id="id4">Localization Delegate</a></p></li>
+<li><p><a class="reference internal" href="#localized-values" id="id5">Localized Values</a></p></li>
+<li><p><a class="reference internal" href="#translation-accessors" id="id6">Translation Accessors</a></p></li>
+<li><p><a class="reference internal" href="#usage" id="id7">Usage</a></p></li>
+<li><p><a class="reference internal" href="#custom-localization-delegate" id="id8">Custom Localization Delegate</a></p>
+<ul>
+<li><p><a class="reference internal" href="#key-methods" id="id9">Key Methods:</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#integration-in-flutter-app" id="id10">Integration in Flutter App</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>This file implements Flutter localization using a custom <code class="docutils literal notranslate"><span class="pre">AppLocalizations</span></code> class and a corresponding <code class="docutils literal notranslate"><span class="pre">LocalizationsDelegate</span></code>. It provides localized strings for English and Spanish, allowing the HealthyWear app to display UI elements in multiple languages.</p>
+</section>
+<hr class="docutils" />
+<section id="localization-entry-point">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Localization Entry Point</a><a class="headerlink" href="#localization-entry-point" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nc">AppLocalizations</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">Locale</span><span class="w"> </span><span class="n">locale</span><span class="p">;</span>
+<span class="w">  </span><span class="n">AppLocalizations</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">locale</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Holds the current locale.</p></li>
+<li><p>Serves as the lookup class for localized values.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="supported-locales">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Supported Locales</a><a class="headerlink" href="#supported-locales" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Locale</span><span class="o">&gt;</span><span class="w"> </span><span class="n">supportedLocales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="n">Locale</span><span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">Locale</span><span class="p">(</span><span class="s1">&#39;es&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+<span class="p">];</span>
+</pre></div>
+</div>
+<p>These define which languages the app supports.</p>
+</section>
+<hr class="docutils" />
+<section id="localization-delegate">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Localization Delegate</a><a class="headerlink" href="#localization-delegate" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">LocalizationsDelegate</span><span class="o">&lt;</span><span class="n">AppLocalizations</span><span class="o">&gt;</span><span class="w"> </span><span class="n">delegate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AppLocalizationsDelegate</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Used in <code class="docutils literal notranslate"><span class="pre">MaterialApp</span></code> to load localized content via <code class="docutils literal notranslate"><span class="pre">AppLocalizationsDelegate</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="localized-values">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Localized Values</a><a class="headerlink" href="#localized-values" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">_localizedValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s1">&#39;en&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Healthy Wear&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id_number&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;ID Number&#39;</span><span class="p">},</span>
+<span class="w">  </span><span class="s1">&#39;es&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;HealthyWear &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id_number&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Número de Referencia&#39;</span><span class="p">},</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Stores translatable strings keyed by language code (<code class="docutils literal notranslate"><span class="pre">'en'</span></code>, <code class="docutils literal notranslate"><span class="pre">'es'</span></code>).</p></li>
+<li><p>Custom method <code class="docutils literal notranslate"><span class="pre">translate(String</span> <span class="pre">key)</span></code> fetches translations dynamically.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="translation-accessors">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Translation Accessors</a><a class="headerlink" href="#translation-accessors" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kt">String</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">title</span>
+<span class="kt">String</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">idNumber</span>
+</pre></div>
+</div>
+<p>Convenient property-style access for common fields in the app.</p>
+</section>
+<hr class="docutils" />
+<section id="usage">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Usage</a><a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>Use anywhere in a widget tree:</p>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">AppLocalizations</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">)</span>
+<span class="n">AppLocalizations</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="n">idNumber</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="custom-localization-delegate">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Custom Localization Delegate</a><a class="headerlink" href="#custom-localization-delegate" title="Link to this heading"></a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nc">AppLocalizationsDelegate</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">LocalizationsDelegate</span><span class="o">&lt;</span><span class="n">AppLocalizations</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Defines how <code class="docutils literal notranslate"><span class="pre">AppLocalizations</span></code> is loaded.</p>
+<section id="key-methods">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Key Methods:</a><a class="headerlink" href="#key-methods" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">isSupported()</span></code>: Checks if the locale is supported</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load()</span></code>: Loads the <code class="docutils literal notranslate"><span class="pre">AppLocalizations</span></code> instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shouldReload()</span></code>: Controls delegate rebuild behavior (always false)</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="integration-in-flutter-app">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Integration in Flutter App</a><a class="headerlink" href="#integration-in-flutter-app" title="Link to this heading"></a></h2>
+<p>You should wire this into your <code class="docutils literal notranslate"><span class="pre">MaterialApp</span></code> like so:</p>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="n">MaterialApp</span><span class="p">(</span>
+<span class="w">  </span><span class="nl">localizationsDelegates:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="n">AppLocalizations</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">    </span><span class="n">GlobalMaterialLocalizations</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">    </span><span class="n">GlobalWidgetsLocalizations</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">    </span><span class="n">GlobalCupertinoLocalizations</span><span class="p">.</span><span class="n">delegate</span><span class="p">,</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nl">supportedLocales:</span><span class="w"> </span><span class="n">AppLocalizations</span><span class="p">.</span><span class="n">supportedLocales</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This will enable multilingual support in your HealthyWear app.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -7,8 +7,9 @@ Welcome to the documentation site for the **HealthyWear** project.
 :caption: Contents
 
 getting_started
-flutter
-ios
+flutter/index
+ios/index
+android/index
 java
 python
 ```

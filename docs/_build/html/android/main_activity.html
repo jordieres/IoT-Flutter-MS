@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MainActivity.java &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="MetaWearHandler.java" href="metawear_handler.html" />
+    <link rel="prev" title="Android Module" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ios/index.html">iOS Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Android Module</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Main Activity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-imports">Key Imports</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#flutter-plugin-apis">Flutter &amp; Plugin APIs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#networking">Networking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metawear-sdk">MetaWear SDK</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#responsibilities">Responsibilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flutter-channels">Flutter Channels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#methodchannels">MethodChannels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eventchannels">EventChannels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#service-binding">Service Binding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#notifications">Notifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#uploads">Uploads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structure">Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform-specific-logic">Platform-Specific Logic</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="metawear_handler.html">MetaWear Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria_handler.html">Sensoria Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensor_service.html">Sensor Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Android Module</a></li>
+      <li class="breadcrumb-item active">MainActivity.java</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/android/main_activity.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mainactivity-java">
+<h1>MainActivity.java<a class="headerlink" href="#mainactivity-java" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#key-imports" id="id2">Key Imports</a></p>
+<ul>
+<li><p><a class="reference internal" href="#flutter-plugin-apis" id="id3">Flutter &amp; Plugin APIs</a></p></li>
+<li><p><a class="reference internal" href="#networking" id="id4">Networking</a></p></li>
+<li><p><a class="reference internal" href="#metawear-sdk" id="id5">MetaWear SDK</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#responsibilities" id="id6">Responsibilities</a></p></li>
+<li><p><a class="reference internal" href="#flutter-channels" id="id7">Flutter Channels</a></p>
+<ul>
+<li><p><a class="reference internal" href="#methodchannels" id="id8">MethodChannels</a></p></li>
+<li><p><a class="reference internal" href="#eventchannels" id="id9">EventChannels</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#service-binding" id="id10">Service Binding</a></p></li>
+<li><p><a class="reference internal" href="#notifications" id="id11">Notifications</a></p></li>
+<li><p><a class="reference internal" href="#uploads" id="id12">Uploads</a></p></li>
+<li><p><a class="reference internal" href="#structure" id="id13">Structure</a></p></li>
+<li><p><a class="reference internal" href="#platform-specific-logic" id="id14">Platform-Specific Logic</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">MainActivity.java</span></code> class acts as the Android entry point for the <strong>HealthyWear</strong> Flutter application. It extends <code class="docutils literal notranslate"><span class="pre">FlutterActivity</span></code> and bridges native Android functionality with Flutter using <code class="docutils literal notranslate"><span class="pre">MethodChannel</span></code> and <code class="docutils literal notranslate"><span class="pre">EventChannel</span></code>. It also manages Bluetooth device scanning and communication for MetaWear and Sensoria sensors.</p>
+</section>
+<hr class="docutils" />
+<section id="key-imports">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Key Imports</a><a class="headerlink" href="#key-imports" title="Link to this heading"></a></h2>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">android.os.Bundle</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.os.Handler</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.util.Log</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.content.pm.PackageManager</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.Manifest</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.bluetooth.BluetoothDevice</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.bluetooth.le.ScanResult</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.app.Notification</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.app.NotificationManager</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.app.NotificationChannel</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">android.os.Build</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">androidx.core.app.ActivityCompat</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">androidx.core.content.ContextCompat</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">androidx.annotation.NonNull</span><span class="p">;</span>
+</pre></div>
+</div>
+<section id="flutter-plugin-apis">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Flutter &amp; Plugin APIs</a><a class="headerlink" href="#flutter-plugin-apis" title="Link to this heading"></a></h3>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">io.flutter.embedding.android.FlutterActivity</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io.flutter.embedding.engine.FlutterEngine</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io.flutter.plugin.common.MethodChannel</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io.flutter.plugin.common.EventChannel</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="networking">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Networking</a><a class="headerlink" href="#networking" title="Link to this heading"></a></h3>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">okhttp3.*</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="metawear-sdk">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">MetaWear SDK</a><a class="headerlink" href="#metawear-sdk" title="Link to this heading"></a></h3>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.mbientlab.metawear.android.BtleService</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="responsibilities">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Responsibilities</a><a class="headerlink" href="#responsibilities" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Bluetooth Permission Handling</strong></p></li>
+<li><p><strong>MetaWear Service Binding</strong></p></li>
+<li><p><strong>File Upload via OkHttp</strong></p></li>
+<li><p><strong>Event Channels for MetaWear and Sensoria status streaming</strong></p></li>
+<li><p><strong>Flutter MethodChannel Handlers for platform interop</strong></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="flutter-channels">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Flutter Channels</a><a class="headerlink" href="#flutter-channels" title="Link to this heading"></a></h2>
+<section id="methodchannels">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">MethodChannels</a><a class="headerlink" href="#methodchannels" title="Link to this heading"></a></h3>
+<p>Handles one-shot requests from Flutter, such as:</p>
+<ul class="simple">
+<li><p>Uploading files to server</p></li>
+<li><p>Initiating sensor commands</p></li>
+<li><p>Querying permission status</p></li>
+</ul>
+</section>
+<section id="eventchannels">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">EventChannels</a><a class="headerlink" href="#eventchannels" title="Link to this heading"></a></h3>
+<p>Enables real-time stream communication to Flutter, such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metawear_connection_status</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sensoria_connection_status</span></code></p></li>
+</ul>
+<p>These push live BLE connection updates into the Dart application UI layer.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="service-binding">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Service Binding</a><a class="headerlink" href="#service-binding" title="Link to this heading"></a></h2>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Intent</span><span class="w"> </span><span class="n">serviceIntent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">BtleService</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+<span class="n">bindService</span><span class="p">(</span><span class="n">serviceIntent</span><span class="p">,</span><span class="w"> </span><span class="n">serviceConnection</span><span class="p">,</span><span class="w"> </span><span class="n">Context</span><span class="p">.</span><span class="na">BIND_AUTO_CREATE</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Binds the Android service used to communicate with MetaWear sensors.</p>
+</section>
+<hr class="docutils" />
+<section id="notifications">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Notifications</a><a class="headerlink" href="#notifications" title="Link to this heading"></a></h2>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">NotificationCompat</span><span class="p">.</span><span class="na">Builder</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NotificationCompat</span><span class="p">.</span><span class="na">Builder</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">CHANNEL_ID</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Custom notifications are created during scanning or error handling.</p>
+</section>
+<hr class="docutils" />
+<section id="uploads">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Uploads</a><a class="headerlink" href="#uploads" title="Link to this heading"></a></h2>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">RequestBody</span><span class="w"> </span><span class="n">fileBody</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RequestBody</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">MediaType</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span><span class="s">&quot;application/octet-stream&quot;</span><span class="p">));</span>
+<span class="n">Request</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Request</span><span class="p">.</span><span class="na">Builder</span><span class="p">().</span><span class="na">url</span><span class="p">(</span><span class="n">serverUrl</span><span class="p">).</span><span class="na">post</span><span class="p">(</span><span class="n">requestBody</span><span class="p">).</span><span class="na">build</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Files are uploaded from Android storage using OkHttp.</p>
+</section>
+<hr class="docutils" />
+<section id="structure">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Structure</a><a class="headerlink" href="#structure" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">configureFlutterEngine()</span></code> sets up all channels and service bindings.</p></li>
+<li><p>Sensors are initialized via <code class="docutils literal notranslate"><span class="pre">SensorHandler</span></code> objects.</p></li>
+<li><p>Communication is managed using <code class="docutils literal notranslate"><span class="pre">EventSink</span></code>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="platform-specific-logic">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Platform-Specific Logic</a><a class="headerlink" href="#platform-specific-logic" title="Link to this heading"></a></h2>
+<p>All Bluetooth and file-handling operations are done through native Android code, while status and results are forwarded to Flutter through interop channels.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Android Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="metawear_handler.html" class="btn btn-neutral float-right" title="MetaWearHandler.java" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -146,8 +146,8 @@ Ensure you have a macOS computer to run Xcode and install all necessary software
 - **MainActivity/MainActivity.swift**: Platform-specific entry points for Android and iOS, respectively.
 
 
-
-## Version 1.0.0
+## Versions
+### Version 1.0.0
 - First release
 - Android native is functional
 
