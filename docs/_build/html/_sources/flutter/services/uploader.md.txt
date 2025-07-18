@@ -113,9 +113,5 @@ Used in:
 - Uses `getExternalStorageDirectory()` for Android.
 - Handles differences for iOS using platform checks.
 
----
 
-### Notes
-
-There’s a commented legacy method for file uploads with TODO markers. If newer method works well on both Android and iOS, you can safely remove the legacy implementation.
 

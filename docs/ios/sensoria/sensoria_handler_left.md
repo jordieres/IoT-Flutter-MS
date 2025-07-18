@@ -108,8 +108,3 @@ Stops the BLE scanning process.
 - This class is highly modular: you can define additional handler classes for the right foot, hand, or other sensors.
 - Designed to interface natively with Flutter using `FlutterEventSink`.
 
----
-
-### Summary
-
-`SensoriaHandlerLeft.swift` is a dedicated BLE manager for left-side Sensoria wearable sensors. It encapsulates device scanning, battery tracking, and stream control for the HealthyWear application, facilitating modular and scalable smart garment integration.

@@ -112,8 +112,4 @@ Clears the `dataBuffer`. Placeholder for future implementation of upload logic (
 
 Prints error messages for debugging or telemetry failure.
 
----
 
-### Summary
-
-`SensoriaHandler.swift` encapsulates BLE device control, data streaming, formatting, and buffering for Sensoria smart socks. It integrates sensor metadata with device identity and prepares structured telemetry for persistent storage or analysis.

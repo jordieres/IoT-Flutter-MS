@@ -1,4 +1,4 @@
-# Services Module
+# Services Modules
 
 ```{toctree}
 :maxdepth: 2

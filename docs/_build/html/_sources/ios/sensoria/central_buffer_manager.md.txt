@@ -84,8 +84,4 @@ private func sendDataToServer(_ data: [String])
 - Parameterize the threshold (currently hardcoded at 1000).
 - Optionally add retry logic if the data fails to send multiple times.
 
----
 
-### Summary
-
-This class acts as a central batching system for handling raw telemetry streams before server synchronization. It’s especially useful in mobile environments with constrained bandwidth or intermittent connectivity.

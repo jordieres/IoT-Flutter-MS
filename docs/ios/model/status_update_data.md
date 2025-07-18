@@ -83,8 +83,4 @@ These structs are consumed by:
 - Background logic that validates whether sensors are still transmitting.
 - UI widgets that display "last seen" times or connection health.
 
----
 
-### Summary
-
-`StatusUpdateData.swift` provides essential runtime metadata containers for healthy and timely operation of sensor data logging. It enables observability and robust error recovery in wearable sensor ecosystems.

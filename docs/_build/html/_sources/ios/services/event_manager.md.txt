@@ -70,8 +70,4 @@ EventManager.shared.dispatchEvent(["status": "connected"])
 - Called by iOS BLE sensor handlers or other iOS logic that needs to report to Dart asynchronously.
 - Simplifies communication by abstracting Flutter stream interface away from business logic.
 
----
 
-### Summary
-
-`EventManager.swift` acts as a tiny but essential abstraction to push structured data from iOS native code to Flutter via `EventChannel`. It is designed for simplicity, thread safety, and reusability.

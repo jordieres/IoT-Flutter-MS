@@ -106,8 +106,4 @@ Used by:
 - Sensor streaming handlers (e.g. `MetaWearHandler`, `SensoriaHandler`)
 - Data upload services in background
 
----
 
-### Summary
-
-`FileHandler.swift` handles the full lifecycle of data persistence: from saving and structuring raw telemetry, to safely compressing and cleaning up. It promotes modularity and ensures data is stored in a standard, readable, and transferable format.

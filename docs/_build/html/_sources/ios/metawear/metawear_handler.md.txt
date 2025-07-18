@@ -98,8 +98,4 @@ Method `getStatusMapJson(board:deviceIndex:) -> String` returns a JSON payload f
 }
 ```
 
----
 
-### Summary
-
-`MetaWearHandler.swift` is the orchestrator of all BLE operations for MetaWear devices in HealthyWear. It robustly handles concurrent boards, data buffering, cleanup, and performance logging. It is a core service layer in the native iOS implementation.

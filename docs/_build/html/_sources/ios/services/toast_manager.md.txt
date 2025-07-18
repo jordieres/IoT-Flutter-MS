@@ -58,8 +58,4 @@ ToastManager.shared.showToast(message: "Sensor connected", in: self)
 - Alerting of a successful file save or error.
 - Displaying non-intrusive status updates in test builds.
 
----
 
-### Summary
-
-`ToastManager.swift` provides a minimal and effective solution for temporary UI alerts. It’s thread-safe, reusable, and requires no custom views, making it ideal for simple debug or UX notifications in the HealthyWear iOS application.
