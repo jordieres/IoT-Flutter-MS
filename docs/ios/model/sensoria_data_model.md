@@ -52,8 +52,3 @@ This structure is used by:
 - File-writing components for exporting logs.
 - Visualization tools for foot pressure and gait analysis.
 
----
-
-### Summary
-
-`SensoriaDataModel.swift` provides a compact and efficient container for high-frequency, multi-sensor data captured from smart socks. It enables synchronized gait and motion tracking across a range of use cases including sports, rehabilitation, and health monitoring.

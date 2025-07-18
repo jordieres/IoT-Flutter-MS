@@ -105,8 +105,4 @@ These structs are typically used:
 - Before writing to disk via `FileHandler.swift`.
 - When displaying recent sensor metrics in debugging or UI.
 
----
 
-### Summary
-
-`SensorFusionDataSample.swift` encapsulates high-resolution multi-axis motion and environmental telemetry for export and visualization. It’s central to time-aligned sensor logging in the HealthyWear iOS BLE architecture.

@@ -81,8 +81,4 @@ Example:
 - When Flutter queries for status, these methods provide serialized snapshots.
 - Ensures real-time visibility and fault tracing for BLE sensors.
 
----
 
-### Summary
-
-`StatusUpdateManager.swift` encapsulates runtime metadata for each sensor family and exposes it in Flutter-friendly JSON. Its single responsibility and clear interface make it easy to integrate and maintain in cross-platform BLE systems.

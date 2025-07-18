@@ -19,7 +19,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="iOS Module" href="../../ios.html" />
+    <link rel="next" title="SmartBandApi.dart" href="smartband_api.html" />
     <link rel="prev" title="MetaWearApi.dart" href="metawear_api.html" /> 
 </head>
 
@@ -47,29 +47,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Flutter Module</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../main_dart.html">main.dart</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../splash_screen.html">splash_screen.dart</a></li>
-<li class="toctree-l2"><a class="reference internal" href="metawear_api.html">    MetaWear API</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">    Sensoria API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#platform-channels">Platform Channels</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#internal-state-callbacks">Internal State &amp; Callbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#setting-the-connection-listener">Setting the Connection Listener</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#event-stream-listener">Event Stream Listener</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#native-method-wrappers">Native Method Wrappers</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#connecttodevice"><code class="docutils literal notranslate"><span class="pre">connectToDevice</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#disconnectfromdevice"><code class="docutils literal notranslate"><span class="pre">disconnectFromDevice</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#vibrate"><code class="docutils literal notranslate"><span class="pre">vibrate</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#startmonitoring-and-stopmonitoring"><code class="docutils literal notranslate"><span class="pre">startMonitoring</span></code> and <code class="docutils literal notranslate"><span class="pre">stopMonitoring</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../main_dart.html">main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../splash_screen.html">splash_screen</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Api Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="metawear_api.html">MetaWear API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sensoria API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#platform-channels">Platform Channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#internal-state-callbacks">Internal State &amp; Callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-the-connection-listener">Setting the Connection Listener</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#event-stream-listener">Event Stream Listener</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#native-method-wrappers">Native Method Wrappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smartband_api.html">Smart Band API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="service_api.html">Service API</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../enums/index.html">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../services/index.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#dartdoc-api-reference">📘 Dartdoc API Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../ios.html">iOS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ios/index.html">iOS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
 </ul>
@@ -89,6 +92,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Flutter Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">API Module</a></li>
       <li class="breadcrumb-item active">SensoriaApi.dart</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/flutter/Api/sensoria_api.md.txt" rel="nofollow"> View page source</a>
@@ -261,7 +265,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="metawear_api.html" class="btn btn-neutral float-left" title="MetaWearApi.dart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../ios.html" class="btn btn-neutral float-right" title="iOS Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="smartband_api.html" class="btn btn-neutral float-right" title="SmartBandApi.dart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

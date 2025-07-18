@@ -109,8 +109,4 @@ Allows switching the language used for this handler’s feedback.
 - Implementation is symmetrical with `SensoriaHandlerLeft`.
 - Use both classes in tandem for dual-device configurations.
 
----
 
-### Summary
-
-`SensoriaHandlerRight.swift` is a clean, modular controller for right-side Sensoria devices, providing scanning, telemetry, localization, and status dispatching. It enhances reusability and device-specific abstraction within the iOS side of the HealthyWear architecture.

@@ -48,8 +48,4 @@ In more advanced versions, this class may include:
 - Start/stop stream commands
 - Battery level or connection status tracking
 
----
 
-### Summary
-
-`MetaWearDevice.swift` provides a skeleton structure for BLE-based MetaWear device access and board communication in the HealthyWear iOS app. It’s foundational for future interaction and management layers.

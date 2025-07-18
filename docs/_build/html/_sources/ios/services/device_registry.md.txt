@@ -109,8 +109,4 @@ Future improvements could include:
 - Persistent storage using `UserDefaults` or `CoreData`.
 - Device health or last-seen flags.
 
----
 
-### Summary
-
-`DeviceRegistry.swift` offers a lightweight, centralized way to manage known wearable devices on the iOS layer. It abstracts device storage away from Flutter and enables clean, fast lookups in a multidevice environment.

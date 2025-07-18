@@ -115,8 +115,3 @@ Used whenever sensor data must be saved with geolocation context. This includes:
 - Smart band sensor streams
 - Motion sensors
 
----
-
-### Summary
-
-`LocationDataManager.swift` provides a lightweight, efficient, and modular way to add GPS context to health data in the HealthyWear iOS app. It integrates smoothly with CoreLocation and encapsulates permission handling, update management, and location injection into the file writing pipeline.

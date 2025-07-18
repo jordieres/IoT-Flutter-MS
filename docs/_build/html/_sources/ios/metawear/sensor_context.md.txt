@@ -69,8 +69,4 @@ This appears to be a previously used or alternate design that stored additional 
 - To associate multiple `MetaWear` devices with their managers.
 - During sensor fusion session setup or teardown.
 
----
 
-### Summary
-
-`SensorContext.swift` provides a clean abstraction to link devices with their controller logic in a memory-safe manner. It’s part of a scalable structure for managing concurrent BLE sensors in the HealthyWear app.

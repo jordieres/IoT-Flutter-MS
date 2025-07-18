@@ -58,8 +58,4 @@ Used extensively throughout the iOS codebase, particularly by:
 - Sensor handlers to identify which data belongs to which device.
 - File naming and metadata during data export.
 
----
 
-### Summary
-
-`DeviceInfo.swift` provides a compact and expressive way to describe and manage wearable BLE devices. It encapsulates both technical and human-readable identifiers and supports scalable, multi-sensor configurations in the HealthyWear app.
