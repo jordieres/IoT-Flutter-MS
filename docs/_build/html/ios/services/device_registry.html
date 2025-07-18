@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeviceRegistry.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="EventManager.swift" href="event_manager.html" />
+    <link rel="prev" title="Services Module" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Services</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Device Registry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-features">Key Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#singleton-design">Singleton Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integration">Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extensibility">Extensibility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="event_manager.html">Event Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file_handler.html">File Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="location_data_manager.html">Location Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="status_update_manager.html">status Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="toast_manager.html">Toast Manager</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensoria/index.html">Sensoria iOS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">iOS Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Services Module</a></li>
+      <li class="breadcrumb-item active">DeviceRegistry.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ios/services/device_registry.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deviceregistry-swift">
+<h1>DeviceRegistry.swift<a class="headerlink" href="#deviceregistry-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#key-features" id="id2">Key Features</a></p></li>
+<li><p><a class="reference internal" href="#singleton-design" id="id3">Singleton Design</a></p></li>
+<li><p><a class="reference internal" href="#properties" id="id4">Properties</a></p></li>
+<li><p><a class="reference internal" href="#methods" id="id5">Methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#register-device" id="id6">Register Device</a></p></li>
+<li><p><a class="reference internal" href="#remove-device" id="id7">Remove Device</a></p></li>
+<li><p><a class="reference internal" href="#get-device-info" id="id8">Get Device Info</a></p></li>
+<li><p><a class="reference internal" href="#get-devices-by-type" id="id9">Get Devices by Type</a></p></li>
+<li><p><a class="reference internal" href="#get-device-type-descriptor" id="id10">Get Device Type Descriptor</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#integration" id="id11">Integration</a></p></li>
+<li><p><a class="reference internal" href="#extensibility" id="id12">Extensibility</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id13">Summary</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">DeviceRegistry.swift</span></code> class acts as a singleton database of connected or known BLE devices (such as MetaWear or Sensoria) on the iOS platform. It provides a centralized structure for registering, accessing, and managing sensor device metadata during runtime.</p>
+</section>
+<hr class="docutils" />
+<section id="key-features">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Key Features</a><a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Maintains a dictionary of <code class="docutils literal notranslate"><span class="pre">DeviceInfo</span></code> objects, indexed by MAC address.</p></li>
+<li><p>Provides lookup, filter, and descriptor utilities for sensor devices.</p></li>
+<li><p>Implements the Singleton pattern using <code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">let</span> <span class="pre">shared</span></code>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="singleton-design">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Singleton Design</a><a class="headerlink" href="#singleton-design" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span> <span class="kd">let</span> <span class="nv">shared</span> <span class="p">=</span> <span class="n">DeviceRegistry</span><span class="p">()</span>
+<span class="kd">private</span> <span class="kd">init</span><span class="p">()</span> <span class="p">{}</span>
+</pre></div>
+</div>
+<p>Ensures a single shared instance of <code class="docutils literal notranslate"><span class="pre">DeviceRegistry</span></code> is used app-wide.</p>
+</section>
+<hr class="docutils" />
+<section id="properties">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Properties</a><a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">var</span> <span class="nv">devices</span> <span class="p">=</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span> <span class="n">DeviceInfo</span><span class="p">]()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Dictionary where keys are MAC addresses.</p></li>
+<li><p>Values are <code class="docutils literal notranslate"><span class="pre">DeviceInfo</span></code> instances containing type, name, etc.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="methods">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Methods</a><a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<section id="register-device">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Register Device</a><a class="headerlink" href="#register-device" title="Link to this heading"></a></h3>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">registerDevice</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">DeviceInfo</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Adds or updates the <code class="docutils literal notranslate"><span class="pre">DeviceInfo</span></code> in the registry.</p>
+</section>
+<section id="remove-device">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Remove Device</a><a class="headerlink" href="#remove-device" title="Link to this heading"></a></h3>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">removeDevice</span><span class="p">(</span><span class="n">macAddress</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Deletes the device entry from the registry.</p>
+</section>
+<section id="get-device-info">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Get Device Info</a><a class="headerlink" href="#get-device-info" title="Link to this heading"></a></h3>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">getDeviceInfo</span><span class="p">(</span><span class="n">macAddress</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">DeviceInfo</span><span class="p">?</span>
+</pre></div>
+</div>
+<p>Returns the stored <code class="docutils literal notranslate"><span class="pre">DeviceInfo</span></code> for a given MAC address.</p>
+</section>
+<section id="get-devices-by-type">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Get Devices by Type</a><a class="headerlink" href="#get-devices-by-type" title="Link to this heading"></a></h3>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">getDevices</span><span class="p">(</span><span class="n">byType</span> <span class="n">type</span><span class="p">:</span> <span class="n">DeviceType</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="p">[</span><span class="n">DeviceInfo</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Returns all <code class="docutils literal notranslate"><span class="pre">DeviceInfo</span></code> objects matching a specified type (<code class="docutils literal notranslate"><span class="pre">e.g.,</span> <span class="pre">smart</span> <span class="pre">sock</span></code>, <code class="docutils literal notranslate"><span class="pre">motion</span> <span class="pre">sensor</span></code>, etc).</p>
+</section>
+<section id="get-device-type-descriptor">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Get Device Type Descriptor</a><a class="headerlink" href="#get-device-type-descriptor" title="Link to this heading"></a></h3>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">getDeviceTypeDescriptor</span><span class="p">(</span><span class="n">macAddress</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">String</span><span class="p">?</span>
+</pre></div>
+</div>
+<p>Returns a formatted string describing:</p>
+<ul class="simple">
+<li><p>Device type</p></li>
+<li><p>MAC address</p></li>
+<li><p>Device name</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SmartSock</span><span class="o">-</span><span class="n">DeviceMac</span><span class="p">:</span><span class="n">A1</span><span class="p">:</span><span class="n">B2</span><span class="p">:</span><span class="n">C3</span><span class="p">:</span><span class="n">D4</span><span class="p">:</span><span class="n">E5</span><span class="p">,</span> <span class="n">SmartSock</span><span class="o">-</span><span class="n">DeviceName</span><span class="p">:</span><span class="n">Right</span> <span class="n">Sock</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="integration">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Integration</a><a class="headerlink" href="#integration" title="Link to this heading"></a></h2>
+<p>Used by:</p>
+<ul class="simple">
+<li><p>Sensor handlers to track BLE device connections.</p></li>
+<li><p>Logic in Flutter method/event channels to tag sensor readings or file names.</p></li>
+<li><p>Any centralized logic needing metadata about registered sensor devices.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="extensibility">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Extensibility</a><a class="headerlink" href="#extensibility" title="Link to this heading"></a></h2>
+<p>Future improvements could include:</p>
+<ul class="simple">
+<li><p>Timestamp tracking for last connection.</p></li>
+<li><p>Persistent storage using <code class="docutils literal notranslate"><span class="pre">UserDefaults</span></code> or <code class="docutils literal notranslate"><span class="pre">CoreData</span></code>.</p></li>
+<li><p>Device health or last-seen flags.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DeviceRegistry.swift</span></code> offers a lightweight, centralized way to manage known wearable devices on the iOS layer. It abstracts device storage away from Flutter and enables clean, fast lookups in a multidevice environment.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Services Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="event_manager.html" class="btn btn-neutral float-right" title="EventManager.swift" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

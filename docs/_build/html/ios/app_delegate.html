@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AppDelegate.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Services Module" href="services/index.html" />
+    <link rel="prev" title="iOS Module" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">App Delegate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-frameworks-used">Key Frameworks Used</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-responsibilities">Main Responsibilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ble-integration">BLE Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flutter-channels">Flutter Channels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-handlers">Sensor Handlers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#notification-setup">Notification Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#background-ble-support">Background BLE Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secondary-bluetoothmanager-class">Secondary BluetoothManager Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-notes">Integration Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="services/index.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria/index.html">Sensoria iOS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">iOS Module</a></li>
+      <li class="breadcrumb-item active">AppDelegate.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ios/app_delegate.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="appdelegate-swift">
+<h1>AppDelegate.swift<a class="headerlink" href="#appdelegate-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#key-frameworks-used" id="id2">Key Frameworks Used</a></p></li>
+<li><p><a class="reference internal" href="#main-responsibilities" id="id3">Main Responsibilities</a></p></li>
+<li><p><a class="reference internal" href="#ble-integration" id="id4">BLE Integration</a></p></li>
+<li><p><a class="reference internal" href="#flutter-channels" id="id5">Flutter Channels</a></p></li>
+<li><p><a class="reference internal" href="#sensor-handlers" id="id6">Sensor Handlers</a></p></li>
+<li><p><a class="reference internal" href="#notification-setup" id="id7">Notification Setup</a></p></li>
+<li><p><a class="reference internal" href="#background-ble-support" id="id8">Background BLE Support</a></p></li>
+<li><p><a class="reference internal" href="#secondary-bluetoothmanager-class" id="id9">Secondary BluetoothManager Class</a></p></li>
+<li><p><a class="reference internal" href="#integration-notes" id="id10">Integration Notes</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">AppDelegate.swift</span></code> file acts as the main entry point for the <strong>HealthyWear iOS app</strong>, responsible for initializing Bluetooth services, connecting native iOS functionality with Flutter using <code class="docutils literal notranslate"><span class="pre">MethodChannel</span></code> and <code class="docutils literal notranslate"><span class="pre">EventChannel</span></code>, and handling system-level behaviors like notifications and background execution.</p>
+</section>
+<hr class="docutils" />
+<section id="key-frameworks-used">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Key Frameworks Used</a><a class="headerlink" href="#key-frameworks-used" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">import</span> <span class="nc">UIKit</span>
+<span class="kd">import</span> <span class="nc">Flutter</span>
+<span class="kd">import</span> <span class="nc">CoreBluetooth</span>
+<span class="kd">import</span> <span class="nc">MetaWear</span>
+<span class="kd">import</span> <span class="nc">UserNotifications</span>
+<span class="kd">import</span> <span class="nc">workmanager</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>UIKit &amp; Flutter</strong>: UI &amp; app lifecycle integration.</p></li>
+<li><p><strong>CoreBluetooth</strong>: Handles BLE device discovery and communication.</p></li>
+<li><p><strong>MetaWear</strong>: Used for wearable sensor API.</p></li>
+<li><p><strong>UserNotifications</strong>: For local push notifications.</p></li>
+<li><p><strong>WorkManager</strong>: Background tasks.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="main-responsibilities">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Main Responsibilities</a><a class="headerlink" href="#main-responsibilities" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Sets up Flutter and plugin registration.</p></li>
+<li><p>Initializes CoreBluetooth manager.</p></li>
+<li><p>Registers MethodChannels and EventChannels.</p></li>
+<li><p>Delegates BLE handling to custom classes.</p></li>
+<li><p>Handles background restoration of Bluetooth state.</p></li>
+<li><p>Requests notification permissions.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ble-integration">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">BLE Integration</a><a class="headerlink" href="#ble-integration" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nv">centralManager</span><span class="p">:</span> <span class="bp">CBCentralManager</span><span class="p">?</span>
+</pre></div>
+</div>
+<p>Initializes a central Bluetooth manager and sets the class as its delegate:</p>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="n">centralManager</span> <span class="p">=</span> <span class="bp">CBCentralManager</span><span class="p">(</span><span class="n">delegate</span><span class="p">:</span> <span class="kc">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="flutter-channels">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Flutter Channels</a><a class="headerlink" href="#flutter-channels" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nv">sensoriaMethodChannel</span><span class="p">:</span> <span class="n">FlutterMethodChannel</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">metaWearMethodChannel</span><span class="p">:</span> <span class="n">FlutterMethodChannel</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">serviceMethodChannel</span><span class="p">:</span> <span class="n">FlutterMethodChannel</span><span class="p">?</span>
+
+<span class="kd">var</span> <span class="nv">metaWearEventChannel</span><span class="p">:</span> <span class="n">FlutterEventChannel</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">sensoriaEventChannel</span><span class="p">:</span> <span class="n">FlutterEventChannel</span><span class="p">?</span>
+</pre></div>
+</div>
+<p>These channels are used for:</p>
+<ul class="simple">
+<li><p>Exchanging BLE sensor data.</p></li>
+<li><p>Broadcasting status updates.</p></li>
+<li><p>Sending command invocations from Dart.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="sensor-handlers">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Sensor Handlers</a><a class="headerlink" href="#sensor-handlers" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nv">metaWearHandler</span><span class="p">:</span> <span class="n">MetaWearHandler</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">sensoriaHandler</span><span class="p">:</span> <span class="n">SensoriaHandler</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">sensoriaHandlerRight</span><span class="p">:</span> <span class="n">SensoriaHandlerRight</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">sensoriaHandlerLeft</span><span class="p">:</span> <span class="n">SensoriaHandlerLeft</span><span class="p">?</span>
+</pre></div>
+</div>
+<p>Handlers for managing individual sensors and communication streams.</p>
+</section>
+<hr class="docutils" />
+<section id="notification-setup">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Notification Setup</a><a class="headerlink" href="#notification-setup" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">private</span> <span class="kd">func</span> <span class="nf">createNotificationChannel</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Requests user permission for notifications.</p></li>
+<li><p>Prepares alert and sound-based alerts.</p></li>
+<li><p>Handles the result via a closure.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="background-ble-support">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Background BLE Support</a><a class="headerlink" href="#background-ble-support" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">centralManager</span><span class="p">(</span><span class="kc">_</span> <span class="n">central</span><span class="p">:</span> <span class="bp">CBCentralManager</span><span class="p">,</span> <span class="n">willRestoreState</span> <span class="n">dict</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span> <span class="p">:</span> <span class="nb">Any</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Ensures restoration of BLE state and reinitializes any pending connections or tasks if needed.</p>
+</section>
+<hr class="docutils" />
+<section id="secondary-bluetoothmanager-class">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Secondary BluetoothManager Class</a><a class="headerlink" href="#secondary-bluetoothmanager-class" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nc">BluetoothManager</span><span class="p">:</span> <span class="bp">NSObject</span><span class="p">,</span> <span class="bp">CBCentralManagerDelegate</span>
+</pre></div>
+</div>
+<p>Encapsulates background BLE scanning and restoration logic. It provides modular recovery from BLE interruptions and lifecycle resets.</p>
+</section>
+<hr class="docutils" />
+<section id="integration-notes">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Integration Notes</a><a class="headerlink" href="#integration-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GeneratedPluginRegistrant.register()</span></code> integrates all Dart plugins into native runtime.</p></li>
+<li><p>BLE and notification functions are cleanly separated from UI logic.</p></li>
+<li><p>Sensor handlers like <code class="docutils literal notranslate"><span class="pre">MetaWearHandler</span></code> and <code class="docutils literal notranslate"><span class="pre">SensoriaHandler</span></code> are modular and extensible.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="iOS Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="services/index.html" class="btn btn-neutral float-right" title="Services Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
