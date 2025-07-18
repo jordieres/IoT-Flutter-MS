@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the scanConnectBind method from the SmartBandApi class, for the Dart programming language.">
+  <title>scanConnectBind method - SmartBandApi class - SmartBandApi library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">HealthyWear</a></li>
+    <li><a href="../../Api_SmartBandApi/Api_SmartBandApi-library.html">Api&#47;SmartBandApi.dart</a></li>
+    <li><a href="../../Api_SmartBandApi/SmartBandApi-class.html">SmartBandApi</a></li>
+    <li class="self-crumb">scanConnectBind static method</li>
+  </ol>
+  <div class="self-name">scanConnectBind</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="Api_SmartBandApi&#47;SmartBandApi-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">scanConnectBind</span> static method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">scanConnectBind</span>(<wbr>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>///////////////////////-----------------------------</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static Future&lt;void&gt; scanConnectBind() async {
+    try {
+      updateConnectionStatus(DeviceConnectionStatus.connecting);
+
+      &#47;&#47;todo must be uncommented
+
+      &#47;&#47; bool permissionsOk = await checkAndRequestPermissions();
+      &#47;&#47; bool servicesOk = await isBluetoothAndLocationEnabled();
+      &#47;&#47;
+      &#47;&#47; if (!permissionsOk) {
+      &#47;&#47;   Fluttertoast.showToast(
+      &#47;&#47;     msg: SmartBandApi.languageCode == &quot;en&quot;
+      &#47;&#47;         ? &quot;Missing permissions. Please grant permissions.&quot;
+      &#47;&#47;         : &quot;Faltan permisos. Por favor, concede los permisos.&quot;,
+      &#47;&#47;   );
+      &#47;&#47;   return;
+      &#47;&#47; }
+      &#47;&#47; if (!servicesOk) {
+      &#47;&#47;   Fluttertoast.showToast(
+      &#47;&#47;     msg: SmartBandApi.languageCode == &quot;en&quot;
+      &#47;&#47;         ? &quot;Bluetooth or Location is off. Please enable them.&quot;
+      &#47;&#47;         : &quot;El Bluetooth o la ubicación están apagados. Por favor, actívalos.&quot;,
+      &#47;&#47;   );
+      &#47;&#47;
+      &#47;&#47;   return;
+      &#47;&#47; }
+
+      SearchResult? selectedDevice;
+      &#47;&#47; scan Attempt Loop
+      int scanAttempts = 3;
+      while (scanAttempts &gt; 0 &amp;&amp; selectedDevice == null) {
+        List&lt;SearchResult&gt; devices = await VeepooSdk.scanDevice();
+        if (devices.isNotEmpty) {
+          print(&quot;the devicessssssssssss----------- AMIR $devices&quot;);
+          selectedDevice = devices.first;
+
+          _selectedDeviceMac = selectedDevice.mac;
+          _selectedDeviceName = selectedDevice.name;
+        } else {
+          scanAttempts--;
+          await Future.delayed(Duration(seconds: 2)); &#47;&#47; wait before retrying
+        }
+      }
+
+      if (selectedDevice == null) {
+        Fluttertoast.showToast(
+            msg: SmartBandApi.languageCode == &quot;en&quot;
+                ? &quot;Failed to find any devices after several attempts.&quot;
+                : &quot;No se encontraron Pulsera Inteligente.&quot;,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            &#47;&#47; timeInSecForIosWeb: 10,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        updateConnectionStatus(DeviceConnectionStatus.disconnected);
+        isConnected = false;
+
+        return;
+      }
+
+      isConnected = false;
+      int connectAttempts = 2;
+      while (connectAttempts &gt; 0 &amp;&amp; !isConnected) {
+        isConnected = await VeepooSdk.connect(selectedDevice!.mac) ?? false;
+        if (!isConnected) {
+          connectAttempts--;
+
+          await Future.delayed(Duration(seconds: 2));
+        }
+      }
+
+      if (!isConnected) {
+        Fluttertoast.showToast(
+            msg: SmartBandApi.languageCode == &quot;en&quot;
+                ? &quot;Failed to connect to Smartband.&quot;
+                : &quot;Fallo al conectar con la pulsera inteligente.&quot;,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 10,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        updateConnectionStatus(DeviceConnectionStatus.disconnected);
+
+        return;
+      }
+
+      &#47;&#47; If connected, proceed to bind
+      bool? isBound = await VeepooSdk.bind(&quot;0000&quot;, true);
+      if (isBound == true) {
+        print(&#39;Bound to ${selectedDevice!.mac}&#39;);
+        SmartBandApi.updateConnectionStatus(DeviceConnectionStatus.connected);
+        updateConnectionStatusForChecker(DeviceConnectionStatus.connected); &#47;&#47; Notify StatusChecker
+
+        isConnected = true;
+
+        &#47;&#47; Proceed with other actions
+        updateLocationPeriodically();
+        startHeartRateMeasurement();
+        startFetchingStepDataPeriodically();
+      } else {}
+    } catch (e) {}
+  }</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">HealthyWear</a></li>
+    <li><a href="../../Api_SmartBandApi/Api_SmartBandApi-library.html">SmartBandApi</a></li>
+    <li><a href="../../Api_SmartBandApi/SmartBandApi-class.html">SmartBandApi</a></li>
+    <li class="self-crumb">scanConnectBind static method</li>
+</ol>
+
+
+    <h5>SmartBandApi class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    HealthyWear
+      2.0.1+26
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
