@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SensoriaHandlerRight.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="CentralBufferManager.swift" href="central_buffer_manager.html" />
+    <link rel="prev" title="SensoriaHandlerLeft.swift" href="sensoria_handler_left.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../services/index.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sensoria iOS</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sensoria_handler.html">Sensoria Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensoria_handler_left.html">Sensoria Handler Left</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sensoria Handler Right</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-sensoriahandlerright">Class: SensoriaHandlerRight</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initializer">Initializer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-updateconnectionstatus-status">Method: <code class="docutils literal notranslate"><span class="pre">updateConnectionStatus(status:)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-didbatteryread">Method: <code class="docutils literal notranslate"><span class="pre">didBatteryRead(_)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-getbatterylevel">Method: <code class="docutils literal notranslate"><span class="pre">getBatteryLevel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-setlocale-languagecode">Method: <code class="docutils literal notranslate"><span class="pre">setLocale(languageCode:)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-startscan">Method: <code class="docutils literal notranslate"><span class="pre">startScan()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="central_buffer_manager.html">Central Buffer Manager</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">iOS Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Sensoria Modules</a></li>
+      <li class="breadcrumb-item active">SensoriaHandlerRight.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ios/sensoria/sensoria_handler_right.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sensoriahandlerright-swift">
+<h1>SensoriaHandlerRight.swift<a class="headerlink" href="#sensoriahandlerright-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#imports" id="id2">Imports</a></p></li>
+<li><p><a class="reference internal" href="#class-sensoriahandlerright" id="id3">Class: SensoriaHandlerRight</a></p></li>
+<li><p><a class="reference internal" href="#properties" id="id4">Properties</a></p></li>
+<li><p><a class="reference internal" href="#initializer" id="id5">Initializer</a></p></li>
+<li><p><a class="reference internal" href="#method-updateconnectionstatus-status" id="id6">Method: <code class="docutils literal notranslate"><span class="pre">updateConnectionStatus(status:)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#method-didbatteryread" id="id7">Method: <code class="docutils literal notranslate"><span class="pre">didBatteryRead(_)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#method-getbatterylevel" id="id8">Method: <code class="docutils literal notranslate"><span class="pre">getBatteryLevel()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#method-setlocale-languagecode" id="id9">Method: <code class="docutils literal notranslate"><span class="pre">setLocale(languageCode:)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#method-startscan" id="id10">Method: <code class="docutils literal notranslate"><span class="pre">startScan()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#notes" id="id11">Notes</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id12">Summary</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SensoriaHandlerRight.swift</span></code> is a dedicated BLE communication handler for the <strong>right</strong> Sensoria smart device (e.g., smart sock or insole). It mirrors the functionality of <code class="docutils literal notranslate"><span class="pre">SensoriaHandlerLeft.swift</span></code> but is designed specifically to manage the right-foot sensor.</p>
+</section>
+<hr class="docutils" />
+<section id="imports">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Imports</a><a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">import</span> <span class="nc">Foundation</span>
+<span class="kd">import</span> <span class="nc">CoreBluetooth</span>
+<span class="kd">import</span> <span class="nc">SensoriaiOS</span>
+<span class="kd">import</span> <span class="nc">BoltsSwift</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Foundation</strong>: Core Swift library for system types and threading.</p></li>
+<li><p><strong>CoreBluetooth</strong>: BLE communication support.</p></li>
+<li><p><strong>SensoriaiOS</strong>: SDK to interface with Sensoria smart garments.</p></li>
+<li><p><strong>BoltsSwift</strong>: For future async task composition (currently unused).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="class-sensoriahandlerright">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Class: SensoriaHandlerRight</a><a class="headerlink" href="#class-sensoriahandlerright" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nc">SensoriaHandlerRight</span><span class="p">:</span> <span class="bp">NSObject</span><span class="p">,</span> <span class="n">SADeviceBluetoothDelegate</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="properties">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Properties</a><a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nv">eventSink</span><span class="p">:</span> <span class="n">FlutterEventSink</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">coreIndex</span><span class="p">:</span> <span class="nb">Int</span> <span class="p">=</span> <span class="mi">1</span>
+<span class="kd">var</span> <span class="nv">lastBatteryLevel</span><span class="p">:</span> <span class="nb">UInt8</span> <span class="p">=</span> <span class="mi">0</span>
+<span class="kd">var</span> <span class="nv">scanTimer</span><span class="p">:</span> <span class="n">Timer</span><span class="p">?</span>
+<span class="kd">var</span> <span class="nv">currentLanguageCode</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;es&quot;</span>
+<span class="kd">var</span> <span class="nv">sacore</span><span class="p">:</span> <span class="n">SACore</span><span class="p">!</span>
+<span class="kd">var</span> <span class="nv">centralBuffer</span><span class="p">:</span> <span class="n">CentralBufferManager</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>eventSink</strong>: Optional channel for streaming device status to the Flutter frontend.</p></li>
+<li><p><strong>coreIndex</strong>: Value <code class="docutils literal notranslate"><span class="pre">1</span></code> identifies this handler as managing the right-side device.</p></li>
+<li><p><strong>lastBatteryLevel</strong>: Tracks the latest battery percentage read from the device.</p></li>
+<li><p><strong>scanTimer</strong>: Auto-cancels scan after a set time (e.g., 20 seconds).</p></li>
+<li><p><strong>currentLanguageCode</strong>: Localization setting.</p></li>
+<li><p><strong>sacore</strong>: BLE device interface from Sensoria SDK.</p></li>
+<li><p><strong>centralBuffer</strong>: Shared buffering system for uploading formatted sensor data.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="initializer">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Initializer</a><a class="headerlink" href="#initializer" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">init</span><span class="p">(</span><span class="n">centralBuffer</span><span class="p">:</span> <span class="n">CentralBufferManager</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Creates an instance of <code class="docutils literal notranslate"><span class="pre">SACore</span></code>, assigns delegate, and initializes buffer handling.</p></li>
+<li><p>This design promotes modularity: each handler works independently but shares a central buffer.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="method-updateconnectionstatus-status">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">updateConnectionStatus(status:)</span></code></a><a class="headerlink" href="#method-updateconnectionstatus-status" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Sends a dictionary <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">&quot;coreIndex&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;status&quot;:</span> <span class="pre">status</span> <span class="pre">}</span></code> via the <code class="docutils literal notranslate"><span class="pre">EventManager</span></code> for Flutter to consume.</p></li>
+<li><p>Ensures UI updates or telemetry sync.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="method-didbatteryread">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">didBatteryRead(_)</span></code></a><a class="headerlink" href="#method-didbatteryread" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">didBatteryRead</span><span class="p">(</span><span class="kc">_</span> <span class="n">batteryValue</span><span class="p">:</span> <span class="nb">UInt8</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Updates internal state and logs the battery level to console.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="method-getbatterylevel">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">getBatteryLevel()</span></code></a><a class="headerlink" href="#method-getbatterylevel" title="Link to this heading"></a></h2>
+<p>Returns the last battery value read.</p>
+</section>
+<hr class="docutils" />
+<section id="method-setlocale-languagecode">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">setLocale(languageCode:)</span></code></a><a class="headerlink" href="#method-setlocale-languagecode" title="Link to this heading"></a></h2>
+<p>Allows switching the language used for this handler’s feedback.</p>
+</section>
+<hr class="docutils" />
+<section id="method-startscan">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">startScan()</span></code></a><a class="headerlink" href="#method-startscan" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Begins Bluetooth scanning for the right-side Sensoria device.</p></li>
+<li><p>Uses a scheduled timer (20 seconds) to timeout scan operation.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="notes">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Notes</a><a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Implementation is symmetrical with <code class="docutils literal notranslate"><span class="pre">SensoriaHandlerLeft</span></code>.</p></li>
+<li><p>Use both classes in tandem for dual-device configurations.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SensoriaHandlerRight.swift</span></code> is a clean, modular controller for right-side Sensoria devices, providing scanning, telemetry, localization, and status dispatching. It enhances reusability and device-specific abstraction within the iOS side of the HealthyWear architecture.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sensoria_handler_left.html" class="btn btn-neutral float-left" title="SensoriaHandlerLeft.swift" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="central_buffer_manager.html" class="btn btn-neutral float-right" title="CentralBufferManager.swift" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

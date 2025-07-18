@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StatusUpdateManager.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ToastManager.swift" href="toast_manager.html" />
+    <link rel="prev" title="LocationDataManager.swift" href="location_data_manager.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Services</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="device_registry.html">Device Registry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="event_manager.html">Event Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file_handler.html">File Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="location_data_manager.html">Location Manager</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">status Manager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#singleton-pattern">Singleton Pattern</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-properties">Key Properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-methods">Core Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#json-utility">JSON Utility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integration">Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="toast_manager.html">Toast Manager</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensoria/index.html">Sensoria iOS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">iOS Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Services Module</a></li>
+      <li class="breadcrumb-item active">StatusUpdateManager.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ios/services/status_update_manager.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="statusupdatemanager-swift">
+<h1>StatusUpdateManager.swift<a class="headerlink" href="#statusupdatemanager-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#singleton-pattern" id="id2">Singleton Pattern</a></p></li>
+<li><p><a class="reference internal" href="#key-properties" id="id3">Key Properties</a></p></li>
+<li><p><a class="reference internal" href="#core-methods" id="id4">Core Methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#getmetawearcurrentstatus-deviceindex" id="id5"><code class="docutils literal notranslate"><span class="pre">getMetaWearCurrentStatus(deviceIndex:)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#getsensoriacurrentstatus-deviceindex" id="id6"><code class="docutils literal notranslate"><span class="pre">getSensoriaCurrentStatus(deviceIndex:)</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#json-utility" id="id7">JSON Utility</a></p></li>
+<li><p><a class="reference internal" href="#integration" id="id8">Integration</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id9">Summary</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">StatusUpdateManager.swift</span></code> is a centralized singleton manager that tracks and serializes runtime sensor status for MetaWear and Sensoria devices. It serves as a bridge between native sensor handlers and Flutter, helping present real-time device status.</p>
+</section>
+<hr class="docutils" />
+<section id="singleton-pattern">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Singleton Pattern</a><a class="headerlink" href="#singleton-pattern" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span> <span class="kd">let</span> <span class="nv">shared</span> <span class="p">=</span> <span class="n">StatusUpdateManager</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Used app-wide to access live status data from any part of the iOS native layer.</p>
+</section>
+<hr class="docutils" />
+<section id="key-properties">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Key Properties</a><a class="headerlink" href="#key-properties" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nv">metaWearData</span> <span class="p">=</span> <span class="n">StatusUpdateMetaWearData</span><span class="p">()</span>
+<span class="kd">var</span> <span class="nv">sensoriaData</span> <span class="p">=</span> <span class="n">StatusUpdatSensoriaData</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metaWearData</span></code>: Holds live status fields for MetaWear devices.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sensoriaData</span></code>: Same for Sensoria smart garments.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="core-methods">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Core Methods</a><a class="headerlink" href="#core-methods" title="Link to this heading"></a></h2>
+<section id="getmetawearcurrentstatus-deviceindex">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">getMetaWearCurrentStatus(deviceIndex:)</span></code></a><a class="headerlink" href="#getmetawearcurrentstatus-deviceindex" title="Link to this heading"></a></h3>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">getMetaWearCurrentStatus</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">:</span> <span class="nb">Int</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">String</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Returns a JSON string representing the device’s current runtime state.</p></li>
+<li><p>Delegates JSON building to <code class="docutils literal notranslate"><span class="pre">StatusUpdateMetaWearData</span></code>.</p></li>
+</ul>
+</section>
+<section id="getsensoriacurrentstatus-deviceindex">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">getSensoriaCurrentStatus(deviceIndex:)</span></code></a><a class="headerlink" href="#getsensoriacurrentstatus-deviceindex" title="Link to this heading"></a></h3>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">getSensoriaCurrentStatus</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">:</span> <span class="nb">Int</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">String</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Mirrors the MetaWear version for Sensoria garments.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="json-utility">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">JSON Utility</a><a class="headerlink" href="#json-utility" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span> <span class="kd">func</span> <span class="nf">serializeToJson</span><span class="p">(</span><span class="kc">_</span> <span class="n">statusMap</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span> <span class="nb">Any</span><span class="p">])</span> <span class="p">-&gt;</span> <span class="nb">String</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Converts a key-value <code class="docutils literal notranslate"><span class="pre">statusMap</span></code> into a well-formed JSON string.</p></li>
+<li><p>Logs serialized output for debugging.</p></li>
+<li><p>Returns a JSON string or error message if serialization fails.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;battery&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">92</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lastUpdate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-07-17T18:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="integration">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Integration</a><a class="headerlink" href="#integration" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Sensor handlers populate <code class="docutils literal notranslate"><span class="pre">metaWearData</span></code> and <code class="docutils literal notranslate"><span class="pre">sensoriaData</span></code> fields.</p></li>
+<li><p>When Flutter queries for status, these methods provide serialized snapshots.</p></li>
+<li><p>Ensures real-time visibility and fault tracing for BLE sensors.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">StatusUpdateManager.swift</span></code> encapsulates runtime metadata for each sensor family and exposes it in Flutter-friendly JSON. Its single responsibility and clear interface make it easy to integrate and maintain in cross-platform BLE systems.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="location_data_manager.html" class="btn btn-neutral float-left" title="LocationDataManager.swift" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="toast_manager.html" class="btn btn-neutral float-right" title="ToastManager.swift" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

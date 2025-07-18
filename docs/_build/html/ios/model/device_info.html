@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeviceInfo.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="SensorFusionDataSample.swift" href="sensor_fusion_data_sample.html" />
+    <link rel="prev" title="Models" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../services/index.html">Services</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Models</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Device Info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum-devicetype">Enum: DeviceType</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#struct-deviceinfo">Struct: DeviceInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_fusion_data_sample.html">Sensor Fusion Data Sample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensoria_data_model.html">Sensoria Data Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="status_update_data.html">Status Update Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensoria/index.html">Sensoria iOS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">iOS Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Models</a></li>
+      <li class="breadcrumb-item active">DeviceInfo.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ios/model/device_info.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deviceinfo-swift">
+<h1>DeviceInfo.swift<a class="headerlink" href="#deviceinfo-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#enum-devicetype" id="id2">Enum: DeviceType</a></p></li>
+<li><p><a class="reference internal" href="#struct-deviceinfo" id="id3">Struct: DeviceInfo</a></p></li>
+<li><p><a class="reference internal" href="#usage" id="id4">Usage</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id5">Summary</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DeviceInfo.swift</span></code> defines a lightweight data structure used to represent individual sensor devices such as smart socks, smart bands, or MetaWear nodes. It includes an <code class="docutils literal notranslate"><span class="pre">enum</span></code> for device type and a struct that encapsulates identifying details about a device.</p>
+</section>
+<hr class="docutils" />
+<section id="enum-devicetype">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Enum: DeviceType</a><a class="headerlink" href="#enum-devicetype" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">enum</span> <span class="nc">DeviceType</span><span class="p">:</span> <span class="nb">String</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">handLeft</span> <span class="p">=</span> <span class="s">&quot;LH&quot;</span>
+    <span class="k">case</span> <span class="n">handRight</span> <span class="p">=</span> <span class="s">&quot;RH&quot;</span>
+    <span class="k">case</span> <span class="n">footLeft</span> <span class="p">=</span> <span class="s">&quot;LF&quot;</span>
+    <span class="k">case</span> <span class="n">footRight</span> <span class="p">=</span> <span class="s">&quot;RF&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Defines a set of known device locations or roles:</p>
+<ul class="simple">
+<li><p><strong>LH</strong>: Left Hand</p></li>
+<li><p><strong>RH</strong>: Right Hand</p></li>
+<li><p><strong>LF</strong>: Left Foot</p></li>
+<li><p><strong>RF</strong>: Right Foot</p></li>
+</ul>
+<p>These identifiers are used to distinguish devices in multi-sensor setups.</p>
+</section>
+<hr class="docutils" />
+<section id="struct-deviceinfo">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Struct: DeviceInfo</a><a class="headerlink" href="#struct-deviceinfo" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">struct</span> <span class="nc">DeviceInfo</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nv">type</span><span class="p">:</span> <span class="n">DeviceType</span>
+    <span class="kd">var</span> <span class="nv">macAddress</span><span class="p">:</span> <span class="nb">String</span>
+    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span>
+    <span class="kd">var</span> <span class="nv">side</span><span class="p">:</span> <span class="nb">String</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Fields:</p>
+<ul class="simple">
+<li><p><strong>type</strong>: Enumerated type of the device (from <code class="docutils literal notranslate"><span class="pre">DeviceType</span></code>).</p></li>
+<li><p><strong>macAddress</strong>: Unique hardware identifier for the BLE device.</p></li>
+<li><p><strong>name</strong>: Human-readable name (e.g., “Right Sock”).</p></li>
+<li><p><strong>side</strong>: Custom side descriptor, e.g., “Left”, “Right” (more flexible than enum).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="usage">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Usage</a><a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>Used extensively throughout the iOS codebase, particularly by:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DeviceRegistry.swift</span></code> for registering known devices.</p></li>
+<li><p>Sensor handlers to identify which data belongs to which device.</p></li>
+<li><p>File naming and metadata during data export.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DeviceInfo.swift</span></code> provides a compact and expressive way to describe and manage wearable BLE devices. It encapsulates both technical and human-readable identifiers and supports scalable, multi-sensor configurations in the HealthyWear app.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sensor_fusion_data_sample.html" class="btn btn-neutral float-right" title="SensorFusionDataSample.swift" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

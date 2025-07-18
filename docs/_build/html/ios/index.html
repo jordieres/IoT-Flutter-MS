@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Android Module" href="../android/index.html" />
+    <link rel="next" title="AppDelegate.swift" href="app_delegate.html" />
     <link rel="prev" title="Uploader.dart" href="../flutter/services/uploader.html" /> 
 </head>
 
@@ -47,7 +47,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html#getting-started">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../flutter/index.html">Flutter Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">iOS Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">iOS Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services/index.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria/index.html">Sensoria iOS</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../android/index.html">Android Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../java.html">Java Backend</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../python.html">Python Backend</a></li>
@@ -79,7 +86,52 @@
              
   <section id="ios-module">
 <h1>iOS Module<a class="headerlink" href="#ios-module" title="Link to this heading"></a></h1>
-<p>Instructions and guides for the iOS app (Swift).</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="app_delegate.html">App Delegate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#key-frameworks-used">Key Frameworks Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#main-responsibilities">Main Responsibilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#ble-integration">BLE Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#flutter-channels">Flutter Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#sensor-handlers">Sensor Handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#notification-setup">Notification Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#background-ble-support">Background BLE Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#secondary-bluetoothmanager-class">Secondary BluetoothManager Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_delegate.html#integration-notes">Integration Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="services/index.html">Services</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="services/device_registry.html">Device Registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services/event_manager.html">Event Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services/file_handler.html">File Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services/location_data_manager.html">Location Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services/status_update_manager.html">status Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services/toast_manager.html">Toast Manager</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model/index.html">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model/device_info.html">Device Info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/sensor_fusion_data_sample.html">Sensor Fusion Data Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/sensoria_data_model.html">Sensoria Data Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/status_update_data.html">Status Update Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metawear/index.html">MetaWear iOS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metawear/metawear_device.html">MetaWear Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metawear/metawear_handler.html">Metawear Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metawear/sensor_context.html">Sensor Context</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sensoria/index.html">Sensoria iOS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sensoria/sensoria_handler.html">Sensoria Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria/sensoria_handler_left.html">Sensoria Handler Left</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria/sensoria_handler_right.html">Sensoria Handler Right</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensoria/central_buffer_manager.html">Central Buffer Manager</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
@@ -87,7 +139,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../flutter/services/uploader.html" class="btn btn-neutral float-left" title="Uploader.dart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../android/index.html" class="btn btn-neutral float-right" title="Android Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="app_delegate.html" class="btn btn-neutral float-right" title="AppDelegate.swift" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

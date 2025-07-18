@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MetaWearHandler.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="SensorContext.swift" href="sensor_context.html" />
+    <link rel="prev" title="MetaWearDevice.swift" href="metawear_device.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../services/index.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Models</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">MetaWear iOS</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="metawear_device.html">MetaWear Device</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Metawear Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-responsibilities">Key Responsibilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#design-pattern">Design Pattern</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#methods-key-functional-blocks">Methods (Key Functional Blocks)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_context.html">Sensor Context</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sensoria/index.html">Sensoria iOS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">iOS Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">MetaWear Modules</a></li>
+      <li class="breadcrumb-item active">MetaWearHandler.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ios/metawear/metawear_handler.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="metawearhandler-swift">
+<h1>MetaWearHandler.swift<a class="headerlink" href="#metawearhandler-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#key-responsibilities" id="id2">Key Responsibilities</a></p></li>
+<li><p><a class="reference internal" href="#design-pattern" id="id3">Design Pattern</a></p></li>
+<li><p><a class="reference internal" href="#properties" id="id4">Properties</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ble-state" id="id5">BLE State</a></p></li>
+<li><p><a class="reference internal" href="#time-tracking" id="id6">Time Tracking</a></p></li>
+<li><p><a class="reference internal" href="#data-buffers" id="id7">Data Buffers</a></p></li>
+<li><p><a class="reference internal" href="#config" id="id8">Config</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#methods-key-functional-blocks" id="id9">Methods (Key Functional Blocks)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#data-streaming-parsing" id="id10">Data Streaming &amp; Parsing</a></p></li>
+<li><p><a class="reference internal" href="#file-handling" id="id11">File Handling</a></p></li>
+<li><p><a class="reference internal" href="#status-json-export" id="id12">Status JSON Export</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#summary" id="id13">Summary</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">MetaWearHandler.swift</span></code> serves as the central controller for managing MetaWear sensor connections, BLE scanning, data acquisition, and file buffering. It uses the MetaWear SDK to stream motion and environmental data and prepare it for export and visualization in the HealthyWear iOS app.</p>
+</section>
+<hr class="docutils" />
+<section id="key-responsibilities">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Key Responsibilities</a><a class="headerlink" href="#key-responsibilities" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Scan for nearby MetaWear devices.</p></li>
+<li><p>Connect to multiple boards simultaneously.</p></li>
+<li><p>Buffer sensor fusion, temperature, and light data.</p></li>
+<li><p>Monitor last-timestamped events.</p></li>
+<li><p>Serialize status updates for UI display or diagnostics.</p></li>
+<li><p>Coordinate data flushing and cleanup routines.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="design-pattern">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Design Pattern</a><a class="headerlink" href="#design-pattern" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span> <span class="kd">let</span> <span class="nv">shared</span> <span class="p">=</span> <span class="n">MetaWearHandler</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Implements the <strong>Singleton</strong> pattern for globally accessible state management of MetaWear operations.</p>
+</section>
+<hr class="docutils" />
+<section id="properties">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Properties</a><a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
+<section id="ble-state">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">BLE State</a><a class="headerlink" href="#ble-state" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">scannedDevices</span></code>: Array of discovered <code class="docutils literal notranslate"><span class="pre">MetaWear</span></code> instances.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connectedDevices</span></code>: Set of MACs representing connected boards.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isScanning</span></code> / <code class="docutils literal notranslate"><span class="pre">isConnecting</span></code>: Booleans to track state.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deviceRssiMap</span></code>: Mapping of RSSI to devices for filtering.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connectionQueue</span></code>: Integer queue of pending connections.</p></li>
+</ul>
+</section>
+<section id="time-tracking">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Time Tracking</a><a class="headerlink" href="#time-tracking" title="Link to this heading"></a></h3>
+<p>Timestamps used to evaluate freshness of data for each board:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lastDataTimestampSensorFusionBoard1</span></code> / <code class="docutils literal notranslate"><span class="pre">Board2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lastDataTimestampTemperatureBoard1</span></code> / <code class="docutils literal notranslate"><span class="pre">Board2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lastDataTimestampAmbientLightBoard1</span></code> / <code class="docutils literal notranslate"><span class="pre">Board2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lastDataWriteFileTimestamps</span></code>: Last time file buffer was flushed.</p></li>
+</ul>
+</section>
+<section id="data-buffers">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Data Buffers</a><a class="headerlink" href="#data-buffers" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dataBuffer</span></code>: Line-buffer for pending data flush.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">illuminanceBuffer</span></code>: Specific to light sensor smoothing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">currentFusionDataSample</span></code>: Holds the current fusion frame.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">allSensorData</span></code>: Accumulates recent sensor history.</p></li>
+</ul>
+</section>
+<section id="config">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Config</a><a class="headerlink" href="#config" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">scanPeriod</span></code>: Duration for BLE scanning.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bufferCapacity</span></code>: Threshold for triggering data export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">currentLanguageCode</span></code>: Localization fallback.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">currentHand</span></code>: Used for device tagging (“Right”, “Left”).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">currentDataType</span></code>: Tracks selected sensor stream type.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">currentDevice</span></code>: Currently active <code class="docutils literal notranslate"><span class="pre">MetaWear</span></code> connection.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="methods-key-functional-blocks">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Methods (Key Functional Blocks)</a><a class="headerlink" href="#methods-key-functional-blocks" title="Link to this heading"></a></h2>
+<section id="data-streaming-parsing">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Data Streaming &amp; Parsing</a><a class="headerlink" href="#data-streaming-parsing" title="Link to this heading"></a></h3>
+<p>Responsible for subscribing to:</p>
+<ul class="simple">
+<li><p><strong>Sensor Fusion</strong>: Quaternion, acceleration, gyro, gravity</p></li>
+<li><p><strong>Temperature</strong>: Ambient or internal sensor</p></li>
+<li><p><strong>Ambient Light</strong>: Illuminance values</p></li>
+</ul>
+<p>Each stream updates <code class="docutils literal notranslate"><span class="pre">currentFusionDataSample</span></code> and relevant timestamp.</p>
+</section>
+<section id="file-handling">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">File Handling</a><a class="headerlink" href="#file-handling" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Gathers sensor fusion lines into <code class="docutils literal notranslate"><span class="pre">dataBuffer</span></code></p></li>
+<li><p>Flushes to file every N samples or on demand</p></li>
+<li><p>Delegates compression to <code class="docutils literal notranslate"><span class="pre">FileHandler.swift</span></code></p></li>
+</ul>
+</section>
+<section id="status-json-export">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Status JSON Export</a><a class="headerlink" href="#status-json-export" title="Link to this heading"></a></h3>
+<p>Method <code class="docutils literal notranslate"><span class="pre">getStatusMapJson(board:deviceIndex:)</span> <span class="pre">-&gt;</span> <span class="pre">String</span></code> returns a JSON payload for UI or Flutter-side status display:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;lastDataTimestampSensorFusion&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1720493520000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lastDataTimestampTemperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1720493520030</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lastDataTimestampAmbientLight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1720493520065</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lastDataWriteToTimestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1720493530000</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">MetaWearHandler.swift</span></code> is the orchestrator of all BLE operations for MetaWear devices in HealthyWear. It robustly handles concurrent boards, data buffering, cleanup, and performance logging. It is a core service layer in the native iOS implementation.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="metawear_device.html" class="btn btn-neutral float-left" title="MetaWearDevice.swift" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sensor_context.html" class="btn btn-neutral float-right" title="SensorContext.swift" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

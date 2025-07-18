@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CentralBufferManager.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Android Module" href="../../android/index.html" />
+    <link rel="prev" title="SensoriaHandlerRight.swift" href="sensoria_handler_right.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../services/index.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sensoria iOS</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sensoria_handler.html">Sensoria Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensoria_handler_left.html">Sensoria Handler Left</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensoria_handler_right.html">Sensoria Handler Right</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Central Buffer Manager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-centralbuffermanager">Class: CentralBufferManager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-adddata-data">Method: <code class="docutils literal notranslate"><span class="pre">addData(data:)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-processbuffer">Method: <code class="docutils literal notranslate"><span class="pre">processBuffer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-senddatatoserver">Method: <code class="docutils literal notranslate"><span class="pre">sendDataToServer(_:)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integration">Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#suggestions-for-improvement">Suggestions for Improvement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">iOS Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Sensoria Modules</a></li>
+      <li class="breadcrumb-item active">CentralBufferManager.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ios/sensoria/central_buffer_manager.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="centralbuffermanager-swift">
+<h1>CentralBufferManager.swift<a class="headerlink" href="#centralbuffermanager-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#class-centralbuffermanager" id="id2">Class: CentralBufferManager</a></p></li>
+<li><p><a class="reference internal" href="#properties" id="id3">Properties</a></p></li>
+<li><p><a class="reference internal" href="#method-adddata-data" id="id4">Method: <code class="docutils literal notranslate"><span class="pre">addData(data:)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#method-processbuffer" id="id5">Method: <code class="docutils literal notranslate"><span class="pre">processBuffer()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#method-senddatatoserver" id="id6">Method: <code class="docutils literal notranslate"><span class="pre">sendDataToServer(_:)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#integration" id="id7">Integration</a></p></li>
+<li><p><a class="reference internal" href="#suggestions-for-improvement" id="id8">Suggestions for Improvement</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id9">Summary</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">CentralBufferManager.swift</span></code> is responsible for aggregating and managing streaming data received from wearable sensors, and handling the logic for flushing this data to a persistent backend or storage. It is used specifically for buffering data strings before export.</p>
+</section>
+<hr class="docutils" />
+<section id="class-centralbuffermanager">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Class: CentralBufferManager</a><a class="headerlink" href="#class-centralbuffermanager" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nc">CentralBufferManager</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nv">dataBuffer</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span>
+    <span class="kd">let</span> <span class="nv">bufferLock</span> <span class="p">=</span> <span class="n">DispatchQueue</span><span class="p">(</span><span class="n">label</span><span class="p">:</span> <span class="s">&quot;com.sensoriahandler.bufferLock&quot;</span><span class="p">)</span>
+
+    <span class="kd">func</span> <span class="nf">addData</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span>
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">processBuffer</span><span class="p">()</span>
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">sendDataToServer</span><span class="p">(</span><span class="kc">_</span> <span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">])</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="properties">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Properties</a><a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>dataBuffer</strong>: An array of raw string data representing encoded telemetry readings (such as CSV-style lines).</p></li>
+<li><p><strong>bufferLock</strong>: A <code class="docutils literal notranslate"><span class="pre">DispatchQueue</span></code> used to synchronize access to the buffer (though the locking logic is currently commented out).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="method-adddata-data">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">addData(data:)</span></code></a><a class="headerlink" href="#method-adddata-data" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">addData</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Appends a new data string to the <code class="docutils literal notranslate"><span class="pre">dataBuffer</span></code>.</p></li>
+<li><p>If the buffer exceeds a certain threshold (currently 1000 entries), it triggers <code class="docutils literal notranslate"><span class="pre">processBuffer()</span></code>.</p></li>
+</ul>
+<p><em>Note</em>: Locking logic using <code class="docutils literal notranslate"><span class="pre">bufferLock.async</span></code> is commented out and could be re-enabled for thread safety.</p>
+</section>
+<hr class="docutils" />
+<section id="method-processbuffer">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">processBuffer()</span></code></a><a class="headerlink" href="#method-processbuffer" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">private</span> <span class="kd">func</span> <span class="nf">processBuffer</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Optionally sorts the buffer (sorting is commented out).</p></li>
+<li><p>Sends the buffered data to the server using <code class="docutils literal notranslate"><span class="pre">sendDataToServer(...)</span></code>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="method-senddatatoserver">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Method: <code class="docutils literal notranslate"><span class="pre">sendDataToServer(_:)</span></code></a><a class="headerlink" href="#method-senddatatoserver" title="Link to this heading"></a></h2>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">private</span> <span class="kd">func</span> <span class="nf">sendDataToServer</span><span class="p">(</span><span class="kc">_</span> <span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">])</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Sets a data type (<code class="docutils literal notranslate"><span class="pre">&quot;S&quot;</span></code> likely stands for Sensoria).</p></li>
+<li><p>Delegates to <code class="docutils literal notranslate"><span class="pre">LocationDataManager.shared.fetchLocationAndSaveData(...)</span></code>, which presumably attaches GPS metadata before saving.</p></li>
+<li><p>Clears the buffer only upon successful transmission.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="integration">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Integration</a><a class="headerlink" href="#integration" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">CentralBufferManager</span></code> plays a key role in ensuring:</p>
+<ul class="simple">
+<li><p>No data loss during high-frequency sampling.</p></li>
+<li><p>Buffered, batch-style transmission for performance and power efficiency.</p></li>
+<li><p>Potential location-aware export (if GPS is enabled in <code class="docutils literal notranslate"><span class="pre">LocationDataManager</span></code>).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="suggestions-for-improvement">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Suggestions for Improvement</a><a class="headerlink" href="#suggestions-for-improvement" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Re-enable <code class="docutils literal notranslate"><span class="pre">bufferLock.async</span></code> to protect buffer from concurrent modification.</p></li>
+<li><p>Parameterize the threshold (currently hardcoded at 1000).</p></li>
+<li><p>Optionally add retry logic if the data fails to send multiple times.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>This class acts as a central batching system for handling raw telemetry streams before server synchronization. It’s especially useful in mobile environments with constrained bandwidth or intermittent connectivity.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sensoria_handler_right.html" class="btn btn-neutral float-left" title="SensoriaHandlerRight.swift" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../android/index.html" class="btn btn-neutral float-right" title="Android Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

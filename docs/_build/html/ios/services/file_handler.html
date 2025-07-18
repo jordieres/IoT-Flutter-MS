@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FileHandler.swift &mdash; HealthyWear  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="LocationDataManager.swift" href="location_data_manager.html" />
+    <link rel="prev" title="EventManager.swift" href="event_manager.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HealthyWear
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html#getting-started">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flutter/index.html">Flutter Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">iOS Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../app_delegate.html">App Delegate</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Services</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="device_registry.html">Device Registry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="event_manager.html">Event Manager</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">File Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#design-pattern">Design Pattern</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-responsibilities">Core Responsibilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-methods">Key Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metadata-construction">Metadata Construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compression-logic">Compression Logic</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integration">Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="location_data_manager.html">Location Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="status_update_manager.html">status Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="toast_manager.html">Toast Manager</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metawear/index.html">MetaWear iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensoria/index.html">Sensoria iOS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../android/index.html">Android Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../java.html">Java Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python.html">Python Backend</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HealthyWear</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">iOS Module</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Services Module</a></li>
+      <li class="breadcrumb-item active">FileHandler.swift</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ios/services/file_handler.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="filehandler-swift">
+<h1>FileHandler.swift<a class="headerlink" href="#filehandler-swift" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#purpose" id="id1">Purpose</a></p></li>
+<li><p><a class="reference internal" href="#design-pattern" id="id2">Design Pattern</a></p></li>
+<li><p><a class="reference internal" href="#core-responsibilities" id="id3">Core Responsibilities</a></p></li>
+<li><p><a class="reference internal" href="#key-methods" id="id4">Key Methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#setidnumber-and-setappversion" id="id5"><code class="docutils literal notranslate"><span class="pre">setIdNumber(_:)</span></code> and <code class="docutils literal notranslate"><span class="pre">setAppVersion(_:)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#savedatatofile" id="id6"><code class="docutils literal notranslate"><span class="pre">saveDataToFile(...)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#deletefile-at" id="id7"><code class="docutils literal notranslate"><span class="pre">deleteFile(at:)</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#metadata-construction" id="id8">Metadata Construction</a></p></li>
+<li><p><a class="reference internal" href="#compression-logic" id="id9">Compression Logic</a></p></li>
+<li><p><a class="reference internal" href="#integration" id="id10">Integration</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id11">Summary</a></p></li>
+</ul>
+</nav>
+<section id="purpose">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Purpose</a><a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">FileHandler.swift</span></code> is a centralized utility class in the iOS native layer that manages file creation, metadata attachment, and compression for sensor data collected by the HealthyWear app.</p>
+</section>
+<hr class="docutils" />
+<section id="design-pattern">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Design Pattern</a><a class="headerlink" href="#design-pattern" title="Link to this heading"></a></h2>
+<p>This class uses the <strong>Singleton pattern</strong>:</p>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span> <span class="kd">let</span> <span class="nv">shared</span> <span class="p">=</span> <span class="n">FileHandler</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Ensures only one instance exists to handle all file-related tasks across the app.</p>
+</section>
+<hr class="docutils" />
+<section id="core-responsibilities">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Core Responsibilities</a><a class="headerlink" href="#core-responsibilities" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Save structured sensor data to local files.</p></li>
+<li><p>Attach metadata including location, app version, and device information.</p></li>
+<li><p>Compress files into <code class="docutils literal notranslate"><span class="pre">.gz</span></code> format using zlib.</p></li>
+<li><p>Manage cleanup (deleting old/uncompressed files).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="key-methods">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Key Methods</a><a class="headerlink" href="#key-methods" title="Link to this heading"></a></h2>
+<section id="setidnumber-and-setappversion">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">setIdNumber(_:)</span></code> and <code class="docutils literal notranslate"><span class="pre">setAppVersion(_:)</span></code></a><a class="headerlink" href="#setidnumber-and-setappversion" title="Link to this heading"></a></h3>
+<p>Set optional metadata headers such as:</p>
+<ul class="simple">
+<li><p>User/Session identifier</p></li>
+<li><p>Application version string</p></li>
+</ul>
+</section>
+<section id="savedatatofile">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">saveDataToFile(...)</span></code></a><a class="headerlink" href="#savedatatofile" title="Link to this heading"></a></h3>
+<p>Creates and writes structured sensor data:</p>
+<ul class="simple">
+<li><p>Builds file name using timestamp and <code class="docutils literal notranslate"><span class="pre">dataType</span></code></p></li>
+<li><p>Saves initial JSON metadata</p></li>
+<li><p>Appends sensor data from <code class="docutils literal notranslate"><span class="pre">dataBuffer</span></code></p></li>
+<li><p>Compresses <code class="docutils literal notranslate"><span class="pre">.txt</span></code> into <code class="docutils literal notranslate"><span class="pre">.gz</span></code> using <code class="docutils literal notranslate"><span class="pre">gzipCompressed()</span></code></p></li>
+<li><p>Deletes original file</p></li>
+</ul>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nv">fileName</span> <span class="p">=</span> <span class="s">&quot;</span><span class="si">\(</span><span class="n">dataType</span><span class="si">)</span><span class="s">_</span><span class="si">\(</span><span class="n">timestamp</span><span class="si">)</span><span class="s">.txt&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="deletefile-at">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">deleteFile(at:)</span></code></a><a class="headerlink" href="#deletefile-at" title="Link to this heading"></a></h3>
+<p>Deletes specified file safely:</p>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="k">try</span> <span class="n">FileManager</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">at</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Used after successful <code class="docutils literal notranslate"><span class="pre">.gz</span></code> compression.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="metadata-construction">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Metadata Construction</a><a class="headerlink" href="#metadata-construction" title="Link to this heading"></a></h2>
+<p>Dynamically builds structured headers:</p>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="n">metadata</span><span class="p">:</span> <span class="p">[</span>
+  <span class="p">(</span><span class="s">&quot;Id&quot;</span><span class="p">,</span> <span class="n">idNumber</span><span class="p">),</span>
+  <span class="p">(</span><span class="s">&quot;Type&quot;</span><span class="p">,</span> <span class="n">type</span><span class="p">),</span>
+  <span class="p">(</span><span class="s">&quot;Structure&quot;</span><span class="p">,</span> <span class="n">structure</span><span class="p">),</span>
+  <span class="p">(</span><span class="s">&quot;Lat&quot;</span><span class="p">,</span> <span class="n">latitude</span><span class="p">),</span>
+  <span class="p">(</span><span class="s">&quot;Long&quot;</span><span class="p">,</span> <span class="n">longitude</span><span class="p">),</span>
+  <span class="p">(</span><span class="s">&quot;AppVersion&quot;</span><span class="p">,</span> <span class="n">appVersion</span><span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Also uses helper functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">getStructureForDataType(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getTypeForDataType(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updateMetadataWithDeviceInfo(...)</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="compression-logic">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Compression Logic</a><a class="headerlink" href="#compression-logic" title="Link to this heading"></a></h2>
+<p>Implemented in a <code class="docutils literal notranslate"><span class="pre">Data</span></code> extension:</p>
+<div class="highlight-swift notranslate"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">gzipCompressed</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">Data</span><span class="p">?</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Uses zlib for GZIP compression</p></li>
+<li><p>Allocates 4KB buffer and processes in blocks</p></li>
+<li><p>Returns compressed <code class="docutils literal notranslate"><span class="pre">Data?</span></code> object</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="integration">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Integration</a><a class="headerlink" href="#integration" title="Link to this heading"></a></h2>
+<p>Used by:</p>
+<ul class="simple">
+<li><p>Sensor streaming handlers (e.g. <code class="docutils literal notranslate"><span class="pre">MetaWearHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">SensoriaHandler</span></code>)</p></li>
+<li><p>Data upload services in background</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">FileHandler.swift</span></code> handles the full lifecycle of data persistence: from saving and structuring raw telemetry, to safely compressing and cleaning up. It promotes modularity and ensures data is stored in a standard, readable, and transferable format.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="event_manager.html" class="btn btn-neutral float-left" title="EventManager.swift" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="location_data_manager.html" class="btn btn-neutral float-right" title="LocationDataManager.swift" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joaquín Ordieres.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
