@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="HealthyWear API docs, for the Dart programming language.">
+  <title>HealthyWear - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">HealthyWear package</li>
+  </ol>
+  <div class="self-name">HealthyWear</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="healthywear">healthyWear</h1>
+<h2 id="introduction">Introduction</h2>
+<p>HealthyWear is an IoT flutter application developed for the Android/iOS devices to streaming and capturing various health data from MetaWear (MetaMotions S) sensors,  HBand, and Sensoria Smart Socks wearables. It provides dual-device functionality and is particularly focused on offering real-time feedback on physical activities, aiding in enhancing doctors diagnosis and patient treatment process. The app collects, stores, and transmits real-time vital signs and physical activity data to a server. This enables doctors to remotely keep track of their patients' health, making it an essential tool in the management of their patients.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>MetaWear Integration</strong>: Connects to MetaWear sensors worn on each hand to monitor and record movements .</li>
+<li><strong>HBand Integration</strong>: Utilizes the HBand to track heart rate ,spo2 and blood pressure and providing vital health metrics.</li>
+<li><strong>Sensoria Smart Socks Integration</strong>: To incorporate data collection from smart socks for comprehensive foot movement analysis.</li>
+<li><strong>Data Management</strong>: Buffers and writting the data locally before sending it to the server, ensuring efficient transmission and minimal loss.</li>
+<li><strong>Doctor Dashboard</strong>: A server-side interface (not included in this repository) where doctors can view and analyze patient data.</li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Flutter SDK(latest version recommended)  ( <a href="https://docs.flutter.dev/get-started/install">https://docs.flutter.dev/get-started/install</a> )</li>
+<li>Android Studio and Xcode for platform-specific SDKs  ( <a href="https://developer.android.com/studio/install">https://developer.android.com/studio/install</a> )</li>
+<li>Access to the required hardware (MetaWear sensors,  HBand, Sensoria Smart Socks)</li>
+</ul>
+<h3 id="installation-flutter">Installation (flutter)</h3>
+<h2 id="install-flutter-sdk">Install Flutter SDK</h2>
+<ul>
+<li><strong>Download Flutter</strong>:
+<ul>
+<li>Visit the <a href="https://flutter.dev/docs/get-started/install">Flutter installation page</a>.</li>
+<li>Download the latest stable Flutter SDK for macOS.</li>
+</ul>
+</li>
+<li><strong>Extract Flutter</strong>:
+<ul>
+<li>Extract the downloaded zip file and move the <code>flutter</code> folder to your desired installation location (e.g., <code>~/flutter</code>).</li>
+</ul>
+</li>
+<li><strong>Update Your Path</strong>:
+<ul>
+<li>Add Flutter to your path permanently:
+<ul>
+<li>Open or create the <code>$HOME/.zshrc</code> file with a text editor like Nano:
+<pre class="language-bash"><code class="language-bash">nano $HOME/.zshrc
+</code></pre>
+</li>
+<li>Add the following line and replace <code>[PATH_TO_FLUTTER_GIT_DIRECTORY]</code> with the actual path to your Flutter SDK:
+<pre class="language-bash"><code class="language-bash">export PATH="$PATH:[PATH_TO_FLUTTER_GIT_DIRECTORY]/flutter/bin"
+</code></pre>
+</li>
+<li>Save and exit the editor. Apply the changes by running:
+<pre class="language-bash"><code class="language-bash">source $HOME/.zshrc
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Run Flutter Doctor</strong>:
+<ul>
+<li>Check for any dependencies you might need to install to complete the setup:
+<pre class="language-bash"><code class="language-bash">flutter doctor
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>
+<p>Clone the repository:</p>
+<p>git clone <a href="https://github.com/jordieres/IoT-Flutter-MS.git">https://github.com/jordieres/IoT-Flutter-MS.git</a></p>
+</li>
+<li>
+<p>Navigate to the project directory</p>
+</li>
+<li>
+<p>Install dependencies:</p>
+<pre class="language-dart"><code>flutter pub get
+</code></pre>
+</li>
+<li>
+<p>Connect physical device Android/iOS</p>
+</li>
+<li>
+<p>install flutter and dart plugins in the android studio setting</p>
+<img width="965" alt="Screenshot 2024-03-12 at 15 56 09" src="https://github.com/jordieres/IoT-Flutter-MS/assets/44529458/eae48f08-b261-490b-bc18-d606d5e72a78">
+</li>
+</ol>
+<p>6.Run the app</p>
+<pre class="language-dart"><code>flutter run
+</code></pre>
+<p>7.select the Device</p>
+<h1 id="ios-installation-guide-for-flutter-app">iOS Installation Guide for Flutter App</h1>
+<h2 id="prerequisites-2">Prerequisites</h2>
+<p>Ensure you have a macOS computer to run Xcode and install all necessary software.</p>
+<h2 id="1-install-xcode">1. Install Xcode</h2>
+<ul>
+<li><strong>Download and Install Xcode</strong>:
+<ul>
+<li>Go to the Mac App Store and search for "Xcode".</li>
+<li>Click "Install" to download and install Xcode on your Mac.</li>
+<li>After installation, launch Xcode and agree to its license agreement. It might prompt you to install additional components, accept and continue.</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-configure-xcode">2. Configure Xcode</h2>
+<ul>
+<li><strong>Xcode Command Line Tools</strong>:
+<ul>
+<li>Open Terminal and run the following command to install Xcode Command Line Tools:
+<pre class="language-bash"><code class="language-bash">xcode-select --install
+</code></pre>
+</li>
+<li>Ensure Xcode command line tools are configured to the correct Xcode installation by running:
+<pre class="language-bash"><code class="language-bash">sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+</code></pre>
+</li>
+<li>Agree to the terms of service when prompted.</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-open-the-ios-folder-with-xcode">3. Open the iOS folder with Xcode</h2>
+<ul>
+<li><strong>Navigate to the iOS Folder</strong>:
+<ul>
+<li>Open the iOS subfolder in your project:
+<pre class="language-bash"><code class="language-bash">open ios/Runner.xcworkspace
+</code></pre>
+</li>
+<li>This command opens the project in Xcode. If the project does not open, make sure you are in the correct directory and that the project includes an <code>ios/Runner.xcworkspace</code> file.</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-run-the-app">4. Run the App</h2>
+<ul>
+<li>**Connect an iOS Device **:
+<ul>
+<li>Connect your iPhone via USB and trust the computer.</li>
+</ul>
+</li>
+<li><strong>Configure Signing</strong>:
+<ul>
+<li>In Xcode, navigate to the project settings by selecting the <strong>Runner</strong> from the Project Navigator.</li>
+<li>Click on the <strong>Signing &amp; Capabilities</strong> tab.</li>
+<li>Choose your Team under the <strong>Team</strong> dropdown. You may need to add your Apple ID in <strong>Xcode &gt; Preferences &gt; Accounts</strong> if you haven't already.</li>
+<li>Ensure that the <strong>Bundle Identifier</strong> is unique and matches your provisioning profile if you are preparing for distribution.</li>
+<li>Xcode may prompt you to fix issues related to provisioning profiles; allow it to do so if required.</li>
+</ul>
+</li>
+<li><strong>Run the App</strong>:
+<ul>
+<li>Click the <strong>Play</strong> button in Xcode or use the keyboard shortcut <strong>Cmd + R</strong> to build and run the app.</li>
+<li>The app should compile and then run on your selected device or simulator.</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-troubleshooting-common-issues">5. Troubleshooting Common Issues</h2>
+<ul>
+<li><strong>Dependency Errors</strong>:
+<ul>
+<li>If you encounter errors related to missing packages or dependencies, return to the terminal in your project directory and run:
+<pre class="language-bash"><code class="language-bash">flutter pub get
+</code></pre>
+</li>
+<li>Then try building the project again.</li>
+</ul>
+</li>
+<li><strong>Build Errors</strong>:
+<ul>
+<li>For errors during the build process, ensure all Xcode updates are installed. Check for any error messages in Xcode's console that might indicate what needs to be addressed.</li>
+<li>Consider running <code>flutter clean</code> in your project directory to clean the build and then try running the app again:
+<pre class="language-bash"><code class="language-bash">flutter clean
+flutter run
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<ul>
+<li><strong>Main.dart</strong>: Entry point of the Flutter application, common across all devices.</li>
+<li><strong>MetawearApi.dart</strong>: Handles communication with MetaWear sensors via platform channels.</li>
+<li><strong>SmartBandApi.dart</strong>: Manages data exchange with the Veepoo HBand using its Flutter SDK.</li>
+<li><strong>SensoriaApi.dart</strong>: Handles communication with Sensoria sensors via platform channels.</li>
+<li><strong>MainActivity/MainActivity.swift</strong>: Platform-specific entry points for Android and iOS, respectively.</li>
+</ul>
+<h3 id="version-100">Version 1.0.0</h3>
+<ul>
+<li>First release</li>
+<li>Android native is functional</li>
+</ul>
+<h3 id="version-101">Version 1.0.1</h3>
+<ul>
+<li>UI improvement</li>
+<li>Data handling improvement</li>
+</ul>
+<h3 id="version-102">Version 1.0.2</h3>
+<ul>
+<li>UI improvement</li>
+<li>Minor bugs Fixed</li>
+<li>Upload data improvement</li>
+</ul>
+<h3 id="version-103">Version 1.0.3</h3>
+<ul>
+<li>UI improvement</li>
+<li>Minor bugs Fixed</li>
+<li>Status Checker improvement</li>
+<li>Notification handler improvement</li>
+</ul>
+<h3 id="version-104">Version 1.0.4</h3>
+<ul>
+<li>Uploading data improvement</li>
+</ul>
+<h3 id="version-105">version 1.0.5</h3>
+<ul>
+<li>Background uploading process</li>
+<li>Battery status checking</li>
+<li>UI improvement</li>
+<li>Icon changed</li>
+</ul>
+<h3 id="version-106">version 1.0.6</h3>
+<ul>
+<li>Metawear disconnection improvement(Android)</li>
+<li>iOS first release</li>
+</ul>
+<h3 id="version-107">version 1.0.7</h3>
+<ul>
+<li>UI improvement</li>
+<li>Minor bugs fixed</li>
+</ul>
+<h3 id="version-108">version 1.0.8</h3>
+<ul>
+<li>Location Disclosure added (Android only)</li>
+</ul>
+<h3 id="version-200">version 2.0.0</h3>
+<p>-Test Recording Feature is added</p>
+<h3 id="version-201">version 2.0.1</h3>
+<p>-Some improvement in UI
+-Version is in splash screen</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="AppLocal">
+  <span class="name"><a href="Service_AppLocal/Service_AppLocal-library.html">Service/AppLocal</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="BackgroundHandling">
+  <span class="name"><a href="Service_BackgroundHandling/Service_BackgroundHandling-library.html">Service/BackgroundHandling</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="device_connection_status">
+  <span class="name"><a href="enums_device_connection_status/enums_device_connection_status-library.html">enums/device_connection_status</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="main">
+  <span class="name"><a href="main/main-library.html">main</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="MetaWearApi">
+  <span class="name"><a href="Api_MetaWearApi/Api_MetaWearApi-library.html">Api/MetaWearApi</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="NotificationHandler">
+  <span class="name"><a href="Service_NotificationHandler/Service_NotificationHandler-library.html">Service/NotificationHandler</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="SensoriaApi">
+  <span class="name"><a href="Api_SensoriaApi/Api_SensoriaApi-library.html">Api/SensoriaApi</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="ServiceApi">
+  <span class="name"><a href="Api_ServiceApi/Api_ServiceApi-library.html">Api/ServiceApi</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="share_files">
+  <span class="name"><a href="Service_share_files/Service_share_files-library.html">Service/share_files</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="SmartBandApi">
+  <span class="name"><a href="Api_SmartBandApi/Api_SmartBandApi-library.html">Api/SmartBandApi</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="splash_screen">
+  <span class="name"><a href="splash_screen/splash_screen-library.html">splash_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="StatusChecker">
+  <span class="name"><a href="Service_StatusChecker/Service_StatusChecker-library.html">Service/StatusChecker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="Uploader">
+  <span class="name"><a href="Service_Uploader/Service_Uploader-library.html">Service/Uploader</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li class="self-crumb">HealthyWear package</li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">HealthyWear</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="Service_AppLocal/Service_AppLocal-library.html">Service/AppLocal</a></li>
+      <li><a href="Service_BackgroundHandling/Service_BackgroundHandling-library.html">Service/BackgroundHandling</a></li>
+      <li><a href="enums_device_connection_status/enums_device_connection_status-library.html">enums/device_connection_status</a></li>
+      <li><a href="main/main-library.html">main</a></li>
+      <li><a href="Api_MetaWearApi/Api_MetaWearApi-library.html">Api/MetaWearApi</a></li>
+      <li><a href="Service_NotificationHandler/Service_NotificationHandler-library.html">Service/NotificationHandler</a></li>
+      <li><a href="Api_SensoriaApi/Api_SensoriaApi-library.html">Api/SensoriaApi</a></li>
+      <li><a href="Api_ServiceApi/Api_ServiceApi-library.html">Api/ServiceApi</a></li>
+      <li><a href="Service_share_files/Service_share_files-library.html">Service/share_files</a></li>
+      <li><a href="Api_SmartBandApi/Api_SmartBandApi-library.html">Api/SmartBandApi</a></li>
+      <li><a href="splash_screen/splash_screen-library.html">splash_screen</a></li>
+      <li><a href="Service_StatusChecker/Service_StatusChecker-library.html">Service/StatusChecker</a></li>
+      <li><a href="Service_Uploader/Service_Uploader-library.html">Service/Uploader</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    HealthyWear
+      2.0.1+26
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

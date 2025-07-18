@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the showLocationPermissionDisclosure function from the main library, for the Dart programming language.">
+  <title>showLocationPermissionDisclosure function - main library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">HealthyWear</a></li>
+    <li><a href="../main/main-library.html">main.dart</a></li>
+    <li class="self-crumb">showLocationPermissionDisclosure function</li>
+  </ol>
+  <div class="self-name">showLocationPermissionDisclosure</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="main&#47;main-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">showLocationPermissionDisclosure</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">showLocationPermissionDisclosure</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="showLocationPermissionDisclosure-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; showLocationPermissionDisclosure(BuildContext context) async {
+  Completer&lt;void&gt; completer = Completer&lt;void&gt;();
+
+  showDialog&lt;void&gt;(
+    context: context,
+    barrierDismissible: false, &#47;&#47; User must tap a button to dismiss the dialog
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(&#39;Se necesitan permisos&#39;),
+        content: Text(
+            &#39;Esta aplicación necesita acceder a su ubicación para mejorar la precisión de los datos de salud recopilados por los dispositivos portátiles. ¿Está de acuerdo con esto??&#39;),
+        actions: &lt;Widget&gt;[
+          TextButton(
+            child: Text(&#39;No&#39;),
+            onPressed: () {
+              Navigator.of(context).pop();
+              completer.complete(); &#47;&#47; Complete the completer when user cancels
+            },
+          ),
+          TextButton(
+            child: Text(&#39;Sí&#39;),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              var status = await Permission.location.request();
+              if (status.isGranted) {
+                &#47;&#47; Handle the granted scenario
+              } else {
+                &#47;&#47; Handle the denied scenario
+              }
+              completer
+                  .complete(); &#47;&#47; Complete the completer when user confirms and permission is processed
+            },
+          ),
+        ],
+      );
+    },
+  );
+
+  return completer.future; &#47;&#47; This will make sure the code waits until the completer is completed
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">HealthyWear</a></li>
+    <li><a href="../main/main-library.html">main</a></li>
+    <li class="self-crumb">showLocationPermissionDisclosure function</li>
+</ol>
+
+
+    <h5>main library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    HealthyWear
+      2.0.1+26
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
