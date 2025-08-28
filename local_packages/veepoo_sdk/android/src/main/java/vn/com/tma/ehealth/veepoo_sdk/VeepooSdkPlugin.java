@@ -15,7 +15,6 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * VeepooSdkPlugin
@@ -54,10 +53,7 @@ public class VeepooSdkPlugin implements FlutterPlugin, ActivityAware {
     // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
     // depending on the user's project. onAttachedToEngine or registerWith must both be defined
     // in the same class.
-    public static void registerWith(Registrar registrar) {
-//        final VeepooSdkPlugin instance = new VeepooSdkPlugin();
-//        registrar.addRequestPermissionsResultListener(instance);
-    }
+
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {

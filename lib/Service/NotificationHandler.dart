@@ -6,6 +6,13 @@ import 'StatusChecker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
+/// BACKGROUND TAP HANDLER (must be top-level for v19)
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  // Runs in a background isolate when the app is terminated/backgrounded
+  // TODO: handle deep links, route navigation, analytics, etc.
+}
+
 class NotificationInfo {
   String deviceName;
   int deviceIndex;
@@ -21,7 +28,7 @@ class NotificationInfo {
 }
 
 class NotificationHandler {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   List<NotificationInfo> sentNotifications = [];
@@ -59,12 +66,6 @@ class NotificationHandler {
     _initializeNotifications();
   }
 
-  // Future<int> countFilesInUploadDirectory() async {//TODO CHECK IF NEW METHOD WORKING FINE INA NDROID AND IOS SO DELETE THIS
-  //   final directory = await getExternalStorageDirectory();
-  //   final fileList = directory!.listSync().where((file) => file.path.endsWith('.gz')).toList();
-  //   return fileList.length;
-  // }
-
   Future<int> countFilesInUploadDirectory() async {
     Directory? directory;
 
@@ -75,7 +76,7 @@ class NotificationHandler {
     }
 
     if (directory == null) {
-      print("No directory found for this platform.");
+      // No directory for this platform
       return 0;
     }
 
@@ -84,7 +85,6 @@ class NotificationHandler {
   }
 
   void checkAndSendNotification(String deviceName, int deviceIndex, String activityName) async {
-    print("notifi checker RRECeivedddd in notihandler-------AMIR");
     final now = DateTime.now();
     final Duration specificInterval = _getNotificationInterval(deviceName, activityName);
     final notificationIndex = sentNotifications.indexWhere(
@@ -156,9 +156,8 @@ class NotificationHandler {
         }
         break;
       case "Uploader":
-        switch (activityName) {
-          case "Uploading":
-            return Duration(minutes: notification_IntervalMinutes_Upload);
+        if (activityName == "Uploading") {
+          return Duration(minutes: notification_IntervalMinutes_Upload);
         }
         break;
       case "Mobile Device":
@@ -167,9 +166,9 @@ class NotificationHandler {
         }
         break;
       default:
-        return Duration(minutes: 30);
+        return const Duration(minutes: 30);
     }
-    return Duration(minutes: 30);
+    return const Duration(minutes: 30);
   }
 
   String _generateTitle(String deviceName, String activityName) {
@@ -217,7 +216,7 @@ class NotificationHandler {
   }
 
   Future<String> _generateMessageEn(String deviceName, int deviceIndex, String activityName) async {
-    int fileCount = await countFilesInUploadDirectory();
+    final fileCount = await countFilesInUploadDirectory();
     switch (deviceName) {
       case "MetaWear":
         switch (activityName) {
@@ -262,17 +261,15 @@ class NotificationHandler {
         }
       case "Uploader":
         return "There are $fileCount files pending delivery to the server. Check your Internet access.";
-
       case "Mobile Device":
         return "Your phone battery is low ";
-
       default:
         return "Failure in $activityName for $deviceName";
     }
   }
 
   Future<String> _generateMessageEs(String deviceName, int deviceIndex, String activityName) async {
-    int fileCount = await countFilesInUploadDirectory();
+    final fileCount = await countFilesInUploadDirectory();
     switch (deviceName) {
       case "MetaWear":
         switch (activityName) {
@@ -317,88 +314,87 @@ class NotificationHandler {
         }
       case "Uploader":
         return "Hay $fileCount ficheros pendientes de entrega al servidor. Compruebe su acceso a Internet. ";
-
       case "Mobile Device":
         return "La batería de su teléfono está baja ";
-
       default:
         return "Fallo en $activityName para $deviceName";
     }
   }
 
-  // void _initializeNotifications() async {//TODO IF THE NEW ONE WORKS FINE IN ANDROID AND IOS SO I DELTE THIS
-  //   final AndroidInitializationSettings initializationSettingsAndroid =
-  //       AndroidInitializationSettings('ic_notification');
-  //
-  //   final InitializationSettings initializationSettings = InitializationSettings(
-  //     android: initializationSettingsAndroid,
-  //   );
-  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  // }
-
   Future<void> _sendNotification(String title, String body) async {
     try {
-      const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          'fail_channel', 'fail_channel',
-          importance: Importance.high, priority: Priority.high, ticker: 'ticker');
-      const NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
-      await flutterLocalNotificationsPlugin.show(0, title, body, platformChannelSpecifics);
+      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+        'fail_channel', // channel id
+        'fail_channel', // channel name
+        importance: Importance.high,
+        priority: Priority.high,
+        ticker: 'ticker',
+      );
+
+      const NotificationDetails details = NotificationDetails(
+        android: androidDetails,
+        // iOS uses default presentation unless you set per-notification flags or categories actions
+      );
+
+      await flutterLocalNotificationsPlugin.show(0, title, body, details);
     } catch (e) {
+      // ignore: avoid_print
       print('Failed to send notification: $e');
     }
   }
 
-  ////////newwww for test
+  /// v19-compatible initialization
+  Future<void> _initializeNotifications() async {
+    // ANDROID
+    const AndroidInitializationSettings initAndroid =
+        AndroidInitializationSettings('ic_notification'); // ensure this exists
 
-  void _initializeNotifications() async {
-    // Define the settings for Android
-    final AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings(
-            'ic_notification'); // Ensure you have an appropriate icon in your Android resources
-
-    // Define the settings for iOS
-    // Setup for Darwin (iOS and macOS) initialization
-    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification,
-        notificationCategories: <DarwinNotificationCategory>[
-          DarwinNotificationCategory('demoCategory', actions: <DarwinNotificationAction>[
+    // iOS/macOS (Darwin) — NO onDidReceiveLocalNotification in v19
+    final DarwinInitializationSettings initDarwin = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      notificationCategories: <DarwinNotificationCategory>[
+        DarwinNotificationCategory(
+          'demoCategory',
+          actions: <DarwinNotificationAction>[
             DarwinNotificationAction.plain('id_1', 'Action 1'),
-            DarwinNotificationAction.plain('id_2', 'Action 2',
-                options: {DarwinNotificationActionOption.foreground}),
-            // Add more actions as needed
-          ], options: {
-            DarwinNotificationCategoryOption.hiddenPreviewShowTitle
-          })
-        ]);
-
-    // Combining settings for both platforms
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
+            DarwinNotificationAction.plain(
+              'id_2',
+              'Action 2',
+              options: {DarwinNotificationActionOption.foreground},
+            ),
+          ],
+          options: {DarwinNotificationCategoryOption.hiddenPreviewShowTitle},
+        ),
+      ],
     );
 
-    // Initialize the plugin with the settings for both platforms
+    final InitializationSettings initSettings = InitializationSettings(
+      android: initAndroid,
+      iOS: initDarwin,
+    );
+
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+      initSettings,
+      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
+
+    // (Optional) Explicitly ask iOS for permissions
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
+
+    // (Optional macOS)
+    // await flutterLocalNotificationsPlugin
+    //     .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()
+    //     ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
-  Future onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) async {
-    // iOS foreground notification handling
-    // For example, display a dialog or perform another action
-  }
-
-  Future onDidReceiveNotificationResponse(NotificationResponse response) async {
-    // Handle user interaction with a notification
-  }
-
-  // Define this as a top-level or static function for handling background notifications
-  @pragma('vm:entry-point')
-  static void notificationTapBackground(NotificationResponse notificationResponse) {
-    // This function can handle notification actions
-    // Remember this runs in a separate isolate
+  Future<void> _onDidReceiveNotificationResponse(NotificationResponse response) async {
+    // Foreground tap handler
+    // You can inspect: response.actionId, response.payload, response.notificationResponseType
+    // TODO: route user or handle action IDs ('id_1', 'id_2', etc.)
   }
 }
