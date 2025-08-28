@@ -1,40 +1,26 @@
-group 'vn.com.tma.ehealth.veepoo_sdk'
-version '1.0'
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
-    }
+plugins {
+    id 'com.android.library'
 }
 
-rootProject.allprojects {
-    repositories {
-        google()
-        mavenCentral()
-
-        flatDir {
-            dirs 'libs' //this way we can find the .aar file in libs folder
-        }
-    }
-}
-
-apply plugin: 'com.android.library'
+group = 'vn.com.tma.ehealth.veepoo_sdk'
+version = '1.0'
 
 android {
-      namespace 'vn.com.tma.ehealth.veepoo_sdk'    // ← add this line
-      compileSdk = 35                               // ← bump to match your app 34
+    namespace 'vn.com.tma.ehealth.veepoo_sdk'
+    compileSdk = 35
 
     defaultConfig {
-        minSdkVersion 22
+        minSdk = 22
+        targetSdk = 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+        consumerProguardFiles "consumer-rules.pro"
     }
-    lintOptions {
+
+    // 'lintOptions' is deprecated; use 'lint' in AGP 8.x
+    lint {
         disable 'InvalidPackage'
     }
 
@@ -43,28 +29,37 @@ android {
             aidl.srcDirs = ['src/main/aidl']
         }
     }
+
+    // AGP 8.x requires JDK 17
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+}
 
-    dependencies {
-        api 'androidx.annotation:annotation:1.1.0'
+repositories {
+    google()
+    mavenCentral()
 
-        implementation fileTree(include: ['*.jar'], dir: 'libs')
-        implementation 'com.orhanobut:logger:1.15'
-        implementation files('libs/vpprotocol_2.1.44.15.jar')
-
-        annotationProcessor 'org.projectlombok:lombok:1.18.30'
-        implementation 'org.projectlombok:lombok:1.18.30'
+    // for your local .aar / jars
+    flatDir {
+        dirs 'libs'
     }
-
 }
 
 dependencies {
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
-    implementation 'org.projectlombok:lombok:1.18.30'
-    implementation 'com.google.code.gson:gson:2.10.1'
+    // your original dependencies (moved to the proper top-level block)
+    api 'androidx.annotation:annotation:1.1.0'
 
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.orhanobut:logger:1.15'
+    implementation files('libs/vpprotocol_2.1.44.15.jar')
+
+    // Lombok: prefer compileOnly + annotationProcessor, but keeping your impl for parity
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    implementation 'org.projectlombok:lombok:1.18.30'
+
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 }

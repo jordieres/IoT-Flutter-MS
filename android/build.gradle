@@ -1,12 +1,13 @@
+// Root build.gradle (NOT the app one)
+
 buildscript {
-    ext.kotlin_version = '1.9.23'
+    ext.kotlin_version = '2.1.0'
     repositories {
         google()
         mavenCentral()
     }
-
     dependencies {
-        classpath "com.android.tools.build:gradle:8.1.2"
+        // Ensure Kotlin Gradle Plugin is on the buildscript classpath early
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -25,8 +26,6 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 

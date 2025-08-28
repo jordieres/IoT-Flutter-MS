@@ -1,10 +1,10 @@
 pluginManagement {
     def flutterSdkPath = {
-        def properties = new Properties()
-        file("local.properties").withInputStream { properties.load(it) }
-        def flutterSdkPath = properties.getProperty("flutter.sdk")
-        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-        return flutterSdkPath
+        def p = new Properties()
+        file("local.properties").withInputStream { p.load(it) }
+        def path = p.getProperty("flutter.sdk")
+        assert path != null, "flutter.sdk not set in local.properties"
+        return path
     }
     settings.ext.flutterSdkPath = flutterSdkPath()
 
@@ -17,13 +17,16 @@ pluginManagement {
     }
 
     plugins {
-        id "dev.flutter.flutter-gradle-plugin" version "1.0.0" apply false
+        id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false
+        id("com.android.application") version "8.6.1" apply false
+        id("com.android.library")     version "8.6.1" apply false
+        // ← do NOT declare Kotlin here
     }
 }
 
 plugins {
-    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version '8.1.2' apply false
+    id("dev.flutter.flutter-plugin-loader") version "1.0.0"
+    id("com.android.application") apply false
 }
 
-include ":app"
+include(":app")

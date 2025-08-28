@@ -15,7 +15,9 @@
         android:required="true" />
 
     <application>
-
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
 
         <service
             android:name=".service.BleService"

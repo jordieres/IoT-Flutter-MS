@@ -1,6 +1,6 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    id "org.jetbrains.kotlin.android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -12,45 +12,36 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
+def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
 android {
     namespace "com.upm.healthywear"
-    compileSdkVersion 35
+    compileSdkVersion 36
     ndkVersion flutter.ndkVersion
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-
-
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
+        options.warnings = true
+        options.deprecation = true
     }
+
+    defaultConfig {
+        applicationId "com.upm.healthywear"
+        minSdkVersion 24
+        targetSdkVersion 36
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
     signingConfigs {
         release {
+            // ⚠️ Consider moving these to gradle.properties (safer)
             keyAlias 'healthywear_key'
             keyPassword 'Madrid#141'
             storeFile file('../../healthywear_keystore.jks')
             storePassword 'Madrid#141'
         }
-    }
-
-
-    defaultConfig {
-        applicationId "com.upm.healthywear"
-        minSdkVersion 24
-        targetSdkVersion 35
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-
-
     }
 
     buildTypes {
@@ -59,33 +50,39 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-            ndk {
-                debugSymbolLevel "SYMBOL_TABLE"
-            }
+            ndk { debugSymbolLevel "SYMBOL_TABLE" }
         }
+        debug {
+            // keep defaults
+        }
+    }
+
+    // AGP 8.x requires Java 17
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+    }
+    kotlinOptions {
+        jvmTarget = '17'
     }
 }
 
 flutter {
     source '../..'
 }
-dependencies {
 
+dependencies {
     implementation 'com.mbientlab:metawear:3.8.1'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'com.google.android.gms:play-services-location:21.2.0'
 
-
-    // -----needed for Bluetooth
+    // Bluetooth
     implementation 'no.nordicsemi.android:dfu:2.4.2'
     implementation 'no.nordicsemi.android.support.v18:scanner:1.6.0'
-//    implementation 'no.nordicsemi.android:ble:2.7.3'
 
-
-
-
+    // Desugaring for minSdk 24 (required by flutter_local_notifications v19)
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }
