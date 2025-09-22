@@ -15,6 +15,12 @@ if (localPropertiesFile.exists()) {
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
 def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
+def keystorePropsFile = rootProject.file('keystore.properties')
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
 android {
     namespace "com.upm.healthywear"
     compileSdkVersion 36
@@ -32,15 +38,25 @@ android {
         targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a' // or just 'arm64-v8a'
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            excludes += ['**/x86_64/**']
+        }
     }
 
     signingConfigs {
         release {
-            // ⚠️ Consider moving these to gradle.properties (safer)
-            keyAlias 'healthywear_key'
-            keyPassword 'Madrid#141'
-            storeFile file('../../healthywear_keystore.jks')
-            storePassword 'Madrid#141'
+            if (keystorePropsFile.exists()) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
         }
     }
 
