@@ -4,12 +4,12 @@ This section covers common issues that may occur when using the HealthyWear Flut
 
 ---
 
-##  App Crash When Connecting to Sensoria
+##  App Crash When Connecting to Sensoria Sensors
 
 ###  Problem
 The app crashes or fails to connect when trying to pair with a **Sensoria sensor**.
 
-### 🧠Cause
+### Cause
 This is most likely due to a misconfigured or missing **BLE protocol** on the sensor. If the sensor is not broadcasting with the expected F20 streaming protocol, the app cannot initialize communication and may crash.
 
 ---
@@ -58,7 +58,11 @@ To complete the reset:
 
 1. Tap `Control Point TX` again → **Write new value**
 2. Enter this hex value to reboot:
-01-05
+    
+    ```
+     01-05
+     ```
+     
 3. Press **Done**  
 The sensor will now restart and should be discoverable by the app again.
 
@@ -72,7 +76,7 @@ The sensor will now restart and should be discoverable by the app again.
 
 ---
 
-## 🧪 Bonus: Check BLE Status
+##  Bonus: Check BLE Status
 
 Make sure your device has:
 - Bluetooth enabled
