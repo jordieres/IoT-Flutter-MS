@@ -194,6 +194,12 @@ Ensure you have a macOS computer to run Xcode and install all necessary software
 -Some improvement in UI
 -Version is in splash screen
 
+### version 2.1.0
+-Android API 36
+
+### version 2.1.1
+-Bug fixed
+
 
 
 
