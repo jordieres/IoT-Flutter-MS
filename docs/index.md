@@ -12,6 +12,7 @@ ios/index
 android/index
 java
 python
+Troubleshooting
 ```
 
 This site includes guides and API documentation across the different parts of the project.
