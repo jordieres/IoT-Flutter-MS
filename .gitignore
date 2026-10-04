@@ -59,3 +59,7 @@ android/keystore.properties
 
 # Keystore file
 healthywear_keystore.jks
+.env
+.env.*
+!.env.example
+local.properties
