@@ -1,10 +1,10 @@
+import '../Service/android_device_permissions.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 import '../enums/device_connection_status.dart';
@@ -78,27 +78,8 @@ class MetaWearApi {
 
   static final _ble = FlutterReactiveBle();
 
-  static Future<bool> checkAndRequestPermissions() async {
-    List<Permission> permissions = [
-      // Permission.storage,
-      Permission.notification,
-      Permission.location,
-      // Permission.bluetooth,
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-      Permission.bluetoothAdvertise,
-    ];
-
-    bool allGranted = true;
-    for (Permission permission in permissions) {
-      var status = await permission.status;
-      if (!status.isGranted) {
-        var result = await permission.request();
-        allGranted = result.isGranted && allGranted;
-      }
-    }
-    return allGranted;
-  }
+  static Future<bool> checkAndRequestPermissions() =>
+      AndroidDevicePermissions.requestAccess();
 
   static Future<bool> isBluetoothAndLocationEnabled() async {
     bool isBluetoothEnabled = await isBluetoothServiceEnabled();
@@ -185,7 +166,11 @@ class MetaWearApi {
         bool permissionsOk = await checkAndRequestPermissions();
 
         if (!permissionsOk) {
-          print("Missing permissions");
+          if (deviceIndex == 1) {
+            updateRightHandConnectionStatus(DeviceConnectionStatus.disconnected);
+          } else {
+            updateLeftHandConnectionStatus(DeviceConnectionStatus.disconnected);
+          }
           return;
         }
       }

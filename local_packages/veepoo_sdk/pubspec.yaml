@@ -35,8 +35,6 @@ flutter:
       android:
         package: vn.com.tma.ehealth.veepoo_sdk
         pluginClass: VeepooSdkPlugin
-      ios:
-        pluginClass: VeepooSdkPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

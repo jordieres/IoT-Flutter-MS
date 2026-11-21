@@ -37,7 +37,16 @@
 
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "Location permission not granted");
-                stopSelf(); // Stop the service if required permissions are not granted
+                stopSelf();
+                return START_NOT_STICKY;
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                    (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                            != PackageManager.PERMISSION_GRANTED ||
+                     ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                            != PackageManager.PERMISSION_GRANTED)) {
+                stopSelf();
+                return START_NOT_STICKY;
             }
 
             if (intent != null && intent.hasExtra("LANGUAGE_CODE")) {

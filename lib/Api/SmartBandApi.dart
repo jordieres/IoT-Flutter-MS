@@ -1,3 +1,4 @@
+import '../Service/android_device_permissions.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
@@ -109,27 +110,8 @@ class SmartBandApi {
 
 /////----------permission and services check
 
-  static Future<bool> checkAndRequestPermissions() async {
-    List<Permission> permissions = [
-      // Permission.storage,
-      Permission.notification,
-      Permission.location,
-      // Permission.bluetooth,
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-      Permission.bluetoothAdvertise,
-    ];
-
-    bool allGranted = true;
-    for (Permission permission in permissions) {
-      var status = await permission.status;
-      if (!status.isGranted) {
-        var result = await permission.request();
-        allGranted = result.isGranted && allGranted;
-      }
-    }
-    return allGranted;
-  }
+  static Future<bool> checkAndRequestPermissions() =>
+      AndroidDevicePermissions.requestAccess();
 
   static Future<bool> isBluetoothAndLocationEnabled() async {
     bool isBluetoothEnabled = await isBluetoothServiceEnabled();
@@ -177,28 +159,11 @@ class SmartBandApi {
     try {
       updateConnectionStatus(DeviceConnectionStatus.connecting);
 
-      //todo must be uncommented
-
-      // bool permissionsOk = await checkAndRequestPermissions();
-      // bool servicesOk = await isBluetoothAndLocationEnabled();
-      //
-      // if (!permissionsOk) {
-      //   Fluttertoast.showToast(
-      //     msg: SmartBandApi.languageCode == "en"
-      //         ? "Missing permissions. Please grant permissions."
-      //         : "Faltan permisos. Por favor, concede los permisos.",
-      //   );
-      //   return;
-      // }
-      // if (!servicesOk) {
-      //   Fluttertoast.showToast(
-      //     msg: SmartBandApi.languageCode == "en"
-      //         ? "Bluetooth or Location is off. Please enable them."
-      //         : "El Bluetooth o la ubicación están apagados. Por favor, actívalos.",
-      //   );
-      //
-      //   return;
-      // }
+      if (!await checkAndRequestPermissions() ||
+          !await isBluetoothAndLocationEnabled()) {
+        updateConnectionStatus(DeviceConnectionStatus.disconnected);
+        return;
+      }
 
       SearchResult? selectedDevice;
       // scan Attempt Loop

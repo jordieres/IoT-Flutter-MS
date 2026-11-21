@@ -1,206 +1,152 @@
-# healthyWear
+# HealthyWear
 
+HealthyWear collects wearable sensor data for gait studies, including people
+with multiple sclerosis walking at their usual pace. The Flutter interface is
+shared by Android and iOS; Bluetooth device handling is native to each platform.
+Sensoria socks are the current priority.
 
-## Introduction
+## Release status
 
-HealthyWear is an IoT flutter application developed for the Android/iOS devices to streaming and capturing various health data from MetaWear (MetaMotions S) sensors,  HBand, and Sensoria Smart Socks wearables. It provides dual-device functionality and is particularly focused on offering real-time feedback on physical activities, aiding in enhancing doctors diagnosis and patient treatment process. The app collects, stores, and transmits real-time vital signs and physical activity data to a server. This enables doctors to remotely keep track of their patients' health, making it an essential tool in the management of their patients.
+The latest Android version uploaded to Google Play is **3.0.1**, as reported by
+the maintainer. `pubspec.yaml` currently declares `3.0.1+30`. The current source
+checkpoint contains fixes made after that upload and must not be treated as an
+exact copy of the submitted binary. iOS is being tested before App Store submission.
+See [release history](CHANGELOG.md) for changes and versioning practice.
 
+## Devices and platforms
 
-## Features
-- **MetaWear Integration**: Connects to MetaWear sensors worn on each hand to monitor and record movements .
-- **HBand Integration**: Utilizes the HBand to track heart rate ,spo2 and blood pressure and providing vital health metrics.
-- **Sensoria Smart Socks Integration**: To incorporate data collection from smart socks for comprehensive foot movement analysis.
-- **Data Management**: Buffers and writting the data locally before sending it to the server, ensuring efficient transmission and minimal loss.
-- **Doctor Dashboard**: A server-side interface (not included in this repository) where doctors can view and analyze patient data.
+| Device | Android | iOS |
+| --- | --- | --- |
+| Sensoria socks, left and right | Supported | Supported; physical-device validation required |
+| MetaWear movement sensors | Supported | Supported |
+| HBand | Android integration | Hidden and excluded from the iOS plugin registration |
 
+## Sensoria session flow
 
+1. Connect the left and/or right sock. The app reads the server profile, checks
+   device ranges and rates, applies changes, and verifies the values. Connection
+   alone does **not** start measurement streaming or recording.
+2. Press **Iniciar / Start** to open the walking instructions. The socks still wait.
+3. Press **Vamos / Go** to begin the 20-second local walking trial. Measurements
+   are used for the trial without creating recording files or uploading trial data.
+4. Trial completion, interruption, or leaving the trial pauses measurements. A
+   pressure or movement issue asks the user to adjust the sock and repeat.
+   A calibration issue opens the guided magnetometer calibration.
+5. Calibration reports a result for each sock separately and returns the sock to
+   waiting. When ready, the final **Start** begins recording.
+6. Walking test selections flag the recording already in progress. **Stop** pauses
+   measurements and saves the remaining recorded data. Pending recorded files may
+   finish uploading afterward.
 
+The pulse indicator represents fresh data during recording. Intentionally idle
+socks must not produce missing-data alerts. Bluetooth debug rows indicate data
+received by the phone; they do not by themselves prove that data was uploaded.
 
-## Getting Started
+The gear menu opens device settings, with connected left and right sock values
+and calibration actions. Server settings are applied on connection; changing the
+server profile does not modify an active recording in the middle of a session.
 
+## Development setup
 
-### Prerequisites
-- Flutter SDK(latest version recommended)  ( https://docs.flutter.dev/get-started/install )
-- Android Studio and Xcode for platform-specific SDKs  ( https://developer.android.com/studio/install )
-- Access to the required hardware (MetaWear sensors,  HBand, Sensoria Smart Socks)
+Use **Flutter 3.41.7** from `.fvmrc`, **Java 17** for Android, Android SDK 36, and
+Xcode with CocoaPods for iOS. Android supports API 24 or later; iOS targets 15 or
+later. Use real devices for Bluetooth testing.
 
+```sh
+fvm install
+fvm flutter pub get
+fvm flutter test
+fvm flutter run
+```
 
-### Installation (flutter)
+Provide the local `assets/config.txt` expected by `lib/Service/Uploader.dart`
+using your deployment configuration. It is deliberately excluded from Git.
+Do not put signing passwords or private keys in tracked configuration.
 
-##  Install Flutter SDK
-- **Download Flutter**:
-   - Visit the [Flutter installation page](https://flutter.dev/docs/get-started/install).
-   - Download the latest stable Flutter SDK for macOS.
-- **Extract Flutter**:
-   - Extract the downloaded zip file and move the `flutter` folder to your desired installation location (e.g., `~/flutter`).
-- **Update Your Path**:
-   - Add Flutter to your path permanently:
-      - Open or create the `$HOME/.zshrc` file with a text editor like Nano:
-        ```bash
-        nano $HOME/.zshrc
-        ```
-      - Add the following line and replace `[PATH_TO_FLUTTER_GIT_DIRECTORY]` with the actual path to your Flutter SDK:
-        ```bash
-        export PATH="$PATH:[PATH_TO_FLUTTER_GIT_DIRECTORY]/flutter/bin"
-        ```
-      - Save and exit the editor. Apply the changes by running:
-        ```bash
-        source $HOME/.zshrc
-        ```
-- **Run Flutter Doctor**:
-   - Check for any dependencies you might need to install to complete the setup:
-     ```bash
-     flutter doctor
-     ```
+### Android
 
-2. Clone the repository:
+```sh
+fvm flutter build apk --debug
+fvm flutter build appbundle --release
+```
 
-   git clone https://github.com/jordieres/IoT-Flutter-MS.git
+Release signing reads the local `android/keystore.properties`. Start from
+[`android/keystore.properties.example`](android/keystore.properties.example),
+set the private keystore path and credentials locally, and keep the real file
+and keystore out of Git. Do not replace an existing production signing key
+without completing the corresponding Play Console signing procedure.
 
-3. Navigate to the project directory
+### iOS
 
-4. Install dependencies:
+```sh
+cd ios
+pod install
+open Runner.xcworkspace
+```
 
-       flutter pub get
+Select the correct team and signing profile in Xcode and run on an iPhone.
+The app uses the UIKit scene lifecycle with Flutter's implicit engine delegate.
+The iOS build does not register the HBand plugin. A successful build does not
+replace testing both socks, the trial, calibration, recording, and Stop on an iPhone.
 
-5. Connect physical device Android/iOS
+## Server settings editor
 
-6. install flutter and dart plugins in the android studio setting
+The password-protected editor is at
+[apiict03 HealthyWear settings](https://apiict03.etsii.upm.es/healthywear/admin).
+It supports accelerometer, gyroscope, and magnetometer range and sampling rate,
+the Bluetooth packet period, and administrator password changes.
 
-     <img width="965" alt="Screenshot 2024-03-12 at 15 56 09" src="https://github.com/jordieres/IoT-Flutter-MS/assets/44529458/eae48f08-b261-490b-bc18-d606d5e72a78">
+The app reads `/healthywear/sensoria-settings.json` over HTTPS and falls back to
+the last valid cached profile, or built-in ranges of **8 g / 1000 degrees/s /
+4 gauss**. An omitted rate or packet period, or a value of zero, keeps that
+setting on the device. Those defaults are configuration values, not proof that
+a device is calibrated. Firmware support must be verified on real socks; one
+Core rejected the 245 degrees/s gyroscope setting during testing.
 
-6.Run the app
+See [server deployment and protocol notes](server/README.md). The profile JSON
+is intended to be public; administrator password hashes and signing credentials
+must remain private.
 
-    flutter run
+## Source map
 
-7.select the Device
+| Path | Responsibility |
+| --- | --- |
+| `lib/main.dart` | Main screen and session controls |
+| `lib/sensoria_setup_screen.dart` | Walking trial and calibration guidance |
+| `lib/healthywear_settings_screen.dart` | Connected device settings |
+| `lib/Api/SensoriaApi.dart` | Flutter/native Sensoria interface |
+| `lib/Api/SensoriaSettings.dart` | Validated server profile and cache |
+| `android/app/src/main/java/com/upm/healthywear/SensoriaHandler.java` | Android connection and capture lifecycle |
+| `ios/Runner/Sensoria/SensoriaHandler.swift` | iOS connection and capture lifecycle |
+| `server/` | Settings editor, profile validation, and deployment templates |
+| `test/` | Flutter regression tests |
 
+The Android Sensoria archive includes a compatibility patch for disconnect and
+invalid streaming settings. Its patch source is
+`android/sdk-tools/PatchSensoriaDisconnect.java`. The MetaWear archive was rebuilt
+from MbientLab's 3.8.1 tag; its license is alongside the archive. The iOS Sensoria
+interface metadata targets iOS 15 for compatibility with the current toolchain.
 
+## Validation and signing protection
 
-# iOS Installation Guide for Flutter App
+```sh
+fvm flutter test
+python3 scripts/check_signing_secrets.py --history
+```
 
-## Prerequisites
-Ensure you have a macOS computer to run Xcode and install all necessary software.
+On 21 November 2026, all 36 Flutter tests passed, Android debug and iOS Profile
+builds succeeded, and a live Samsung test verified two socks waiting after
+connection, a local trial, both calibrations, recording, Stop, and server upload
+confirmation. The equivalent iPhone Bluetooth sequence still needs validation.
 
-## 1. Install Xcode
-- **Download and Install Xcode**:
-   - Go to the Mac App Store and search for "Xcode".
-   - Click "Install" to download and install Xcode on your Mac.
-   - After installation, launch Xcode and agree to its license agreement. It might prompt you to install additional components, accept and continue.
+The signing-file check also runs in GitHub Actions. It rejects private signing
+containers, real signing property files, and hard-coded Gradle signing passwords
+in tracked files or reachable history;
+it is not a general scanner for every possible secret.
 
-## 2. Configure Xcode
-- **Xcode Command Line Tools**:
-   - Open Terminal and run the following command to install Xcode Command Line Tools:
-     ```bash
-     xcode-select --install
-     ```
-   - Ensure Xcode command line tools are configured to the correct Xcode installation by running:
-     ```bash
-     sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-     ```
-   - Agree to the terms of service when prompted.
-
-
-## 3. Open the iOS folder with Xcode
-- **Navigate to the iOS Folder**:
-   - Open the iOS subfolder in your project:
-     ```bash
-     open ios/Runner.xcworkspace
-     ```
-   - This command opens the project in Xcode. If the project does not open, make sure you are in the correct directory and that the project includes an `ios/Runner.xcworkspace` file.
-
-## 4. Run the App
-- **Connect an iOS Device **:
-   - Connect your iPhone via USB and trust the computer.
-- **Configure Signing**:
-   - In Xcode, navigate to the project settings by selecting the **Runner** from the Project Navigator.
-   - Click on the **Signing & Capabilities** tab.
-   - Choose your Team under the **Team** dropdown. You may need to add your Apple ID in **Xcode > Preferences > Accounts** if you haven't already.
-   - Ensure that the **Bundle Identifier** is unique and matches your provisioning profile if you are preparing for distribution.
-   - Xcode may prompt you to fix issues related to provisioning profiles; allow it to do so if required.
-- **Run the App**:
-   - Click the **Play** button in Xcode or use the keyboard shortcut **Cmd + R** to build and run the app.
-   - The app should compile and then run on your selected device or simulator.
-
-## 5. Troubleshooting Common Issues
-- **Dependency Errors**:
-   - If you encounter errors related to missing packages or dependencies, return to the terminal in your project directory and run:
-     ```bash
-     flutter pub get
-     ```
-   - Then try building the project again.
-- **Build Errors**:
-   - For errors during the build process, ensure all Xcode updates are installed. Check for any error messages in Xcode's console that might indicate what needs to be addressed.
-   - Consider running `flutter clean` in your project directory to clean the build and then try running the app again:
-     ```bash
-     flutter clean
-     flutter run
-     ```
-
-
-## Architecture
-- **Main.dart**: Entry point of the Flutter application, common across all devices.
-- **MetawearApi.dart**: Handles communication with MetaWear sensors via platform channels.
-- **SmartBandApi.dart**: Manages data exchange with the Veepoo HBand using its Flutter SDK.
-- **SensoriaApi.dart**: Handles communication with Sensoria sensors via platform channels.
-- **MainActivity/MainActivity.swift**: Platform-specific entry points for Android and iOS, respectively.
-
-
-
-### Version 1.0.0
-- First release
-- Android native is functional
-
-### Version 1.0.1
-- UI improvement
-- Data handling improvement
-
-### Version 1.0.2
-- UI improvement
-- Minor bugs Fixed
-- Upload data improvement
-
-### Version 1.0.3
-- UI improvement
-- Minor bugs Fixed
-- Status Checker improvement
-- Notification handler improvement
-
-### Version 1.0.4
-- Uploading data improvement
-
-### version 1.0.5
-- Background uploading process
-- Battery status checking 
-- UI improvement
-- Icon changed
-
-### version 1.0.6
-- Metawear disconnection improvement(Android)
-- iOS first release
-
-### version 1.0.7
-- UI improvement
-- Minor bugs fixed
-
-### version 1.0.8
-- Location Disclosure added (Android only)
-
-
-### version 2.0.0
--Test Recording Feature is added
-
-### version 2.0.1
--Some improvement in UI
--Version is in splash screen
-
-### version 2.1.0
--Android API 36
-
-### version 2.1.1
--Bug fixed
-
-
-
-
-
+The previously published keystore and passwords must be treated as exposed.
+Removing them from Git history cannot revoke downloaded copies. Complete the
+appropriate upload-key reset or app-signing-key procedure in Play Console.
+After history cleanup, collaborators should clone again rather than merging old
+branches that could reintroduce the removed files. GitHub Support may also be
+needed to clear cached views or pull-request references.

@@ -63,3 +63,16 @@ healthywear_keystore.jks
 .env.*
 !.env.example
 local.properties
+
+# Local signing credentials and private signing containers
+**/keystore.properties
+**/key.properties
+*.p12
+*.pfx
+
+# Server administrator credentials stay on the deployment host
+**/.sensoria-admin-password
+
+# Local Python environments and generated documentation
+**/.venv/
+docs/_build/

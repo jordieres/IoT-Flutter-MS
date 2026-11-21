@@ -92,58 +92,39 @@ public class MainActivity extends FlutterActivity {
         }
     };
 
-    ///////---foreground service permission check
+    private boolean activityResumed;
+    private boolean sensorServiceStarted;
 
-    private final int MAX_RETRIES = 10;
-    private int currentRetry = 0;
+    private boolean hasWearablePermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) return false;
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                        == PackageManager.PERMISSION_GRANTED &&
+                 ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                        == PackageManager.PERMISSION_GRANTED);
+    }
 
-    private void permissionCheckAndStartService() {
-        if (checkAllPermissions()) {
-            startSensorService();
-        } else {
-            if (currentRetry < MAX_RETRIES) {
-                currentRetry++; // Increment the retry count
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        permissionCheckAndStartService(); // Recursively check permissions
-                    }
-                }, 20000);
-            } else {
-                Log.d(TAG, "Maximum retries reached. Not starting SensorService.");
-            }
+    private void refreshSensorService() {
+        if (!hasWearablePermissions()) {
+            if (sensorServiceStarted) stopSensorService();
+            return;
         }
+        if (activityResumed && !sensorServiceStarted) startSensorService();
     }
 
-
-private boolean checkAllPermissions() {
-    boolean allPermissionsGranted = true;
-
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        Log.d(TAG, "Permission Denied: ACCESS_FINE_LOCATION");
-        allPermissionsGranted = false;
-    } else {
-        Log.d(TAG, "Permission Granted: ACCESS_FINE_LOCATION");
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activityResumed = true;
+        refreshSensorService();
     }
 
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        Log.d(TAG, "Permission Denied: ACCESS_COARSE_LOCATION");
-        allPermissionsGranted = false;
-    } else {
-        Log.d(TAG, "Permission Granted: ACCESS_COARSE_LOCATION");
+    @Override
+    protected void onPause() {
+        activityResumed = false;
+        super.onPause();
     }
-
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-        Log.d(TAG, "Permission Denied: BLUETOOTH");
-        allPermissionsGranted = false;
-    } else {
-        Log.d(TAG, "Permission Granted: BLUETOOTH");
-    }
-
-    return allPermissionsGranted;
-}
-    ////////////////////
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,26 +132,8 @@ private boolean checkAllPermissions() {
 
         createNotificationChannel();
 
-        permissionCheckAndStartService();
-        // Start the sensor service
-//        startSensorService();
-
-//        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION }, LOCATION_PERMISSION_REQUEST_CODE);
-//        } else {
-//            startSensorService();
-//        }
-
-
-        // delayed permission check
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-////                checkAndRequestPermissions();
-//                startSensorService();
-//            }
-//        }, 10000); // Delay of 5000 milliseconds (5 seconds)
-
+        // Flutter requests access after the home route is ready. The
+        // foreground service starts once those permissions are granted.
 
         //MetaWear btle Service binding
         Intent bindIntent = new Intent(this, BtleService.class);
@@ -194,6 +157,7 @@ private boolean checkAllPermissions() {
 
     @Override
     protected void onDestroy() {
+        if (sensoriaHandler != null) sensoriaHandler.close();
         super.onDestroy();
         //metawear service unbinding
         if (serviceConnection != null) {
@@ -238,18 +202,22 @@ private boolean checkAllPermissions() {
     private void startSensorService() {
         Intent serviceIntent = new Intent(this, SensorService.class);
         ContextCompat.startForegroundService(this, serviceIntent);
+        sensorServiceStarted = true;
     }
 
     private void updateServiceLocale(String languageCode) {
+        if (!hasWearablePermissions() || !activityResumed) return;
         Intent serviceIntent = new Intent(this, SensorService.class);
         serviceIntent.putExtra("LANGUAGE_CODE", languageCode);
 
-        startService(serviceIntent);
+        ContextCompat.startForegroundService(this, serviceIntent);
+        sensorServiceStarted = true;
     }
 
     private void stopSensorService() {
         Intent serviceIntent = new Intent(this, SensorService.class);
         stopService(serviceIntent);
+        sensorServiceStarted = false;
     }
 
 
@@ -258,6 +226,39 @@ private boolean checkAllPermissions() {
 
         super.configureFlutterEngine(flutterEngine);
 
+
+        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(),
+                "com.example.healthywear/service")
+                .setMethodCallHandler((call, result) -> {
+                    switch (call.method) {
+                        case "getAndroidSdkInt":
+                            result.success(Build.VERSION.SDK_INT);
+                            break;
+                        case "hasWearablePermissions":
+                            result.success(hasWearablePermissions());
+                            break;
+                        case "refreshPermissions":
+                            refreshSensorService();
+                            result.success(null);
+                            break;
+                        case "sendAppVersion": {
+                            String version = call.argument("appVersion");
+                            SensoriaHandler.setAppVersion(version);
+                            MetaWearHandler.setAppVersion(version);
+                            result.success(null);
+                            break;
+                        }
+                        case "sendIdNumber": {
+                            String reference = call.argument("refNumber");
+                            if (sensoriaHandler != null) sensoriaHandler.setIdNumber(reference);
+                            if (metaWearHandler != null) metaWearHandler.setIdNumber(reference);
+                            result.success(null);
+                            break;
+                        }
+                        default:
+                            result.notImplemented();
+                    }
+                });
 
         ///---------------MetaWear Channel---------------//
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), "com.example.healthywear/metawear")
@@ -343,15 +344,45 @@ private boolean checkAllPermissions() {
                 .setMethodCallHandler((call, result) -> {
                     switch (call.method) {
 
-                        case "scanAndConnectToSensoriaDevice":
-                            Integer coreIndex = call.argument("coreIndex");
-                            if (coreIndex != null) {
-                                sensoriaHandler.enqueueScanAndConnectRequest(coreIndex);
-                                result.success(null);
-                            } else {
-                                result.error("ERROR", "coreIndex is null or not passed correctly", null);
+                        case "scanAndConnectToSensoriaDevice": {
+                            if (!hasWearablePermissions()) {
+                                result.error("PERMISSION_REQUIRED",
+                                        "Precise location and Nearby devices are required by the Sensoria SDK", null);
+                                break;
                             }
+                            Integer index = call.argument("coreIndex");
+                            java.util.Map<String, Integer> settings = call.argument("settings");
+                            if (index == null || index < 1 || index > 2 || settings == null) {
+                                result.error("INVALID_ARGUMENT", "Invalid Sensoria request", null);
+                                break;
+                            }
+                            Integer accel = settings.get("accelerometerG");
+                            Integer gyro = settings.get("gyroscopeDps");
+                            Integer mag = settings.get("magnetometerGauss");
+                            if (!java.util.Arrays.asList(2, 4, 8, 16).contains(accel) ||
+                                    !java.util.Arrays.asList(245, 500, 1000, 2000).contains(gyro) ||
+                                    !java.util.Arrays.asList(4, 8, 12, 16).contains(mag)) {
+                                result.error("INVALID_ARGUMENT", "Invalid Sensoria ranges", null);
+                                break;
+                            }
+                            int accelHz = settings.getOrDefault("accelerometerHz", 0);
+                            int gyroHz = settings.getOrDefault("gyroscopeHz", 0);
+                            int magHz = settings.getOrDefault("magnetometerHz", 0);
+                            int period = settings.getOrDefault("streamPeriodMs", 0);
+                            java.util.List<Integer> motionRates = java.util.Arrays.asList(0, 13, 26, 52, 104, 208, 416, 833, 1660);
+                            if (!motionRates.contains(accelHz) || !motionRates.contains(gyroHz) ||
+                                    !java.util.Arrays.asList(0, 5, 10, 20, 40, 80).contains(magHz) ||
+                                    !java.util.Arrays.asList(0, 10, 20, 25, 32, 40, 50, 100, 200).contains(period)) {
+                                result.error("INVALID_ARGUMENT", "Invalid Sensoria sampling settings", null);
+                                break;
+                            }
+                            sensoriaHandler.enqueueScanAndConnectRequest(index, accel.shortValue(),
+                                    gyro.shortValue(), mag.shortValue(), new short[]{
+                                        (short) accelHz, (short) gyroHz, (short) magHz, (short) period
+                                    });
+                            result.success(null);
                             break;
+                        }
                         case "sendIdNumber": {
                             String refNumber = call.argument("refNumber");
                             sensoriaHandler.setIdNumber(refNumber);
@@ -362,6 +393,34 @@ private boolean checkAllPermissions() {
                             String appVersion = call.argument("appVersion");
                             SensoriaHandler.setAppVersion(appVersion);
                             result.success(null);
+                            break;
+                        }
+                        case "calibrateMagnetometer":
+                        case "hasRecordingData": {
+                            Integer slot = call.argument("coreIndex");
+                            if (slot == null || slot < 1 || slot > 2) {
+                                result.error("INVALID_ARGUMENT", "Invalid Sensoria slot", null);
+                            } else if (call.method.equals("hasRecordingData")) {
+                                result.success(sensoriaHandler.hasRecordingData(slot));
+                            } else {
+                                sensoriaHandler.calibrateMagnetometer(slot, result);
+                            }
+                            break;
+                        }
+                        case "setRecording": {
+                            result.success(sensoriaHandler.setRecording(Boolean.TRUE.equals(call.argument("enabled"))));
+                            break;
+                        }
+                        case "setTrialCapture": {
+                            if (sensoriaHandler.setTrialCapture(Boolean.TRUE.equals(call.argument("enabled")))) {
+                                result.success(null);
+                            } else {
+                                result.error("CAPTURE_UNAVAILABLE", "Sensoria trial is not available", null);
+                            }
+                            break;
+                        }
+                        case "drainTrialSamples": {
+                            result.success(sensoriaHandler.drainTrialSamples());
                             break;
                         }
                         case "getBatteryLevel": {
@@ -378,8 +437,12 @@ private boolean checkAllPermissions() {
                         }
                         case "disconnectDevice": {
                             Integer coreindexdc = call.argument("coreIndex");
-                            sensoriaHandler.disconnectDevice(coreindexdc);
-
+                            if (coreindexdc == null || coreindexdc < 1 || coreindexdc > 2) {
+                                result.error("INVALID_ARGUMENT", "Invalid Sensoria slot", null);
+                            } else {
+                                sensoriaHandler.disconnectDevice(coreindexdc);
+                                result.success(null);
+                            }
                             break;
                         }
                         case "requestStatusUpdate": {

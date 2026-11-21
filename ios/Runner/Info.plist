@@ -48,6 +48,27 @@
 	<string>This app continuously uses your location to enhance activity tracking and lifestyle personalization by adapting to your environmental conditions. This ensures precise, tailored insights for maintaining a healthy lifestyle, even when the app is in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app uses your location to improve activity tracking and personalize wellness insights while you use it, adjusting data based on your current environment to promote healthy lifestyle habits.</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>flutter</string>
+					<key>UISceneDelegateClassName</key>
+					<string>FlutterSceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIFileSharingEnabled</key>

@@ -28,9 +28,6 @@
 		298FD27E2BEA553200E0C230 /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298FD27D2BEA553200E0C230 /* ToastManager.swift */; };
 		298FD2802BEAA38600E0C230 /* EvenetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298FD27F2BEAA38600E0C230 /* EvenetManager.swift */; };
 		29A41EEC2BD8E38300798EE6 /* Sensoria.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 29A41EE92BD8E38000798EE6 /* Sensoria.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		29A41EF32BD8E5F000798EE6 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 29A41EF22BD8E5F000798EE6 /* Logging */; };
-		29ED0FC82BE8E21900316C80 /* SensoriaHandlerRight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29ED0FC72BE8E21900316C80 /* SensoriaHandlerRight.swift */; };
-		29ED0FCA2BE8E24900316C80 /* SensoriaHandlerLeft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29ED0FC92BE8E24900316C80 /* SensoriaHandlerLeft.swift */; };
 		29ED0FCC2BE8E31E00316C80 /* CentralBufferManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29ED0FCB2BE8E31E00316C80 /* CentralBufferManager.swift */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -91,8 +88,6 @@
 		298FD27D2BEA553200E0C230 /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
 		298FD27F2BEAA38600E0C230 /* EvenetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvenetManager.swift; sourceTree = "<group>"; };
 		29A41EE92BD8E38000798EE6 /* Sensoria.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Sensoria.xcframework; sourceTree = "<group>"; };
-		29ED0FC72BE8E21900316C80 /* SensoriaHandlerRight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensoriaHandlerRight.swift; sourceTree = "<group>"; };
-		29ED0FC92BE8E24900316C80 /* SensoriaHandlerLeft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensoriaHandlerLeft.swift; sourceTree = "<group>"; };
 		29ED0FCB2BE8E31E00316C80 /* CentralBufferManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralBufferManager.swift; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,7 +124,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29A41EF32BD8E5F000798EE6 /* Logging in Frameworks */,
 				7028FED2F1156EECA1173992 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,8 +195,6 @@
 			isa = PBXGroup;
 			children = (
 				295AD8042BD808B7007FA79D /* SensoriaHandler.swift */,
-				29ED0FC72BE8E21900316C80 /* SensoriaHandlerRight.swift */,
-				29ED0FC92BE8E24900316C80 /* SensoriaHandlerLeft.swift */,
 				29ED0FCB2BE8E31E00316C80 /* CentralBufferManager.swift */,
 			);
 			path = Sensoria;
@@ -319,9 +311,6 @@
 			dependencies = (
 			);
 			name = Runner;
-			packageProductDependencies = (
-				29A41EF22BD8E5F000798EE6 /* Logging */,
-			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -355,9 +344,6 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
-			packageReferences = (
-				29A41EF12BD8E5F000798EE6 /* XCRemoteSwiftPackageReference "swift-log.git" */,
-			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -514,9 +500,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29ED0FCA2BE8E24900316C80 /* SensoriaHandlerLeft.swift in Sources */,
 				292424CB2BE0E08100118448 /* DeviceRegistry.swift in Sources */,
-				29ED0FC82BE8E21900316C80 /* SensoriaHandlerRight.swift in Sources */,
 				295CA8F82BE3715A002206CB /* LedManager.swift in Sources */,
 				292424D42BE0E79E00118448 /* MetaWearDevice.swift in Sources */,
 				292424D22BE0E76D00118448 /* SensorContext.swift in Sources */,
@@ -612,7 +596,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -637,7 +621,7 @@
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -753,7 +737,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -789,6 +773,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -802,7 +787,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -829,7 +814,7 @@
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -867,7 +852,7 @@
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -921,25 +906,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		29A41EF12BD8E5F000798EE6 /* XCRemoteSwiftPackageReference "swift-log.git" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-log.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.5.4;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		29A41EF22BD8E5F000798EE6 /* Logging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 29A41EF12BD8E5F000798EE6 /* XCRemoteSwiftPackageReference "swift-log.git" */;
-			productName = Logging;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

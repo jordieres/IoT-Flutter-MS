@@ -1,19 +1,4 @@
 PODS:
-  - AFNetworking (4.0.1):
-    - AFNetworking/NSURLSession (= 4.0.1)
-    - AFNetworking/Reachability (= 4.0.1)
-    - AFNetworking/Security (= 4.0.1)
-    - AFNetworking/Serialization (= 4.0.1)
-    - AFNetworking/UIKit (= 4.0.1)
-  - AFNetworking/NSURLSession (4.0.1):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (4.0.1)
-  - AFNetworking/Security (4.0.1)
-  - AFNetworking/Serialization (4.0.1)
-  - AFNetworking/UIKit (4.0.1):
-    - AFNetworking/NSURLSession
   - battery_plus (1.0.0):
     - Flutter
   - Bolts-Swift (1.5.0)
@@ -24,15 +9,9 @@ PODS:
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
-  - FMDB (2.7.12):
-    - FMDB/standard (= 2.7.12)
-  - FMDB/Core (2.7.12)
-  - FMDB/standard (2.7.12):
-    - FMDB/Core
   - geolocator_apple (1.2.0):
     - Flutter
-  - iOSDFULibrary (4.15.3):
-    - ZIPFoundation (= 0.9.19)
+    - FlutterMacOS
   - MetaWear (4.1.3):
     - MetaWear/Core (= 4.1.3)
   - MetaWear/Core (4.1.3):
@@ -56,14 +35,8 @@ PODS:
     - Flutter
     - FlutterMacOS
   - SwiftProtobuf (1.28.2)
-  - veepoo_sdk (0.0.1):
-    - AFNetworking (= 4.0.1)
+  - workmanager_apple (0.0.1):
     - Flutter
-    - FMDB
-    - iOSDFULibrary (= 4.15.3)
-  - workmanager (0.0.1):
-    - Flutter
-  - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
   - battery_plus (from `.symlinks/plugins/battery_plus/ios`)
@@ -71,7 +44,7 @@ DEPENDENCIES:
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
   - MetaWear (~> 4.1.3)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -79,19 +52,14 @@ DEPENDENCIES:
   - reactive_ble_mobile (from `.symlinks/plugins/reactive_ble_mobile/darwin`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - veepoo_sdk (from `.symlinks/plugins/veepoo_sdk/ios`)
-  - workmanager (from `.symlinks/plugins/workmanager/ios`)
+  - workmanager_apple (from `.symlinks/plugins/workmanager_apple/ios`)
 
 SPEC REPOS:
   trunk:
-    - AFNetworking
     - Bolts-Swift
-    - FMDB
-    - iOSDFULibrary
     - MetaWear
     - Protobuf
     - SwiftProtobuf
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   battery_plus:
@@ -105,7 +73,7 @@ EXTERNAL SOURCES:
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geolocator_apple:
-    :path: ".symlinks/plugins/geolocator_apple/ios"
+    :path: ".symlinks/plugins/geolocator_apple/darwin"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
@@ -118,22 +86,17 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  veepoo_sdk:
-    :path: ".symlinks/plugins/veepoo_sdk/ios"
-  workmanager:
-    :path: ".symlinks/plugins/workmanager/ios"
+  workmanager_apple:
+    :path: ".symlinks/plugins/workmanager_apple/ios"
 
 SPEC CHECKSUMS:
-  AFNetworking: 3bd23d814e976cd148d7d44c3ab78017b744cd58
   battery_plus: 34f72fa2afeeea83bbae306c72a25828d3ec727a
   Bolts-Swift: afbbaf8c8186e7f769be4afa656949c14087ba44
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
-  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
+  flutter_local_notifications: ff50f8405aaa0ccdc7dcfb9022ca192e8ad9688f
   fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
-  FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
-  geolocator_apple: 9bcea1918ff7f0062d98345d238ae12718acfbc1
-  iOSDFULibrary: ef7e1fbb3fc7a5fabd106297a9cd0e775bcfcec6
+  geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
   MetaWear: 172042a920e6853083f1fd94fb4f509016188586
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
@@ -143,10 +106,8 @@ SPEC CHECKSUMS:
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   SwiftProtobuf: 4dbaffec76a39a8dc5da23b40af1a5dc01a4c02d
-  veepoo_sdk: 2d8051008ba021805f7dcfc52e50f96890bde237
-  workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
-  ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
+  workmanager_apple: 7bac258335c310689a641e2d66e88d4845d372e9
 
-PODFILE CHECKSUM: 71140cb1396552e73a3451e0d04e04e3e18bc9eb
+PODFILE CHECKSUM: c0171d3683d8228c634ac0474ed16a457cefc770
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

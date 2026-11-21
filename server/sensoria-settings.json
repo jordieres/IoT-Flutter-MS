@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "accelerometerG": 8,
+  "gyroscopeDps": 1000,
+  "magnetometerGauss": 4
+}

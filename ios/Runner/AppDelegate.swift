@@ -3,12 +3,10 @@ import Flutter
 import CoreBluetooth
 import MetaWear
 import UserNotifications
-import workmanager
 
 
-@UIApplicationMain
-class AppDelegate: FlutterAppDelegate, CBCentralManagerDelegate, FlutterStreamHandler {
-    var flutterEngine: FlutterEngine!
+@main
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate, CBCentralManagerDelegate, FlutterStreamHandler {
     var centralManager: CBCentralManager?
     
     private var eventSink: FlutterEventSink?
@@ -16,16 +14,12 @@ class AppDelegate: FlutterAppDelegate, CBCentralManagerDelegate, FlutterStreamHa
 
     // MetaWear and Sensoria handlers
     var metaWearHandler: MetaWearHandler?
-    var sensoriaHandler: SensoriaHandler?
     var locationDataManager: LocationDataManager?
-    
-    var sensoriaHandlerRight: SensoriaHandlerRight?
-        var sensoriaHandlerLeft: SensoriaHandlerLeft?
-        var centralBufferManager = CentralBufferManager()
-
-    
-    
-
+    private let centralBufferManager = CentralBufferManager()
+    private lazy var sensoria = [
+        1: SensoriaHandler(index: 1, buffer: centralBufferManager),
+        2: SensoriaHandler(index: 2, buffer: centralBufferManager)
+    ]
 
     // Method channels
     var sensoriaMethodChannel: FlutterMethodChannel?
@@ -43,215 +37,119 @@ class AppDelegate: FlutterAppDelegate, CBCentralManagerDelegate, FlutterStreamHa
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        GeneratedPluginRegistrant.register(with: self)
-
-        guard let controller = window?.rootViewController as? FlutterViewController else {
-            fatalError("rootViewController is not type FlutterViewController")
-        }
-
-        // Initialize the central manager for Bluetooth with restoration capabilities
-        centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionRestoreIdentifierKey: "com.upm.bluetooth.central"])
-
+        centralManager = CBCentralManager(
+            delegate: self,
+            queue: nil,
+            options: [CBCentralManagerOptionRestoreIdentifierKey: "com.upm.bluetooth.central"]
+        )
         metaWearHandler = MetaWearHandler()
-//        sensoriaHandler = SensoriaHandler()
-        
-        sensoriaHandlerRight = SensoriaHandlerRight(centralBuffer: centralBufferManager)
-        sensoriaHandlerLeft = SensoriaHandlerLeft(centralBuffer: centralBufferManager)
-        
-        let _ = LocationDataManager.shared
-
-//workmanager
-//        // In AppDelegate.application method
-//        WorkmanagerPlugin.registerBGProcessingTask(withIdentifier: "com.upm.healthywear.checkUploadStatus")
-//
-//        // Register a periodic task in iOS 13+
-//        WorkmanagerPlugin.registerPeriodicTask(withIdentifier: "com.upm.healthywear.checkUploadStatus", frequency: NSNumber(value: 20 * 60))
-
-        // Setup method channels
-        setupSensoriaMethodChannel(controller: controller)
-        setupMetaWearMethodChannel(controller: controller)
-        setupServiceMethodChannel(controller: controller)
-
-        setupMetaWearEventChannel(controller: controller)
-        setupSensoriaEventChannel(controller: controller)
-
-
-
+        _ = LocationDataManager.shared
+        UNUserNotificationCenter.current().delegate = self
         createNotificationChannel()
-        
-        if #available(iOS 10.0, *) {
-                    UNUserNotificationCenter.current().delegate = self
-                }
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    private func setupSensoriaMethodChannel(controller: FlutterViewController) {
-        sensoriaMethodChannel = FlutterMethodChannel(name: "com.example.healthywear/sensoria", binaryMessenger: controller.binaryMessenger)
-        sensoriaMethodChannel?.setMethodCallHandler { [weak self] (call, result) in
-            // Handle Sensoria-specific calls
+    func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+        GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+
+        let messenger = engineBridge.applicationRegistrar.messenger()
+        setupSensoriaMethodChannel(messenger: messenger)
+        setupMetaWearMethodChannel(messenger: messenger)
+        setupServiceMethodChannel(messenger: messenger)
+        setupMetaWearEventChannel(messenger: messenger)
+        setupSensoriaEventChannel(messenger: messenger)
+    }
+
+    private func setupSensoriaMethodChannel(messenger: FlutterBinaryMessenger) {
+        let channel = FlutterMethodChannel(name: "com.example.healthywear/sensoria",
+                                           binaryMessenger: messenger)
+        sensoriaMethodChannel = channel
+        channel.setMethodCallHandler { [weak self] call, result in
+            let args = call.arguments as? [String: Any] ?? [:]
+            let index = (args["coreIndex"] ?? args["deviceIndex"]) as? Int
+            let handler = index.flatMap { self?.sensoria[$0] }
+
+            func badArguments() {
+                result(FlutterError(code: "INVALID_ARGUMENT", message: "Invalid Sensoria request", details: nil))
+            }
+
             switch call.method {
-                //MARK: FROM HERE
-                //TODO: MUST BE REMOVED
             case "sendIdNumber":
-                        if let arguments = call.arguments as? [String: Any],
-                           let refNumber = arguments["refNumber"] as? String {
-                            // Handle the refNumber as needed, for example:
-//                            FileHandler.shared.setIdNumber(refNumber);
-
-                            result(nil) // Success
-                        } else {
-                            result(FlutterError(code: "INVALID_ARGUMENT", message: "Missing or invalid arguments", details: nil))
-                        }
-            case "sendAppVersion":
-                if let arguments = call.arguments as? [String: Any],
-                   let appVersion = arguments["appVersion"] as? String {
-//                    FileHandler.shared.setAppVersion(appVersion);
-                        result(nil);
-                } else {
-                    result(FlutterError(code: "INVALID_ARGUMENT", message: "Missing or invalid arguments", details: nil))
-                }
-                
-
-//            case "scanAndConnectToSensoriaDevice":
-//                print("received request for connection in appDelegate")
-//                if let args = call.arguments as? [String: Any],
-//                   let coreIndex = args["coreIndex"] as? Int {
-//                    print("received request for connection in appDelegate for coreIndex \(coreIndex)")
-//
-//                    // Function to start scanning
-//                    func startScan(for index: Int) {
-//                        if index == 1 {
-//                            self?.sensoriaHandlerRight?.startScan()
-//                        } else if index == 2 {
-//                            self?.sensoriaHandlerLeft?.startScan()
-//                        }
-//                    }
-//
-//                    // Introduce a delay for the second device
-//                    if coreIndex == 1 {
-//                        startScan(for: coreIndex)
-//                        // If the first device is coreIndex 1, delay the scan for coreIndex 2
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                            startScan(for: 2)
-//                        }
-//                    } else if coreIndex == 2 {
-//                        startScan(for: coreIndex)
-//                        // If the first device is coreIndex 2, delay the scan for coreIndex 1
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                            startScan(for: 1)
-//                        }
-//                    } else {
-//                        result(FlutterError(code: "INVALID_INDEX",
-//                                            message: "Invalid coreIndex. Must be 1 or 2.",
-//                                            details: nil))
-//                        return
-//                    }
-//                    result(nil)
-//                } else {
-//                    result(FlutterError(code: "ERROR",
-//                                        message: "coreIndex is null or not passed correctly",
-//                                        details: nil))
-//                }
-
-            case "scanAndConnectToSensoriaDevice":
-                guard let args = call.arguments as? [String: Any],
-                      let coreIndex = args["coreIndex"] as? Int else {
-                    result(FlutterError(
-                        code: "ERROR",
-                        message: "coreIndex is missing or invalid",
-                        details: nil
-                    ))
-                    return
-                }
-
-                switch coreIndex {
-                case 1:
-                    print("Starting RIGHT‑foot scan")
-                    self?.sensoriaHandlerRight?.startScan()
-                case 2:
-                    print("Starting LEFT‑foot scan")
-                    self?.sensoriaHandlerLeft?.startScan()
-                default:
-                    result(FlutterError(
-                        code: "INVALID_INDEX",
-                        message: "coreIndex must be 1 or 2",
-                        details: nil
-                    ))
-                    return
-                }
-
+                guard let reference = args["refNumber"] as? String else { badArguments(); return }
+                self?.centralBufferManager.setRecording(false)
+                self?.sensoria.values.forEach { $0.updateCapture() }
+                FileHandler.shared.setIdNumber(reference)
                 result(nil)
-                
-                
+            case "sendAppVersion":
+                guard let version = args["appVersion"] as? String else { badArguments(); return }
+                FileHandler.shared.setAppVersion(version)
+                result(nil)
+            case "scanAndConnectToSensoriaDevice":
+                guard let handler = handler, let settings = args["settings"] as? [String: Int],
+                      let accel = settings["accelerometerG"], [2, 4, 8, 16].contains(accel),
+                      let gyro = settings["gyroscopeDps"], [245, 500, 1000, 2000].contains(gyro),
+                      let mag = settings["magnetometerGauss"], [4, 8, 12, 16].contains(mag)
+                else { badArguments(); return }
+                let rates = [settings["accelerometerHz"] ?? 0,
+                             settings["gyroscopeHz"] ?? 0,
+                             settings["magnetometerHz"] ?? 0]
+                let motionRates = [0, 13, 26, 52, 104, 208, 416, 833, 1660]
+                let period = settings["streamPeriodMs"] ?? 0
+                guard motionRates.contains(rates[0]), motionRates.contains(rates[1]),
+                      [0, 5, 10, 20, 40, 80].contains(rates[2]),
+                      [0, 10, 20, 25, 32, 40, 50, 100, 200].contains(period)
+                else { badArguments(); return }
+                handler.start(ranges: [accel, gyro, mag], rates: rates, period: period)
+                result(nil)
             case "disconnectDevice":
-                print("received request for connection in appdelegate")
-                            if let args = call.arguments as? [String: Any],
-                               let coreIndex = args["coreIndex"] as? Int {
-                                print("2received request for connection in appdelegatec \(coreIndex)")
-
-                                if coreIndex == 1 {
-                                           self?.sensoriaHandlerRight?.disconnect()
-                                       } else if coreIndex == 2 {
-                                           self?.sensoriaHandlerLeft?.disconnect()
-                                       } else {
-                                           result(FlutterError(code: "INVALID_INDEX",
-                                                               message: "Invalid coreIndex. Must be 1 or 2.",
-                                                               details: nil))
-                                           return
-                                       }
-                                result(nil)  // Successful invocation without specific return
-                            } else {
-                                result(FlutterError(code: "ERROR",
-                                                    message: "coreIndex is null or not passed correctly",
-                                                    details: nil))
-                            }
+                guard let handler = handler else { badArguments(); return }
+                handler.disconnect()
+                result(nil)
             case "getBatteryLevel":
-                if let args = call.arguments as? [String: Any],
-                   let coreIndex = args["coreIndex"] as? Int {
-                    switch coreIndex {
-                    case 1:
-                        let batteryLevel = self?.sensoriaHandlerRight?.getBatteryLevel() ?? 0
-                        result(Int(batteryLevel))
-                    case 2:
-                        let batteryLevel = self?.sensoriaHandlerLeft?.getBatteryLevel() ?? 0
-                        result(Int(batteryLevel))
-                    default:
-                        result(FlutterError(code: "INVALID_INDEX", message: "Invalid coreIndex. Must be 1 or 2.", details: nil))
-                    }
-                } else {
-                    result(FlutterError(code: "BAD_ARGS", message: "Missing or invalid arguments", details: nil))
+                guard let handler = handler else { badArguments(); return }
+                result(Int(handler.getBatteryLevel()))
+            case "calibrateMagnetometer":
+                guard let handler = handler else { badArguments(); return }
+                handler.calibrateMagnetometer { result($0) }
+            case "hasRecordingData":
+                result(handler?.hasRecordingData ?? false)
+            case "setRecording":
+                guard let self = self, let enabled = args["enabled"] as? Bool else { badArguments(); return }
+                guard !enabled || (self.sensoria.values.contains(where: { $0.isReady }) &&
+                    !self.sensoria.values.contains(where: { $0.isCalibrating || $0.isCollectingTrial })) else {
+                    result(false)
+                    return
                 }
+                self.centralBufferManager.setRecording(enabled)
+                self.sensoria.values.forEach { $0.updateCapture() }
+                result(true)
+            case "setTrialCapture":
+                guard let self = self, let enabled = args["enabled"] as? Bool else { badArguments(); return }
+                guard !enabled || (!self.centralBufferManager.isRecording &&
+                    self.sensoria.values.contains(where: { $0.isReady }) &&
+                    !self.sensoria.values.contains(where: { $0.isCalibrating })) else {
+                    result(FlutterError(code: "CAPTURE_UNAVAILABLE", message: "Sensoria trial is not available", details: nil))
+                    return
+                }
+                self.sensoria.values.forEach { $0.setTrialCapture(enabled) }
+                result(nil)
+            case "drainTrialSamples":
+                result(self?.sensoria.values.flatMap { $0.drainTrialSamples() } ?? [])
             case "requestStatusUpdate":
-                        if let args = call.arguments as? [String: Any], let deviceIndex = args["deviceIndex"] as? Int {
-                            let status = StatusUpdateManager.shared.getSensoriaCurrentStatus(deviceIndex: deviceIndex)
-                            result(status)
-                        } else {
-                            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid or missing arguments for device status request", details: nil))
-                        }
+                guard let index = index, handler != nil else { badArguments(); return }
+                result(StatusUpdateManager.shared.getSensoriaCurrentStatus(deviceIndex: index))
             case "setLocale":
-                if let args = call.arguments as? [String: Any],
-                               let languageCode = args["languageCode"] as? String {
-                    self?.sensoriaHandlerRight!.setLocale(languageCode: languageCode)
-                    self?.sensoriaHandlerLeft!.setLocale(languageCode: languageCode)
-
-                                result(nil)
-                            } else {
-                                result(FlutterError(code: "BAD_ARGS", message: "Wrong argument type", details: nil))
-                            }
-                                       
-                  
-                //MARK: UNTIL  HERE
-             
-                
+                // Flutter localizes the status messages for both platforms.
+                result(nil)
             default:
                 result(FlutterMethodNotImplemented)
             }
         }
     }
 
-    private func setupMetaWearMethodChannel(controller: FlutterViewController) {
-        metaWearMethodChannel = FlutterMethodChannel(name: "com.example.healthywear/metawear", binaryMessenger: controller.binaryMessenger)
+    private func setupMetaWearMethodChannel(messenger: FlutterBinaryMessenger) {
+        metaWearMethodChannel = FlutterMethodChannel(name: "com.example.healthywear/metawear", binaryMessenger: messenger)
         metaWearMethodChannel?.setMethodCallHandler { [weak self] (call, result) in
             guard let self = self, let metaWearHandler = self.metaWearHandler else {
                 result(FlutterError(code: "UNAVAILABLE", message: "MetaWearHandler is not initialized", details: nil))
@@ -363,9 +261,9 @@ class AppDelegate: FlutterAppDelegate, CBCentralManagerDelegate, FlutterStreamHa
     
     
     //MARK: - Service Method channel
-    private func setupServiceMethodChannel(controller: FlutterViewController) {
-        sensoriaMethodChannel = FlutterMethodChannel(name: "com.example.healthywear/service", binaryMessenger: controller.binaryMessenger)
-        sensoriaMethodChannel?.setMethodCallHandler { [weak self] (call, result) in
+    private func setupServiceMethodChannel(messenger: FlutterBinaryMessenger) {
+        serviceMethodChannel = FlutterMethodChannel(name: "com.example.healthywear/service", binaryMessenger: messenger)
+        serviceMethodChannel?.setMethodCallHandler { [weak self] (call, result) in
             // Handle service-specific calls
             switch call.method {
             case "sendIdNumber":
@@ -400,14 +298,14 @@ class AppDelegate: FlutterAppDelegate, CBCentralManagerDelegate, FlutterStreamHa
         }
     }
     ///////event listerner////////
-    private func setupMetaWearEventChannel(controller: FlutterViewController) {
-        metaWearEventChannel = FlutterEventChannel(name: "com.example.healthywear/metawear_connection_status", binaryMessenger: controller.binaryMessenger)
+    private func setupMetaWearEventChannel(messenger: FlutterBinaryMessenger) {
+        metaWearEventChannel = FlutterEventChannel(name: "com.example.healthywear/metawear_connection_status", binaryMessenger: messenger)
         metaWearEventChannel?.setStreamHandler(self)
        }
     
     // AppDelegate
-    private func setupSensoriaEventChannel(controller: FlutterViewController) {
-        sensoriaEventChannel = FlutterEventChannel(name: "com.example.healthywear/sensoria_connection_status", binaryMessenger: controller.binaryMessenger)
+    private func setupSensoriaEventChannel(messenger: FlutterBinaryMessenger) {
+        sensoriaEventChannel = FlutterEventChannel(name: "com.example.healthywear/sensoria_connection_status", binaryMessenger: messenger)
         sensoriaEventChannel?.setStreamHandler(self)
     }
 
@@ -435,9 +333,6 @@ class AppDelegate: FlutterAppDelegate, CBCentralManagerDelegate, FlutterStreamHa
         switch central.state {
         case .poweredOn:
             print("Bluetooth is powered on and ready.")
-            if sensoriaHandler == nil {
-                            sensoriaHandler = SensoriaHandler()
-                        }
             metaWearHandler = MetaWearHandler()
 
         case .poweredOff:

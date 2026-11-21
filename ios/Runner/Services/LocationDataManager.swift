@@ -25,14 +25,16 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate {
 
 
        func fetchLocationAndSaveData(dataType: String, dataBuffer: [String],completion: @escaping (Bool) -> Void) {
-           guard let location = self.lastKnownLocation else {
-               print("No location data available. Cannot save data.")
+           let coordinates = lastKnownLocation?.coordinate
+           // Sensoria samples remain usable if a location fix is unavailable.
+           if coordinates == nil && dataType != "S" {
                completion(false)
-
                return
            }
-           print("Sending data to FileHandler with location: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-           FileHandler.shared.saveDataToFile(dataType: dataType, dataBuffer: dataBuffer, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,completion: completion)
+           FileHandler.shared.saveDataToFile(dataType: dataType, dataBuffer: dataBuffer,
+                                             latitude: coordinates?.latitude ?? 0,
+                                             longitude: coordinates?.longitude ?? 0,
+                                             completion: completion)
        }
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {

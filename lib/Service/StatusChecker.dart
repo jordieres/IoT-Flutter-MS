@@ -225,16 +225,28 @@ class StatusChecker {
     DateTime? lastSensoriaDataWriteTimestamp =
         _parseDateTime(status['lastDataWriteTimestampSensoria']);
 
-    _checkActivityStatus(deviceName, deviceIndex, "Sensoria data reception", lastCoreDataTimestamp,
-        Allowed_initialDelayMinutes_Sensoria, Allowed_updateIntervalMinutes_Sensoria);
-
-    _checkActivityStatus(
-        deviceName,
-        deviceIndex,
-        "Sensoria writing to file",
-        lastSensoriaDataWriteTimestamp,
-        Allowed_initialDelayMinutes_Sensoria_WriteFile,
-        Allowed_updateIntervalMinutes_Sensoria_WriteFile);
+    final recordingStart = SensoriaApi.recordingStartedAt;
+    if (recordingStart != null) {
+      // Connected socks intentionally send no measurements before the trial
+      // or recording. Monitor reception only during the recording session.
+      _checkActivityStatus(
+          deviceName,
+          deviceIndex,
+          "Sensoria data reception",
+          lastCoreDataTimestamp != null && lastCoreDataTimestamp.isAfter(recordingStart)
+              ? lastCoreDataTimestamp
+              : recordingStart,
+          Allowed_initialDelayMinutes_Sensoria,
+          Allowed_updateIntervalMinutes_Sensoria);
+      final lastWrite = lastSensoriaDataWriteTimestamp;
+      _checkActivityStatus(
+          deviceName,
+          deviceIndex,
+          "Sensoria writing to file",
+          lastWrite != null && lastWrite.isAfter(recordingStart) ? lastWrite : recordingStart,
+          Allowed_initialDelayMinutes_Sensoria_WriteFile,
+          Allowed_updateIntervalMinutes_Sensoria_WriteFile);
+    }
   }
 
   void processSmartBandStatusUpdate(Map<String, dynamic> status) {

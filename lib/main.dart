@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+import 'Service/android_device_permissions.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'Service/StatusChecker.dart';
 import 'Api/SmartBandApi.dart';
 import 'Api/MetaWearApi.dart';
 import 'Api/SensoriaApi.dart';
+import 'sensoria_setup_screen.dart';
+import 'healthywear_settings_screen.dart';
 import 'Api/ServiceApi.dart';
 import 'Service/Uploader.dart';
 import 'Service/AppLocal.dart';
@@ -64,13 +69,13 @@ void main() async {
   //to send the app version for the metadata
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   String appVersion = packageInfo.version;
-  SmartBandApi.setAppVersion(appVersion);
+  if (Platform.isAndroid) SmartBandApi.setAppVersion(appVersion);
   MetaWearApi.sendAppVersion(appVersion);
   SensoriaApi.sendAppVersion(appVersion);
   ServiceApi.sendAppVersion(appVersion);
 
   //  update each API with the correct language code
-  SmartBandApi.setLocale(languageCode);
+  if (Platform.isAndroid) SmartBandApi.setLocale(languageCode);
   MetaWearApi.setLocale(languageCode);
   SensoriaApi.setLocale(languageCode);
   NotificationHandler.setLocale(languageCode);
@@ -84,124 +89,107 @@ void main() async {
   Uploader.startMonitoringAndUploading();
 }
 
-class SplashApp extends StatelessWidget {
+class SplashApp extends StatefulWidget {
   final Locale initialLocale;
 
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  const SplashApp({super.key, required this.initialLocale});
 
-  SplashApp({required this.initialLocale});
+  @override
+  State<SplashApp> createState() => _SplashAppState();
+}
+
+class _SplashAppState extends State<SplashApp> {
+  Timer? _splashTimer;
+  bool _showSplash = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _splashTimer = Timer(const Duration(seconds: 2), () {
+      setState(() => _showSplash = false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _splashTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!_showSplash) return MyApp(initialLocale: widget.initialLocale);
     return MaterialApp(
-      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      home: Builder(builder: (context) {
-        // Using a Builder to get the correct context
-        Future.delayed(Duration(seconds: 2), () {
-          if (Navigator.of(context).canPop()) {
-            Navigator.of(context).pop(); // Pop current page if possible
-          }
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => MyApp(initialLocale: initialLocale)));
-        });
-        return SplashScreen();
-      }),
+      home: const SplashScreen(),
     );
   }
 }
 
-Future<void> requestPermissions(BuildContext context) async {
-  if (Platform.isAndroid) {
-    // Check and request location permission
-    var locationStatus = await Permission.location.status;
-    if (!locationStatus.isGranted) {
-      await showLocationPermissionDisclosure(context);
-    }
-
-    // Check and request storage permission
-    var storageStatus = await Permission.storage.status;
-    if (!storageStatus.isGranted) {
-      await Permission.storage.request();
-    }
-
-    // Check and request notification permission/
-    var notificationStatus = await Permission.notification.status;
-    if (!notificationStatus.isGranted) {
-      await Permission.notification.request();
-    }
-
-    // Check and request Bluetooth permissions
-    var bluetoothStatus = await Permission.bluetooth.status;
-    if (!bluetoothStatus.isGranted) {
-      await Permission.bluetooth.request();
-    }
-
-    var bluetoothScanStatus = await Permission.bluetoothScan.status;
-    if (!bluetoothScanStatus.isGranted) {
-      await Permission.bluetoothScan.request();
-    }
-
-    var bluetoothConnectStatus = await Permission.bluetoothConnect.status;
-    if (!bluetoothConnectStatus.isGranted) {
-      await Permission.bluetoothConnect.request();
-    }
-
-    var bluetoothAdvertiseStatus = await Permission.bluetoothAdvertise.status;
-    if (!bluetoothAdvertiseStatus.isGranted) {
-      await Permission.bluetoothAdvertise.request();
-    }
-  }
-}
-
-Future<void> showLocationPermissionDisclosure(BuildContext context) async {
-  Completer<void> completer = Completer<void>();
-
-  showDialog<void>(
-    context: context,
-    barrierDismissible: false, // User must tap a button to dismiss the dialog
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Se necesitan permisos'),
-        content: Text(
-            'Esta aplicación necesita acceder a su ubicación para mejorar la precisión de los datos de salud recopilados por los dispositivos portátiles. ¿Está de acuerdo con esto??'),
-        actions: <Widget>[
+Future<bool> requestPermissions(BuildContext context,
+    {bool requestNotifications = false}) async {
+  if (defaultTargetPlatform != TargetPlatform.android) return true;
+  final es = Localizations.localeOf(context).languageCode == 'es';
+  if (!await AndroidDevicePermissions.hasAccess()) {
+    if (!context.mounted) return false;
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        scrollable: true,
+        title: Text(es ? 'Se necesitan permisos' : 'Permissions required'),
+        content: Text(es
+            ? 'Esta aplicación necesita acceder a su ubicación para mejorar la precisión de los datos de salud recopilados por los dispositivos portátiles. '
+                'La ubicación se guarda con los registros de actividad y se envía al servidor de HealthyWear, también mientras la app está en segundo plano. '
+                '¿Está de acuerdo con esto?'
+            : 'This application needs access to your location to improve the accuracy of health data collected by wearable devices. '
+                'Location is saved with activity records and sent to the HealthyWear server, including while the app is in the background. '
+                'Do you agree?'),
+        actions: [
           TextButton(
-            child: Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-              completer.complete(); // Complete the completer when user cancels
-            },
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('No'),
           ),
-          TextButton(
-            child: Text('Sí'),
-            onPressed: () async {
-              Navigator.of(context).pop();
-              var status = await Permission.location.request();
-              if (status.isGranted) {
-                // Handle the granted scenario
-              } else {
-                // Handle the denied scenario
-              }
-              completer
-                  .complete(); // Complete the completer when user confirms and permission is processed
-            },
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(es ? 'Sí' : 'Yes'),
           ),
         ],
+      ),
+    );
+    if (proceed != true) return false;
+    final granted = await AndroidDevicePermissions.requestAccess();
+    if (!granted) {
+      if (!context.mounted) return false;
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          scrollable: true,
+          title: Text(es ? 'Activa los permisos' : 'Enable permissions'),
+          content: Text(es
+              ? 'En Ajustes, permite Ubicación precisa y Dispositivos cercanos para HealthyWear. Después, vuelve y pulsa el calcetín.'
+              : 'In Settings, allow Precise location and Nearby devices for HealthyWear. Then return and tap the sock.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(es ? 'Ahora no' : 'Not now'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                unawaited(openAppSettings());
+              },
+              child: Text(es ? 'Abrir ajustes' : 'Open settings'),
+            ),
+          ],
+        ),
       );
-    },
-  );
-
-  return completer.future; // This will make sure the code waits until the completer is completed
-}
-
-Future<void> requestLocationPermission(BuildContext context) async {
-  var status = await Permission.location.request();
-  if (status.isGranted) {
-    // Proceed with location-based functionality
-  } else {
-    // Handle permission denial
+      return false;
+    }
   }
+  if (requestNotifications) {
+    await AndroidDevicePermissions.requestNotifications();
+  }
+  return true;
 }
 
 class MyApp extends StatefulWidget {
@@ -214,6 +202,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Locale _locale;
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  bool _startupPermissionsScheduled = false;
+  Future<bool>? _permissionRequest;
   // Locale _locale = Locale('es', 'ES');
 
   bool isBandToggled = false;
@@ -259,9 +250,7 @@ class _MyAppState extends State<MyApp> {
 
     Uploader.loadConfig(); //load config file which include the url
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      requestPermissions(context);
-    });
+
 
 /////loader of IdNumber/////todo:if we want to activitate the mechanism to save the idnumber
     // _loadIdNumber().then((_) {
@@ -344,6 +333,13 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
+    if (!_isSensoriaConnected() && SensoriaApi.isRecording) {
+      setState(() {
+        SensoriaApi.isRecording = false;
+        SensoriaApi.recordingStartedAt = null;
+      });
+      unawaited(SensoriaApi.setRecording(false).then<void>((_) {}, onError: (Object _) {}));
+    }
     if (_areAllDevicesDisconnected()) {
       _startOrRestartDisconnectTimer();
     } else {
@@ -401,7 +397,7 @@ class _MyAppState extends State<MyApp> {
       });
       MetaWearApi.setLocale(newLocale.languageCode);
       SensoriaApi.setLocale(newLocale.languageCode);
-      SmartBandApi.setLocale(newLocale.languageCode);
+      if (Platform.isAndroid) SmartBandApi.setLocale(newLocale.languageCode);
       NotificationHandler.setLocale(newLocale.languageCode);
     }
   }
@@ -416,9 +412,47 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    var localization = AppLocalizations.of(context);
     return MaterialApp(
+      navigatorKey: _navigatorKey,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xff153865),
+          primary: const Color(0xff153865),
+          onPrimary: Colors.white,
+          surface: const Color(0xfff5f8fe),
+        ),
+        dialogTheme: DialogThemeData(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          titleTextStyle: const TextStyle(
+            color: Color(0xff153865),
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+          contentTextStyle: const TextStyle(
+            color: Color(0xff334155),
+            fontSize: 16,
+            height: 1.5,
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: const Color(0xff153865),
+            minimumSize: const Size(64, 48),
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xff153865),
+            foregroundColor: Colors.white,
+            minimumSize: const Size(80, 48),
+          ),
+        ),
+      ),
       locale: _locale,
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -427,76 +461,73 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
+      home: Builder(builder: (homeContext) {
+        if (!_startupPermissionsScheduled &&
+            defaultTargetPlatform == TargetPlatform.android) {
+          _startupPermissionsScheduled = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && homeContext.mounted) {
+              unawaited(_ensureDevicePermissions(requestNotifications: true));
+            }
+          });
+        }
+        return Scaffold(
         appBar: AppBar(
           title: Align(
             alignment: Alignment.centerLeft, // Aligns the container to the left
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               height: 45,
               child: Image.asset('assets/images/SaludMadrid_logo.png', fit: BoxFit.scaleDown),
             ),
           ),
           backgroundColor: Colors.white,
           actions: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.red.shade700.withOpacity(0.9),
-                shape: BoxShape.circle,
-              ),
-              padding: EdgeInsets.all(8),
-              margin: EdgeInsets.only(right: 10),
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  canvasColor: Colors.red.shade400, // Sets dropdown background color
-                  popupMenuTheme: PopupMenuThemeData(
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners for dropdown menu
-                    ),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    icon: Container(), // Removes the dropdown icon
-                    items: <String>['en', 'es'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value.toUpperCase(), style: TextStyle(color: Colors.white)),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      if (newValue != null) {
-                        setLocale(Locale(newValue));
-                      }
-                    },
-                    value: _locale.languageCode,
-                  ),
-                ),
-              ),
+            PopupMenuButton<String>(
+              tooltip: _locale.languageCode == 'es' ? 'Idioma' : 'Language',
+              initialValue: _locale.languageCode,
+              onSelected: (language) => setLocale(Locale(language)),
+              itemBuilder: (_) => const [
+                PopupMenuItem(value: 'en', child: Text('English')),
+                PopupMenuItem(value: 'es', child: Text('Español')),
+              ],
+              icon: const Icon(Icons.language, color: Color(0xff173f77)),
             ),
             IconButton(
-              icon: Icon(Icons.share, color: Colors.blue),
+              icon: const Icon(Icons.share_outlined, color: Color(0xff173f77)),
               tooltip: _locale.languageCode == 'en'
                   ? 'Manage pending files'
                   : 'Gestionar archivos pendientes',
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
+                _navigatorKey.currentState?.push(
+                  MaterialPageRoute<void>(
                     builder: (_) => ShareFilesPage(locale: _locale),
                   ),
                 );
               },
             ),
+            IconButton(
+              icon: const Icon(Icons.history, color: Color(0xff173f77)),
+              tooltip: _locale.languageCode == 'es' ? 'Historial' : 'Test history',
+              onPressed: _devicesEnabled ? _openTestHistory : null,
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings_outlined, color: Color(0xff173f77)),
+              tooltip: _locale.languageCode == 'es' ? 'Ajustes' : 'Settings',
+              onPressed: () => _navigatorKey.currentState?.push(
+                MaterialPageRoute<void>(
+                  builder: (_) => HealthyWearSettingsScreen(locale: _locale),
+                ),
+              ),
+            ),
           ],
         ),
-        body: Center(
+        body: Align(
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // ——— Share button row ———
-                SizedBox(height: 20),
+                const SizedBox(height: 8),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ClipRRect(
@@ -506,15 +537,14 @@ class _MyAppState extends State<MyApp> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.blue.shade600
-                                .withOpacity(0.8), // Set the container's background color to blue
+                                .withOpacity(0.87),
                             borderRadius:
                                 BorderRadius.circular(10), // Round the corners of the container
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.5), // Shadow color
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: Offset(0, 3), // Position of shadow
+                                color: const Color(0xff153865).withOpacity(0.15),
+                                blurRadius: 16,
+                                offset: const Offset(0, 5),
                               ),
                             ],
                           ),
@@ -564,6 +594,8 @@ class _MyAppState extends State<MyApp> {
                                           required bool isFocused}) =>
                                       null,
                                   autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardType: TextInputType.visiblePassword,
                                   textCapitalization: TextCapitalization.characters,
                                 ),
                               ),
@@ -651,24 +683,21 @@ class _MyAppState extends State<MyApp> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10), //  container's border radius
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), //  blur radius
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white, // Adjust opacity
+                        color: const Color(0xfff5f8fe).withOpacity(0.85),
                         borderRadius:
                             BorderRadius.circular(10), // Round the corners of the container
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.5), // Shadow color
-                            spreadRadius: 2,
-                            blurRadius: 7,
-                            offset: Offset(0, 3), // Position of shadow
+                            color: const Color(0xff153865).withOpacity(0.08),
+                            blurRadius: 18,
+                            offset: const Offset(0, 5),
                           ),
                         ],
                       ),
@@ -725,59 +754,38 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
+                _buildRecordingControls(),
               ],
             ),
           ),
         ),
 
-        /////////////////////////////////////////////////////////////////////////////////
-        ///////  Adding Floating Action Buttons for Test and History
-        floatingActionButton: Stack(
-          children: [
-            // History FAB (unchanged)
-            Positioned(
-              left: 40,
-              bottom: Platform.isIOS ? 30 : 5,
-              child: Opacity(
-                opacity: _devicesEnabled ? 1.0 : 0.5,
-                child: FloatingActionButton(
-                  heroTag: 'history',
-                  backgroundColor: _devicesEnabled ? Colors.blueAccent : Colors.grey,
-                  onPressed: _devicesEnabled ? _openTestHistory : null,
-                  child: _devicesEnabled
-                      ? Icon(Icons.history)
-                      : Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Icon(Icons.history, color: Colors.white54),
-                            Icon(Icons.lock, color: Colors.red, size: 24),
-                          ],
-                        ),
-                ),
-              ),
-            ),
-
-            Positioned(
-              right: 16,
-              bottom: Platform.isIOS ? 30 : 5,
-              child: Opacity(
-                // fade it when disconnected:
-                opacity: _isSensoriaConnected() ? 1.0 : 0.2,
-                child: FloatingActionButton(
-                  heroTag: 'test',
-                  backgroundColor: Colors.blue,
-                  // disable the tap when disconnected:
-                  onPressed: _isSensoriaConnected() ? _openTestSelectionSheet : null,
-                  child: Icon(Icons.fitness_center),
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        backgroundColor: Colors.white,
-      ),
+        backgroundColor: const Color(0xfff5f8fe),
+      );
+      }),
     );
+  }
+
+  Future<bool> _ensureDevicePermissions({bool requestNotifications = false}) async {
+    final navigationContext = _navigatorKey.currentState?.overlay?.context;
+    if (navigationContext == null) return false;
+    final request = _permissionRequest ??= requestPermissions(
+      navigationContext,
+      requestNotifications: requestNotifications,
+    );
+    try {
+      return await request;
+    } catch (error) {
+      debugPrint('Could not prepare Android permissions: $error');
+      if (mounted) {
+        Fluttertoast.showToast(msg: _locale.languageCode == 'es'
+            ? 'Revisa los permisos de HealthyWear en Ajustes.'
+            : 'Check HealthyWear permissions in Settings.');
+      }
+      return false;
+    } finally {
+      if (identical(_permissionRequest, request)) _permissionRequest = null;
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -791,10 +799,9 @@ class _MyAppState extends State<MyApp> {
   // Function to open Test History page.
   void _openTestHistory() {
     final codeID = "${_idController.text.trim()}-${_checksumController.text.trim()}";
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TestHistoryPage(codeID: codeID, locale: _locale),
+    _navigatorKey.currentState?.push(
+      MaterialPageRoute<void>(
+        builder: (_) => TestHistoryPage(codeID: codeID, locale: _locale),
       ),
     );
   }
@@ -827,13 +834,104 @@ class _MyAppState extends State<MyApp> {
       'display_es': 'Marcha 6 Minutos',
     },
   ];
-  // Function to open bottom sheet for test selection.
+  bool _changingRecording = false;
+  bool _openingTrial = false;
+
+  Widget _buildRecordingControls() {
+    final es = _locale.languageCode == 'es';
+    final recording = SensoriaApi.isRecording;
+    final connecting = ['LF', 'RF'].any((slot) => deviceStatuses[slot]?.isConnecting == true);
+    final canStart = _devicesEnabled && _isSensoriaConnected() && !_changingRecording && !connecting;
+    final IconData icon = recording ? Icons.assignment_outlined : Icons.play_arrow_rounded;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_isSensoriaConnected())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                recording
+                    ? (es ? 'Grabación activa' : 'Recording active')
+                    : (es ? 'Todo listo para caminar' : 'Ready to walk'),
+                style: const TextStyle(color: Color(0xff173f77), fontSize: 21, fontWeight: FontWeight.w700),
+              ),
+            ),
+          FilledButton.icon(
+            icon: Icon(icon),
+            label: Text(recording ? (es ? 'Seleccionar prueba' : 'Select test') : (es ? 'Iniciar' : 'Start')),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xff153865),
+              foregroundColor: Colors.white,
+              minimumSize: const Size.fromHeight(66),
+              textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            ),
+            onPressed: !canStart ? null : recording ? _openTestSelectionSheet : _openRecordingSetup,
+          ),
+          if (recording)
+            OutlinedButton.icon(
+              onPressed: _changingRecording ? null : () => _setSensoriaRecording(false),
+              icon: const Icon(Icons.stop_circle_outlined),
+              label: Text(es ? 'Marcha libre · Detener' : 'Free walk · Stop'),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _setSensoriaRecording(bool enabled) async {
+    if (_changingRecording) return;
+    setState(() => _changingRecording = true);
+    final startedAt = DateTime.now();
+    try {
+      final success = await SensoriaApi.setRecording(enabled);
+      if (!success) throw StateError('No Sensoria stream available');
+      SensoriaApi.isRecording = enabled && _isSensoriaConnected();
+      SensoriaApi.recordingStartedAt = SensoriaApi.isRecording ? startedAt : null;
+    } catch (_) {
+      if (!mounted) return;
+      Fluttertoast.showToast(msg: _locale.languageCode == 'es'
+          ? 'No se pudo cambiar la grabación. Revisa la conexión.'
+          : 'Could not change recording. Check the sensor connection.');
+    } finally {
+      if (mounted) setState(() => _changingRecording = false);
+    }
+  }
+
+  Future<void> _openRecordingSetup() async {
+    final navigator = _navigatorKey.currentState;
+    if (_openingTrial || navigator == null) return;
+
+    _openingTrial = true;
+    try {
+      final ready = await navigator.push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) => SensoriaSetupScreen(
+            locale: _locale,
+            connectedSlots: () => {
+              if (deviceStatuses['LF'] == DeviceConnectionStatus.connected) 2,
+              if (deviceStatuses['RF'] == DeviceConnectionStatus.connected) 1,
+            },
+          ),
+        ),
+      );
+      if (!mounted || ready != true || !_isSensoriaConnected()) return;
+      await _setSensoriaRecording(true);
+    } finally {
+      _openingTrial = false;
+    }
+  }
+
   void _openTestSelectionSheet() async {
+    final navigationContext = _navigatorKey.currentContext;
+    if (navigationContext == null) return;
     final lang = _locale.languageCode;
     final selected = await showModalBottomSheet<String>(
-      context: context,
+      context: navigationContext,
       backgroundColor: Colors.transparent,
-      builder: (_) {
+      builder: (sheetContext) {
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -862,7 +960,7 @@ class _MyAppState extends State<MyApp> {
                       ),
                     ),
                     child: Text(display, style: TextStyle(fontSize: 18, color: Colors.white)),
-                    onPressed: () => Navigator.pop(context, value),
+                    onPressed: () => Navigator.pop(sheetContext, value),
                   ),
                 );
               }).toList(),
@@ -872,18 +970,18 @@ class _MyAppState extends State<MyApp> {
       },
     );
 
-    if (selected != null) _startTest(selected);
+    if (mounted && selected != null && SensoriaApi.isRecording) _startTest(selected);
   }
 
   ////// Function to start a test by recording start time and opening TestInProgressScreen.
   void _startTest(String testType) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
+    _navigatorKey.currentState?.push(
+      MaterialPageRoute<void>(
         builder: (ctx) => TestInstructionScreen(
           locale: _locale,
           testType: testType,
           onStart: () {
+            if (!SensoriaApi.isRecording) return;
             // when “Start Test” tapped → go to in‐progress
             DateTime start = DateTime.now();
             Navigator.of(ctx).pushReplacement(
@@ -953,15 +1051,6 @@ class _MyAppState extends State<MyApp> {
 
     String statusMessage = getConnectionStatusMessage(status, _locale);
 
-    List<Widget> widgetList = [
-      Text(title),
-      Text(
-        // status.toString().split('.').last,
-        statusMessage,
-        style: TextStyle(fontSize: 14, color: Colors.grey),
-      ),
-    ];
-
     IconData? batteryIcon;
     Color iconColor = Colors.green[800]!;
 
@@ -979,11 +1068,9 @@ class _MyAppState extends State<MyApp> {
         batteryIcon = Icons.battery_unknown;
       }
 
-      widgetList.add(Icon(batteryIcon, color: Colors.green[800]));
-      widgetList.add(Text("$batteryLevel%"));
     }
 
-    double boxWidth = MediaQuery.of(context).size.width / 2 - 15;
+    double boxWidth = MediaQuery.of(context).size.width / 2 - 16;
 
     if (deviceName == "SB") {
       boxWidth = MediaQuery.of(context).size.width - 20;
@@ -992,23 +1079,23 @@ class _MyAppState extends State<MyApp> {
     // Adjusting blur effect and background color based on connection status
     double blurSigma = status == DeviceConnectionStatus.connected ? 0 : 5;
     Color boxColor = status == DeviceConnectionStatus.connected
-        ? Colors.green.withOpacity(0.3)
-        : Colors.blue.shade700.withOpacity(0.1);
+        ? const Color(0xffdcecff)
+        : Colors.white.withOpacity(0.84);
     Color titleColor =
-        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+        (status == DeviceConnectionStatus.connected || status.isConnecting)
             ? Colors.grey.shade700
             : Colors.blue.shade900;
     Color statusColor =
-        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+        (status == DeviceConnectionStatus.connected || status.isConnecting)
             ? Colors.grey.shade700
             : Colors.grey.shade500;
 
     FontWeight statusFontWeight =
-        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+        (status == DeviceConnectionStatus.connected || status.isConnecting)
             ? FontWeight.bold
             : FontWeight.normal;
     FontWeight statusFontWeightTitle =
-        (status == DeviceConnectionStatus.connected || status == DeviceConnectionStatus.connecting)
+        (status == DeviceConnectionStatus.connected || status.isConnecting)
             ? FontWeight.normal
             : FontWeight.bold;
 
@@ -1022,25 +1109,31 @@ class _MyAppState extends State<MyApp> {
             filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
             child: Container(
               width: boxWidth,
-              padding: EdgeInsets.all(14),
+              constraints: BoxConstraints(
+                minHeight: 112 + 44 * (MediaQuery.textScalerOf(context).scale(16) / 16 - 1).clamp(0, 3),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
                 color: boxColor,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.9),
+                  color: const Color(0xffcfdeef),
                 ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
                     style: GoogleFonts.roboto(
                         fontSize: 17.5, fontWeight: statusFontWeightTitle, color: titleColor),
                     // TextStyle(fontWeight: statusFontWeightTitle, fontSize: 16, color: titleColor),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 30), // Spacing
+                  const SizedBox(height: 7),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -1050,30 +1143,37 @@ class _MyAppState extends State<MyApp> {
                           child: Icon(batteryIcon, color: iconColor),
                         ),
                       SizedBox(width: 4), // Spacing
-                      // Connection Status
-                      Text(
-                        // status.toString().split('.').last,
-                        statusMessage,
-                        style: TextStyle(
-                            fontSize: 16, color: statusColor, fontWeight: statusFontWeight),
+                      Flexible(
+                        child: Text(
+                          statusMessage,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 13, color: statusColor, fontWeight: statusFontWeight),
+                        ),
                       ),
                       SizedBox(width: 2),
-                      if (status == DeviceConnectionStatus.connecting)
+                      if (status.isConnecting)
                         SpinKitFadingCircle(
                           color: Colors.red.shade500,
                           size: 20.0,
                         ),
-                      if (status == DeviceConnectionStatus.connected)
-                        SpinKitPumpingHeart(
-                          color: Colors.red.shade500,
-                          size: 15.0,
-                        ),
                     ],
                   ),
 
-                  // Switch Widget or Lock Icon
-
-                  if (!_devicesEnabled) Icon(Icons.lock, color: Colors.red, size: 24),
+                  if (!_devicesEnabled) ...[
+                    const SizedBox(height: 5),
+                    const Icon(Icons.lock_outline, color: Color(0xff153865), size: 16),
+                  ] else if (deviceName == 'LF' || deviceName == 'RF') ...[
+                    const SizedBox(height: 5),
+                    SizedBox(
+                      height: 19,
+                      child: status == DeviceConnectionStatus.connected && SensoriaApi.isRecording
+                          ? Center(child: _ConnectionSignal(slot: deviceName == 'RF' ? 1 : 2))
+                          : null,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -1086,7 +1186,17 @@ class _MyAppState extends State<MyApp> {
   void _handleDeviceTap(String deviceName) async {
     DeviceConnectionStatus status =
         deviceStatuses[deviceName] ?? DeviceConnectionStatus.disconnected;
+    if (SensoriaApi.isRecording && (deviceName == 'LF' || deviceName == 'RF') &&
+        status == DeviceConnectionStatus.disconnected) {
+      Fluttertoast.showToast(msg: _locale.languageCode == 'es'
+          ? 'Detén la grabación antes de añadir un calcetín.'
+          : 'Stop recording before adding a sock.');
+      return;
+    }
 
+    if ((deviceName == 'LF' || deviceName == 'RF') && status.isConnecting) {
+      return;
+    }
     if (status == DeviceConnectionStatus.connected) {
       // Disconnect
       switch (deviceName) {
@@ -1107,6 +1217,8 @@ class _MyAppState extends State<MyApp> {
           break;
       }
     } else {
+      if (Platform.isAndroid && !await _ensureDevicePermissions()) return;
+      if (!mounted) return;
       // Connect
       switch (deviceName) {
         case 'SB':
@@ -1194,7 +1306,7 @@ class _MyAppState extends State<MyApp> {
 
     if (idNumber.isNotEmpty && idNumberChecksum.isNotEmpty) {
       ServiceApi.sendIdNumber(combinedIDChecksum);
-      SmartBandApi.setIdNumber(combinedIDChecksum);
+      if (Platform.isAndroid) SmartBandApi.setIdNumber(combinedIDChecksum);
       SensoriaApi.sendIdNumber(combinedIDChecksum);
       MetaWearApi.sendIdNumber(combinedIDChecksum);
 
@@ -1221,9 +1333,10 @@ class _MyAppState extends State<MyApp> {
 
           final combinedIDChecksum = "$idNumber-$calculatedChecksum";
 
-          SmartBandApi.setIdNumber(combinedIDChecksum);
+          if (Platform.isAndroid) SmartBandApi.setIdNumber(combinedIDChecksum);
           MetaWearApi.sendIdNumber(combinedIDChecksum);
-          SensoriaApi.sendIdNumber(combinedIDChecksum);
+          await SensoriaApi.sendIdNumber(combinedIDChecksum);
+          if (!mounted) return;
           // _loadIdNumber();
           setState(() {
             _isIdEditable = false;
@@ -1243,6 +1356,8 @@ class _MyAppState extends State<MyApp> {
         });
       }
     } else {
+      if (SensoriaApi.isRecording) await _setSensoriaRecording(false);
+      if (!mounted || SensoriaApi.isRecording) return;
       setState(() {
         _isIdEditable = true;
         _devicesEnabled = false;
@@ -1295,14 +1410,18 @@ class _MyAppState extends State<MyApp> {
       DeviceConnectionStatus.disconnected: "Not connected",
       DeviceConnectionStatus.connecting: "Connecting ",
       DeviceConnectionStatus.connected: "Connected",
-      DeviceConnectionStatus.reconnecting: "Reconnecting..."
+      DeviceConnectionStatus.reconnecting: "Reconnecting…",
+      DeviceConnectionStatus.checkingSettings: "Checking settings…",
+      DeviceConnectionStatus.startingStream: "Preparing sensor…",
     };
 
     Map<DeviceConnectionStatus, String> esMessages = {
       DeviceConnectionStatus.disconnected: "No conectado",
       DeviceConnectionStatus.connecting: "Conectando ",
       DeviceConnectionStatus.connected: "Conectado",
-      DeviceConnectionStatus.reconnecting: "Reconectando..."
+      DeviceConnectionStatus.reconnecting: "Reconectando…",
+      DeviceConnectionStatus.checkingSettings: "Verificando ajustes…",
+      DeviceConnectionStatus.startingStream: "Preparando sensor…",
     };
 
     Map<DeviceConnectionStatus, String> messages =
@@ -1310,6 +1429,128 @@ class _MyAppState extends State<MyApp> {
 
     return messages[status] ?? "Unknown";
   }
+}
+
+class _ConnectionSignal extends StatefulWidget {
+  const _ConnectionSignal({required this.slot});
+
+  final int slot;
+
+  @override
+  State<_ConnectionSignal> createState() => _ConnectionSignalState();
+}
+
+class _ConnectionSignalState extends State<_ConnectionSignal>
+    with SingleTickerProviderStateMixin {
+  late final _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  );
+
+  Timer? _poll;
+  bool _receiving = false;
+  bool _checking = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _poll = Timer.periodic(const Duration(milliseconds: 650), (_) => _checkSamples());
+    _checkSamples();
+  }
+
+  Future<void> _checkSamples() async {
+    if (_checking) return;
+    _checking = true;
+    var receiving = false;
+    try {
+      receiving = await SensoriaApi.hasRecordingData(widget.slot);
+    } catch (_) {
+      // Hide the pulse when fresh samples cannot be confirmed.
+    } finally {
+      _checking = false;
+    }
+    if (mounted && receiving != _receiving) {
+      setState(() => _receiving = receiving);
+      _updateAnimation();
+    }
+  }
+
+  void _updateAnimation() {
+    if (!_receiving || MediaQuery.disableAnimationsOf(context)) {
+      _pulse.stop();
+    } else if (!_pulse.isAnimating) {
+      _pulse.repeat();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateAnimation();
+  }
+
+  @override
+  void dispose() {
+    _poll?.cancel();
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => _receiving
+      ? Semantics(
+          label: Localizations.localeOf(context).languageCode == 'es'
+              ? 'Recibiendo datos' : 'Receiving data',
+          child: AnimatedBuilder(
+      animation: _pulse,
+      builder: (context, _) => CustomPaint(
+        size: const Size(76, 19),
+        painter: _ConnectionPulsePainter(
+          _pulse.value, MediaQuery.disableAnimationsOf(context),
+        ),
+      ),
+          ),
+        )
+      : const SizedBox.shrink();
+}
+
+class _ConnectionPulsePainter extends CustomPainter {
+  const _ConnectionPulsePainter(this.progress, this.reducedMotion);
+
+  final double progress;
+  final bool reducedMotion;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final middle = size.height / 2;
+    final path = Path()
+      ..moveTo(1.5, middle)
+      ..lineTo(size.width * .28, middle)
+      ..lineTo(size.width * .36, middle - 3)
+      ..lineTo(size.width * .44, middle + 3)
+      ..lineTo(size.width * .50, 2)
+      ..lineTo(size.width * .57, size.height - 2)
+      ..lineTo(size.width * .65, middle)
+      ..lineTo(size.width - 1.5, middle);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = const Color(0xff7198bf);
+    canvas.drawPath(path, stroke);
+    if (reducedMotion) return;
+    final wave = path.computeMetrics().first;
+    final end = progress * (wave.length + 22);
+    canvas.drawPath(
+      wave.extractPath(max(0, end - 22), min(end, wave.length)),
+      stroke..color = const Color(0xff104d88)..strokeWidth = 2.6,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ConnectionPulsePainter oldDelegate) =>
+      progress != oldDelegate.progress || reducedMotion != oldDelegate.reducedMotion;
 }
 
 /////////////////////New pages for Test History, Test In Progress and Thank You screen

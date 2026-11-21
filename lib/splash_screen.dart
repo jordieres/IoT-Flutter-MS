@@ -3,8 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
@@ -18,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _loadVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
+    if (!mounted) return;
     setState(() {
       _version = packageInfo.version;
     });
@@ -40,13 +43,17 @@ class _SplashScreenState extends State<SplashScreen> {
               Text(
                 'Healthy',
                 style: GoogleFonts.poppins(
-                    fontSize: 60, fontWeight: FontWeight.w500, color: Colors.white),
+                    fontSize: 60,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
                 textAlign: TextAlign.center,
               ),
               Text(
                 'Wear',
                 style: GoogleFonts.poppins(
-                    fontSize: 60, fontWeight: FontWeight.w500, color: Colors.white),
+                    fontSize: 60,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -63,6 +70,9 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               Image.asset(
                 'assets/images/upm2.png',
+                cacheWidth: 600,
+                fit: BoxFit.contain,
+                semanticLabel: 'Universidad Politécnica de Madrid',
                 width: size.width * 0.7,
                 height: size.height * 0.130,
               ),

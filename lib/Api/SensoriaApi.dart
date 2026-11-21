@@ -1,13 +1,41 @@
+import '../Service/android_device_permissions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../enums/device_connection_status.dart';
 import 'dart:io';
+import 'SensoriaSettings.dart';
+
+enum SensoriaCalibrationStatus { available, suspect, unavailable }
 
 class SensoriaApi {
-  static const MethodChannel _platform = MethodChannel('com.example.healthywear/sensoria');
+  static const MethodChannel _platform =
+      MethodChannel('com.example.healthywear/sensoria');
+
+  static Future<bool> setRecording(bool enabled) async =>
+      await _platform
+          .invokeMethod<bool>('setRecording', {'enabled': enabled}) ??
+      false;
+
+  static bool isRecording = false;
+  static DateTime? recordingStartedAt;
+
+  static Future<String> calibrateMagnetometer(int slot) async =>
+      await _platform
+          .invokeMethod<String>('calibrateMagnetometer', {'coreIndex': slot}) ??
+      'unavailable';
+
+  static Future<bool> hasRecordingData(int slot) async =>
+      await _platform
+          .invokeMethod<bool>('hasRecordingData', {'coreIndex': slot}) ??
+      false;
+
+  static Future<void> setTrialCapture(bool enabled) =>
+      _platform.invokeMethod<void>('setTrialCapture', {'enabled': enabled});
+
+  static Future<List<dynamic>> drainTrialSamples() async =>
+      await _platform.invokeListMethod<dynamic>('drainTrialSamples') ?? [];
 
 //connection Evenet listener----------------
   static const _connectionStatusChannel =
@@ -15,11 +43,38 @@ class SensoriaApi {
 
   static bool _alreadyListening = false;
   static String _languageCode = '';
+  static final _connectedSettings =
+      ValueNotifier<Map<int, Map<String, int>>>({});
+  static ValueListenable<Map<int, Map<String, int>>> get connectedSettings =>
+      _connectedSettings;
+
+  static final _calibrationStatuses = <int, SensoriaCalibrationStatus>{};
+
+  static SensoriaCalibrationStatus calibrationStatus(int slot) =>
+      _calibrationStatuses[slot] ?? SensoriaCalibrationStatus.unavailable;
+
+  static SensoriaCalibrationStatus evaluateOffsets(
+      Object? offsets, Object? range) {
+    if (offsets case [int x, int y, int z]) {
+      if (range is! int || range <= 0)
+        return SensoriaCalibrationStatus.unavailable;
+      // The vendor control-point UI reports signed offsets in milligauss.
+      // An offset outside the selected range merits review on that sock.
+      final limit = range * 1000;
+      if (x.abs() >= limit || y.abs() >= limit || z.abs() >= limit) {
+        return SensoriaCalibrationStatus.suspect;
+      }
+      return SensoriaCalibrationStatus.available;
+    }
+    return SensoriaCalibrationStatus.unavailable;
+  }
 
   //callback for status checker////
-  static Function(String, int, DeviceConnectionStatus)? onConnectionStatusChanged;
+  static Function(String, int, DeviceConnectionStatus)?
+      onConnectionStatusChanged;
 
-  static void setConnectionStatusListener(Function(String, int, DeviceConnectionStatus) callback) {
+  static void setConnectionStatusListener(
+      Function(String, int, DeviceConnectionStatus) callback) {
     onConnectionStatusChanged = callback;
   }
   ////////////////////////////
@@ -27,30 +82,68 @@ class SensoriaApi {
   static void handleConnectionUpdate(dynamic event) {
     final Map<dynamic, dynamic> statusUpdate = Map<String, dynamic>.from(event);
     final int coreIndex = statusUpdate["coreIndex"];
-    final String status = statusUpdate["status"];
-
-    if (status == "connected") {
-      if (coreIndex == 1) {
-        updateRightFootConnectionStatus(DeviceConnectionStatus.connected);
-        onConnectionStatusChanged?.call("Sensoria", 1, DeviceConnectionStatus.connected);
-      } else if (coreIndex == 2) {
-        updateLeftFootConnectionStatus(DeviceConnectionStatus.connected);
-        onConnectionStatusChanged?.call("Sensoria", 2, DeviceConnectionStatus.connected);
+    if (statusUpdate['error'] case final String error) {
+      final sock = _languageCode == 'es'
+          ? (coreIndex == 1 ? 'derecho' : 'izquierdo')
+          : (coreIndex == 1 ? 'right' : 'left');
+      final message = switch (error) {
+        'notFound' => _languageCode == 'es'
+            ? 'No se encontró el sensor. Muévelo e inténtalo de nuevo.'
+            : 'Sensor not found. Move it and try again.',
+        'gyroscopeRange' => _languageCode == 'es'
+            ? 'El calcetín $sock no pudo aplicar el rango del giroscopio. Avisa al equipo del estudio.'
+            : 'The $sock sock could not apply its gyroscope range. Contact the study team.',
+        'configuration' => _languageCode == 'es'
+            ? 'No se pudo verificar el calcetín $sock. Pulsa su botón para reintentar.'
+            : 'Could not verify the $sock sock. Tap its button to retry.',
+        _ => _languageCode == 'es'
+            ? 'El sensor no envió datos. Inténtalo de nuevo.'
+            : 'The sensor did not send data. Try again.',
+      };
+      Fluttertoast.showToast(msg: message);
+    }
+    final status = switch (statusUpdate['status']) {
+      'connected' => DeviceConnectionStatus.connected,
+      'disconnected' => DeviceConnectionStatus.disconnected,
+      'reconnecting' => DeviceConnectionStatus.reconnecting,
+      'checking' => DeviceConnectionStatus.checkingSettings,
+      'starting' => DeviceConnectionStatus.startingStream,
+      _ => null,
+    };
+    if (status == null) return;
+    if (status == DeviceConnectionStatus.connected) {
+      _calibrationStatuses[coreIndex] = evaluateOffsets(
+        statusUpdate['magneticOffsets'],
+        statusUpdate['magnetometerGauss'],
+      );
+    } else {
+      _calibrationStatuses.remove(coreIndex);
+    }
+    if (coreIndex == 1 || coreIndex == 2) {
+      final connected = {..._connectedSettings.value};
+      if (status == DeviceConnectionStatus.connected) {
+        final settings = statusUpdate['settings'];
+        connected[coreIndex] = Map.unmodifiable({
+          if (settings is Map)
+            for (final entry in settings.entries)
+              if (entry.key is String && entry.value is int)
+                entry.key as String: entry.value as int,
+        });
+      } else {
+        connected.remove(coreIndex);
       }
-    } else if (status == "disconnected") {
-      if (coreIndex == 1) {
-        updateRightFootConnectionStatus(DeviceConnectionStatus.disconnected);
-        onConnectionStatusChanged?.call("Sensoria", 1, DeviceConnectionStatus.disconnected);
-      } else if (coreIndex == 2) {
-        updateLeftFootConnectionStatus(DeviceConnectionStatus.disconnected);
-        onConnectionStatusChanged?.call("Sensoria", 2, DeviceConnectionStatus.disconnected);
-      }
-    } else if (status == "reconnecting") {
-      if (coreIndex == 1) {
-        updateRightFootConnectionStatus(DeviceConnectionStatus.reconnecting);
-      } else if (coreIndex == 2) {
-        updateLeftFootConnectionStatus(DeviceConnectionStatus.reconnecting);
-      }
+      _connectedSettings.value = Map.unmodifiable(connected);
+    }
+    if (coreIndex == 1) {
+      updateRightFootConnectionStatus(status);
+    } else if (coreIndex == 2) {
+      updateLeftFootConnectionStatus(status);
+    } else {
+      return;
+    }
+    if (status == DeviceConnectionStatus.connected ||
+        status == DeviceConnectionStatus.disconnected) {
+      onConnectionStatusChanged?.call('Sensoria', coreIndex, status);
     }
   }
 
@@ -73,146 +166,56 @@ class SensoriaApi {
 
   static final _ble = FlutterReactiveBle();
 
-  static Future<bool> checkAndRequestPermissions() async {
-    List<Permission> permissions = [
-      // Permission.storage,
-      Permission.notification,
-      Permission.location,
-      // Permission.bluetooth,
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-      Permission.bluetoothAdvertise,
-    ];
+  static final Set<int> _pending = {};
 
-    bool allGranted = true;
-    for (Permission permission in permissions) {
-      var status = await permission.status;
-      if (!status.isGranted) {
-        var result = await permission.request();
-        allGranted = result.isGranted && allGranted;
-      }
-    }
-    return allGranted;
-  }
-
-  static Future<bool> isBluetoothAndLocationEnabled() async {
-    // Improved Bluetooth check
-    bool isBluetoothEnabled = await isBluetoothServiceEnabled();
-
-    // Direct check for Location services
-    bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!isBluetoothEnabled) {
-      updateRightFootConnectionStatus(DeviceConnectionStatus.disconnected);
-      updateLeftFootConnectionStatus(DeviceConnectionStatus.disconnected);
-
-      Fluttertoast.showToast(
-        msg: _languageCode == "en"
-            ? "Bluetooth service is not enabled. Please enable it."
-            : "El servicio de Bluetooth no está activado. Por favor, actívelo.",
-        toastLength: Toast.LENGTH_LONG,
-      );
-    }
-
-    if (!isLocationEnabled) {
-      updateRightFootConnectionStatus(DeviceConnectionStatus.disconnected);
-      updateLeftFootConnectionStatus(DeviceConnectionStatus.disconnected);
-      Fluttertoast.showToast(
-        msg: _languageCode == "en"
-            ? "Location service is not enabled. Please enable it."
-            : "El servicio de ubicación no está activado. Por favor, actívelo.",
-        toastLength: Toast.LENGTH_LONG,
-      );
-    }
-
-    return isBluetoothEnabled && isLocationEnabled;
-  }
-
-  static Future<bool> isBluetoothServiceEnabled() async {
-    // Listen for the first relevant status update rather than just taking the first emitted value
-    final bluetoothStatus = await _ble.statusStream.firstWhere(
-      (status) =>
-          status == BleStatus.ready ||
-          status == BleStatus.unsupported ||
-          status == BleStatus.unauthorized ||
-          status == BleStatus.poweredOff,
-    );
-    return bluetoothStatus == BleStatus.ready;
-  }
-  //////-------------------------------------
-
-  static Future<void> scanAndConnect(int footIndex, Set<String> connectedDevices,
-      Function(String, String) onDeviceConnected) async {
-    await _platform.invokeMethod('startScanSensoria');
-    await Future.delayed(Duration(seconds: 5)); // delay to allow for device discovery
-    await _platform.invokeMethod('stopScanSensoria');
-
-    List<dynamic> devices = await _platform.invokeMethod('getScannedSensoriaDevices');
-    List<String> filteredDevices = devices
-        .where((device) {
-          var parts = device.split(' - ');
-          return parts.length > 1 && !connectedDevices.contains(parts.last);
-        })
-        .toList()
-        .cast<String>();
-
-    if (filteredDevices.isNotEmpty && filteredDevices.length > footIndex) {
-      String selectedDevice = filteredDevices[footIndex];
-      String selectedDeviceMacAddress = selectedDevice.split(' - ').last;
-      String foot = footIndex == 0 ? "right" : "left";
-
-      if (!connectedDevices.contains(selectedDeviceMacAddress)) {
-        bool isConnected = (await _platform.invokeMethod(
-                'connectToSensoriaDevice', {'macAddress': selectedDeviceMacAddress})) ??
-            false;
-
-        if (isConnected) {
-          onDeviceConnected(selectedDeviceMacAddress, foot);
-        } else {
-          print("Failed to connect to Sensoria device for the $foot foot.");
-        }
-      }
-    } else {
-      print("No Sensoria devices discovered or not enough devices to select the $footIndex index.");
-    }
-  }
-
-  ////-----------------------------the 2 core test//////
   static Future<void> scanAndConnectWithCore(int coreIndex) async {
+    if (!_pending.add(coreIndex)) return;
+    final update = coreIndex == 1
+        ? updateRightFootConnectionStatus
+        : updateLeftFootConnectionStatus;
     try {
       if (!_alreadyListening) {
-        _connectionStatusChannel.receiveBroadcastStream().listen(handleConnectionUpdate,
-            onError: (error) {
-          print("Connection status update error: $error");
-        });
+        _connectionStatusChannel.receiveBroadcastStream().listen(
+              handleConnectionUpdate,
+              onError: (Object error) => print('Sensoria status error: $error'),
+            );
         _alreadyListening = true;
       }
-      if (coreIndex == 1) {
-        updateRightFootConnectionStatus(DeviceConnectionStatus.connecting);
-      } else {
-        updateLeftFootConnectionStatus(DeviceConnectionStatus.connecting);
+      update(DeviceConnectionStatus.connecting);
+      if (Platform.isAndroid &&
+          !await AndroidDevicePermissions.requestAccess()) {
+        throw PlatformException(code: 'PERMISSION_REQUIRED');
       }
-      if (Platform.isAndroid) {
-        bool permissionsOk = await checkAndRequestPermissions();
-        if (!permissionsOk) {
-          print("Missing permissions");
-          return;
-        }
+      final status = await _ble.statusStream
+          .firstWhere(
+            (status) => status != BleStatus.unknown &&
+                (!Platform.isAndroid || status != BleStatus.unauthorized),
+          )
+          .timeout(const Duration(seconds: 6));
+      if (status != BleStatus.ready) {
+        throw StateError('Bluetooth unavailable: $status');
       }
-      bool servicesOk = await isBluetoothAndLocationEnabled();
-      if (!servicesOk) {
-        print("Bluetooth or Location is off");
-        return;
-      }
-//-------------------------------------
-      await _platform.invokeMethod('scanAndConnectToSensoriaDevice', {'coreIndex': coreIndex});
-    } catch (e) {
-      print("Failed to initiate scan and connect with core $coreIndex: $e");
-      if (coreIndex == 1) {
-        updateRightFootConnectionStatus(DeviceConnectionStatus.disconnected);
-      } else {
-        updateLeftFootConnectionStatus(DeviceConnectionStatus.disconnected);
-      }
+      final settings = await SensoriaSettings.load();
+      await _platform.invokeMethod<void>('scanAndConnectToSensoriaDevice', {
+        'coreIndex': coreIndex,
+        'settings': settings,
+      });
+    } catch (error) {
+      print('Sensoria setup could not start: $error');
+      update(DeviceConnectionStatus.disconnected);
+      final permissionsMissing =
+          error is PlatformException && error.code == 'PERMISSION_REQUIRED';
+      Fluttertoast.showToast(
+        msg: permissionsMissing
+            ? (_languageCode == 'es'
+                ? 'Activa Ubicación precisa y Dispositivos cercanos en los ajustes de HealthyWear.'
+                : 'Enable Precise location and Nearby devices in HealthyWear settings.')
+            : (_languageCode == 'es'
+                ? 'No se pudo iniciar la conexión. Comprueba que Bluetooth y Ubicación estén activados.'
+                : 'Could not start the connection. Check that Bluetooth and Location are on.'),
+      );
+    } finally {
+      _pending.remove(coreIndex);
     }
   }
 
@@ -232,8 +235,8 @@ class SensoriaApi {
     try {
       await Future.delayed(Duration(seconds: 1));
 
-      final int batteryLevel =
-          await _platform.invokeMethod('getBatteryLevel', {'coreIndex': coreIndex});
+      final int batteryLevel = await _platform
+          .invokeMethod('getBatteryLevel', {'coreIndex': coreIndex});
       print("sensoriaAPI-----Battery level----------------$batteryLevel");
       return batteryLevel;
     } on PlatformException catch (e) {
@@ -257,7 +260,8 @@ class SensoriaApi {
 
   static Future<void> disconnectDevice(int coreIndex) async {
     try {
-      await _platform.invokeMethod('disconnectDevice', {'coreIndex': coreIndex});
+      await _platform
+          .invokeMethod('disconnectDevice', {'coreIndex': coreIndex});
     } catch (e) {
       print("Failed to disconnect  with core $coreIndex: $e");
     }

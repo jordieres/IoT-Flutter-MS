@@ -1,0 +1,13 @@
+[Unit]
+Description=HealthyWear Sensoria settings
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/healthywear
+ExecStart=/usr/bin/python3 %h/healthywear/sensoria_admin.py
+Restart=on-failure
+UMask=0077
+
+[Install]
+WantedBy=default.target
