@@ -155,7 +155,9 @@ class Handler(BaseHTTPRequestHandler):
             saved=saved, error=error), "text/html")
 
     def do_GET(self):
-        if self.path == API:
+        if self.path in ("/healthywear/", ADMIN + "/"):
+            self.respond(303, "Open HealthyWear settings.", Location=ADMIN)
+        elif self.path == API:
             self.respond(200, json.dumps(profile()) + "\n", "application/json")
         elif self.path in (ADMIN, ADMIN + "?saved=1", ADMIN + "?password-changed=1", ADMIN + "/password"):
             session = self.session()

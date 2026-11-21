@@ -1,6 +1,6 @@
 # HealthyWear Sensoria settings
 
-The password protected editor is intended for `https://apiict03.etsii.upm.es/healthywear/admin`. Choose a range and sampling rate for each sensor. The separate packet period controls the Bluetooth stream (20 ms is 50 packets per second). “Keep device setting” leaves that rate or period alone. Changes take effect on the next connection. The app reads the validated profile at `/healthywear/sensoria-settings.json` and uses its last valid profile or its built-in defaults offline.
+Open `https://apiict03.etsii.upm.es/healthywear/` to reach the password protected editor at `/healthywear/admin`. Choose a range and sampling rate for each sensor. The separate packet period controls the Bluetooth stream (20 ms is 50 packets per second). “Keep device setting” leaves that rate or period alone. Changes take effect on the next connection. The app reads the validated profile at `/healthywear/sensoria-settings.json` and uses its last valid profile or its built-in defaults offline.
 
 The editor service runs on apiict03 at `127.0.0.1:8097` under the `amirf` account. To set the editor password, sign into the server and run:
 
